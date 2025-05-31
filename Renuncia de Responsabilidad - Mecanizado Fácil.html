@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Renuncia de Responsabilidad - Mecanizado Fácil</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #3498db;
+        }
+        header h1 {
+            color: #2c3e50;
+            font-size: 2.2em;
+            margin-bottom: 0.1em;
+        }
+        .date {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        h2 {
+            color: #2980b9;
+            font-size: 1.5em;
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+        p {
+            font-size: 0.95em;
+            color: #444;
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 8px;
+            font-size: 0.95em;
+            color: #444;
+            text-align: justify;
+        }
+        strong {
+            color: #2c3e50;
+        }
+        .final-recommendation {
+            font-weight: bold;
+            text-align: center;
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #eaf6ff;
+            border: 1px solid #3498db;
+            border-radius: 4px;
+            color: #1a5276;
+        }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.85em;
+            color: #7f8c8d;
+        }
+        /* --- Menú lateral y botón --- */
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1001;
+            background: #fff;
+            border-radius: 5px;
+            padding: 4px 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 1px solid #ccc;
+        }
+        .menu {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            min-width: 260px;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        .menu li {
+            padding: 5px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        .menu a:hover {
+            background: #f4f7f6;
+            color: #2980b9;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 5px;
+            }
+            .menu {
+                min-width: 180px;
+                left: 5px;
+                top: 50px;
+            }
+            .menu-button {
+                top: 10px;
+                left: 10px;
+                font-size: 22px;
+                padding: 2px 8px;
+            }
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("sideMenu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+        // Opcional: cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById("sideMenu");
+            var button = document.querySelector('.menu-button');
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu.style.display = "none";
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="menu-button" onclick="toggleMenu()">&#9776;</div>
+    <div class="menu" id="sideMenu">
+        <ul>
+            <li><a href="index.html">Página Principal</a></li>
+            <li><a href="Mecanizado Fácil - Suite Integral para Talleres Mecánicos.html">Mecanizado Fácil - Suite Integral para Talleres Mecánicos</a></li>
+            <li><a href="Consejos para Principiantes en Mecanizado - Mecanizado Fácil.html">Consejos para Principiantes en Mecanizado</a></li>
+            <li><a href="Seguridad en Talleres de Mecanizado - Mecanizado Fácil.html">Seguridad en Talleres de Mecanizado</a></li>
+            <li><a href="Test de Seguridad en Mecanizado.html">Test de Seguridad en Mecanizado</a></li>
+            <li><a href="Renuncia de Responsabilidad - Mecanizado Fácil.html">Renuncia de Responsabilidad</a></li>
+            <li><a href="Generador de Código G71 y Guía para Torno CNC.html">Generador de Código G71 y Guía para Torno CNC</a></li>
+            <li><a href="Calculadora de Código G G76 (Fanuc) y Guía.html">Calculadora de Código G G76 (Fanuc) y Guía</a></li>
+            <li><a href="Calculadora de Triángulos.html">Calculadora de Triángulos</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Chaveteros.html">Calculadora de Chaveteros</a></li>
+            <li><a href="Calculadora Avanzada de Engranajes.html">Calculadora Avanzada de Engranajes</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Inclinación de Cabezal.html">Calculadora de Inclinación de Cabezal</a></li>
+            <li><a href="Calculadora de Tolerancias ISO - Mecanizado Fácil.html">Calculadora de Tolerancias ISO</a></li>
+            <li><a href="Calculadora para Cabezal Divisor.html">Calculadora para Cabezal Divisor</a></li>
+            <li><a href="Calculadora de Cuerdas y Coordenadas de Agujeros.html">Calculadora de Cuerdas y Coordenadas de Agujeros</a></li>
+            <li><a href="Calculadora de Peso de Materiales.html">Calculadora de Peso de Materiales</a></li>
+            <li><a href="Calculadora de Inclinación y Conicidad.html">Calculadora de Inclinación y Conicidad</a></li>
+            <li><a href="Consultor de Roscas para Taller.html">Consultor de Roscas para Taller</a></li>
+            <li><a href="Calculadora de Avances Para Freasadoras - Mecanizado Fácil.html">Calculadora de Avances Para Freasadoras</a></li>
+            <li><a href="Calculadora de Desarrollo de Cilindros y Conos.html">Calculadora de Desarrollo de Cilindros y Conos</a></li>
+            <li><a href="Conversiones Técnicas para Talleres Mecánicos.html">Conversiones Técnicas para Talleres Mecánicos</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <header>
+            <h1>Renuncia de Responsabilidad para "Mecanizado Fácil"</h1>
+        </header>
+        <p class="date">Fecha de entrada en vigor: 16 de mayo de 2025</p>
+
+        <p>Bienvenido a "Mecanizado Fácil" (<a href="https://sites.google.com/view/mecanizado-fcil/" target="_blank">https://sites.google.com/view/mecanizado-fcil/</a>). Las herramientas de cálculo y la información proporcionada en este sitio web (en adelante, "el Servicio") se ofrecen únicamente con fines informativos y educativos generales.</p>
+        <p>Al utilizar el Servicio, usted reconoce y acepta los siguientes términos:</p>
+
+        <section id="precision">
+            <h2>Precisión de la Información y Cálculos</h2>
+            <p>Si bien nos esforzamos por proporcionar información y herramientas de cálculo precisas y actualizadas, no ofrecemos ninguna garantía, expresa o implícita, sobre la exactitud, fiabilidad, exhaustividad o idoneidad de cualquier cálculo, ecuación, dato o contenido disponible en el Servicio. Los procesos de mecanizado son complejos y dependen de múltiples factores que pueden no ser contemplados en su totalidad por las calculadoras aquí presentes. Es posible que existan errores en las ecuaciones, en los datos de entrada o en los algoritmos de las calculadoras.</p>
+        </section>
+
+        <section id="responsabilidad-uso">
+            <h2>Uso Bajo Propia Responsabilidad</h2>
+            <p>El uso que usted haga de cualquier información o herramienta de cálculo proporcionada en este sitio web es estrictamente bajo su propio riesgo. Usted es el único responsable de verificar la exactitud y aplicabilidad de cualquier cálculo o resultado obtenido a través del Servicio antes de tomar cualquier decisión o acción que pueda tener consecuencias financieras, materiales o de cualquier otra índole. Le recomendamos encarecidamente que verifique los resultados con fuentes independientes y/o consulte con profesionales cualificados antes de aplicar cualquier información obtenida de este sitio web en un entorno de trabajo real.</p>
+        </section>
+
+        <section id="limitacion-responsabilidad">
+            <h2>Limitación de Responsabilidad</h2>
+            <p>El autor y propietario de "Mecanizado Fácil" no se hace responsable, bajo ninguna circunstancia, de cualquier pérdida o daño, incluyendo, sin limitación, pérdidas directas o indirectas, consecuentes, especiales, incidentales o punitivas, tales como pérdida de tiempo, pérdida de beneficios, pérdida de producción, daño a materiales o maquinaria, que puedan surgir como resultado de:</p>
+            <ul>
+                <li>El uso o la imposibilidad de uso del Servicio.</li>
+                <li>Cualquier error, inexactitud u omisión en los cálculos o en el contenido proporcionado por el Servicio.</li>
+                <li>La confianza depositada en la información o en los resultados obtenidos a través del Servicio.</li>
+                <li>El mal uso de las herramientas de cálculo por parte del usuario.</li>
+            </ul>
+        </section>
+
+        <section id="no-asesoramiento">
+            <h2>No Asesoramiento Profesional</h2>
+            <p>La información y las herramientas proporcionadas en "Mecanizado Fácil" no pretenden constituir asesoramiento profesional técnico o de ingeniería. Están diseñadas para asistir a los operadores de máquinas y herramientas, pero no sustituyen el juicio profesional, la experiencia y la debida diligencia que se requiere en cualquier operación de mecanizado.</p>
+        </section>
+
+        <section id="errores-mal-uso">
+            <h2>Errores y Mal Uso</h2>
+            <p>Usted reconoce que los cálculos pueden ser erróneos debido a fallos en las ecuaciones implementadas, errores de programación, o por una incorrecta introducción de datos o una mala interpretación de los resultados por parte del usuario. El autor no se hace responsable de las consecuencias derivadas de dichos errores o mal uso.</p>
+        </section>
+
+        <section id="modificaciones">
+            <h2>Modificaciones</h2>
+            <p>Nos reservamos el derecho de modificar, actualizar o eliminar contenido y herramientas del Servicio en cualquier momento y sin previo aviso.</p>
+        </section>
+
+        <p><strong>Al acceder y utilizar las calculadoras y la información de "Mecanizado Fácil", usted indica que ha leído, entendido y aceptado esta renuncia de responsabilidad en su totalidad. Si no está de acuerdo con alguno de estos términos, por favor, no utilice nuestro Servicio.</strong></p>
+
+        <p class="final-recommendation">Se recomienda a los usuarios ser prudentes y verificar siempre los resultados obtenidos. La seguridad y la correcta ejecución de los procesos de mecanizado son responsabilidad última del operario y de la empresa para la cual trabaja.</p>
+
+        <footer>
+            <p>© 2025 Mecanizado Fácil</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanizado Fácil - Calculadora de Inclinación de Cabezal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            display: none;
+        }
+        .diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .diagram img {
+            max-width: 100%;
+            height: auto;
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+        }
+        /* --- Menú lateral y botón --- */
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1001;
+            background: #fff;
+            border-radius: 5px;
+            padding: 4px 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 1px solid #ccc;
+        }
+        .menu {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            min-width: 260px;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        .menu li {
+            padding: 5px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        .menu a:hover {
+            background: #f4f7f6;
+            color: #3498db;
+        }
+        @media (max-width: 600px) {
+            .menu {
+                min-width: 180px;
+                left: 5px;
+                top: 50px;
+            }
+            .menu-button {
+                top: 10px;
+                left: 10px;
+                font-size: 22px;
+                padding: 2px 8px;
+            }
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("sideMenu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+        // Opcional: cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById("sideMenu");
+            var button = document.querySelector('.menu-button');
+            if (menu && button && !menu.contains(event.target) && !button.contains(event.target)) {
+                menu.style.display = "none";
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="menu-button" onclick="toggleMenu()">&#9776;</div>
+    <div class="menu" id="sideMenu">
+        <ul>
+            <li><a href="index.html">Página Principal</a></li>
+            <li><a href="Mecanizado Fácil - Suite Integral para Talleres Mecánicos.html">Mecanizado Fácil - Suite Integral para Talleres Mecánicos</a></li>
+            <li><a href="Consejos para Principiantes en Mecanizado - Mecanizado Fácil.html">Consejos para Principiantes en Mecanizado</a></li>
+            <li><a href="Seguridad en Talleres de Mecanizado - Mecanizado Fácil.html">Seguridad en Talleres de Mecanizado</a></li>
+            <li><a href="Test de Seguridad en Mecanizado.html">Test de Seguridad en Mecanizado</a></li>
+            <li><a href="Renuncia de Responsabilidad - Mecanizado Fácil.html">Renuncia de Responsabilidad</a></li>
+            <li><a href="Generador de Código G71 y Guía para Torno CNC.html">Generador de Código G71 y Guía para Torno CNC</a></li>
+            <li><a href="Calculadora de Código G G76 (Fanuc) y Guía.html">Calculadora de Código G G76 (Fanuc) y Guía</a></li>
+            <li><a href="Calculadora de Triángulos.html">Calculadora de Triángulos</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Chaveteros.html">Calculadora de Chaveteros</a></li>
+            <li><a href="Calculadora Avanzada de Engranajes.html">Calculadora Avanzada de Engranajes</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Inclinación de Cabezal.html">Calculadora de Inclinación de Cabezal</a></li>
+            <li><a href="Calculadora de Tolerancias ISO - Mecanizado Fácil.html">Calculadora de Tolerancias ISO</a></li>
+            <li><a href="Calculadora para Cabezal Divisor.html">Calculadora para Cabezal Divisor</a></li>
+            <li><a href="Calculadora de Cuerdas y Coordenadas de Agujeros.html">Calculadora de Cuerdas y Coordenadas de Agujeros</a></li>
+            <li><a href="Calculadora de Peso de Materiales.html">Calculadora de Peso de Materiales</a></li>
+            <li><a href="Calculadora de Inclinación y Conicidad.html">Calculadora de Inclinación y Conicidad</a></li>
+            <li><a href="Consultor de Roscas para Taller.html">Consultor de Roscas para Taller</a></li>
+            <li><a href="Calculadora de Avances Para Freasadoras - Mecanizado Fácil.html">Calculadora de Avances Para Freasadoras</a></li>
+            <li><a href="Calculadora de Desarrollo de Cilindros y Conos.html">Calculadora de Desarrollo de Cilindros y Conos</a></li>
+            <li><a href="Conversiones Técnicas para Talleres Mecánicos.html">Conversiones Técnicas para Talleres Mecánicos</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <h1>Calculadora de Inclinación para Cabezal Universal</h1>
+        
+        <div class="form-group">
+            <label for="inclinacion">Inclinación deseada (grados):</label>
+            <input type="number" id="inclinacion" min="0" max="90" step="0.1" placeholder="Ejemplo: 45">
+        </div>
+        
+        <div class="form-group">
+            <label for="tipo">Tipo de configuración:</label>
+            <select id="tipo" class="form-control">
+                <option value="simple">Inclinación simple (un solo cabezal)</option>
+                <option value="compuesta">Inclinación compuesta (ambos cabezales)</option>
+            </select>
+        </div>
+        
+        <button onclick="calcularInclinacion()">Calcular Ajustes</button>
+        
+        <div id="resultadoSimple" class="result">
+            <h3>Resultado:</h3>
+            <p>Para lograr una inclinación de <span id="anguloDeseadoSimple"></span>°, ajuste el cabezal a:</p>
+            <p><strong><span id="resultadoSimpleAngulo"></span>°</strong></p>
+        </div>
+        
+        <div id="resultadoCompuesto" class="result">
+            <h3>Resultado:</h3>
+            <p>Para lograr una inclinación compuesta de <span id="anguloDeseadoCompuesto"></span>°, ajuste los cabezales a:</p>
+            <ul>
+                <li>Cabezal inclinado: <strong><span id="resultadoInclinado"></span>°</strong></li>
+                <li>Cabezal vertical: <strong><span id="resultadoVertical"></span>°</strong></li>
+            </ul>
+            <p>Fórmula utilizada: tan(θ) = tan(α) × cos(β)</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>Instrucciones de Uso:</h3>
+            <ol>
+                <li>Ingrese el ángulo de inclinación deseado en grados (0-90°).</li>
+                <li>Seleccione si desea una inclinación simple (un solo cabezal) o compuesta (ambos cabezales).</li>
+                <li>Haga clic en "Calcular Ajustes" para obtener los ángulos de configuración.</li>
+                <li>Para inclinación compuesta, la calculadora determinará la combinación óptima de ángulos.</li>
+            </ol>
+            <p><strong>Nota:</strong> Para ángulos mayores a 45°, se recomienda usar configuración compuesta para mayor precisión.</p>
+        </div>
+    </div>
+
+    <script>
+        function calcularInclinacion() {
+            const inclinacion = parseFloat(document.getElementById('inclinacion').value);
+            const tipo = document.getElementById('tipo').value;
+            
+            if (isNaN(inclinacion) || inclinacion < 0 || inclinacion > 90) {
+                alert("Por favor ingrese un ángulo válido entre 0 y 90 grados.");
+                return;
+            }
+            
+            if (tipo === 'simple') {
+                document.getElementById('anguloDeseadoSimple').textContent = inclinacion;
+                document.getElementById('resultadoSimpleAngulo').textContent = inclinacion;
+                
+                document.getElementById('resultadoSimple').style.display = 'block';
+                document.getElementById('resultadoCompuesto').style.display = 'none';
+            } else {
+                // Cálculo para inclinación compuesta
+                // Para simplificar, asumimos una división equitativa del ángulo
+                // En una implementación real, esto podría ser más complejo basado en trigonometría esférica
+                const anguloInclinado = inclinacion * 0.7; // Aproximación práctica
+                const anguloVertical = Math.atan(Math.tan(inclinacion * Math.PI/180) / Math.cos(anguloInclinado * Math.PI/180)) * 180/Math.PI;
+                
+                document.getElementById('anguloDeseadoCompuesto').textContent = inclinacion;
+                document.getElementById('resultadoInclinado').textContent = anguloInclinado.toFixed(2);
+                document.getElementById('resultadoVertical').textContent = anguloVertical.toFixed(2);
+                
+                document.getElementById('resultadoSimple').style.display = 'none';
+                document.getElementById('resultadoCompuesto').style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

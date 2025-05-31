@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<!-- saved from url=(0109)file:///C:/Users/isaac/Downloads/Generador%20de%20C%C3%B3digo%20G71%20y%20Gu%C3%ADa%20para%20Torno%20CNC.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguridad en Talleres de Mecanizado - Mecanizado Fácil</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            position: relative; /* Added for menu positioning */
+        }
+        .container {
+            width: 90%;
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 30px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #e74c3c; /* Rojo para seguridad */
+        }
+        header h1 {
+            color: #c0392b; /* Rojo oscuro para el título principal */
+            font-size: 2.4em;
+            margin-bottom: 0.3em;
+        }
+        header .subtitle {
+            font-size: 1.1em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        section {
+            margin-bottom: 35px;
+        }
+        h2 {
+            color: #d35400; /* Naranja oscuro para secciones principales */
+            font-size: 1.9em;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-left: 4px solid #e74c3c;
+            padding-left: 12px;
+        }
+        h3 {
+            color: #e67e22; /* Naranja para subsecciones */
+            font-size: 1.5em;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        h4 { /* Para los puntos numerados dentro de las secciones */
+            color: #2c3e50; /* Azul oscuro */
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p, li {
+            font-size: 1em;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        ul {
+            list-style-type: disc; /* Estilo de viñeta estándar */
+            padding-left: 25px;
+        }
+        .list-item-group { /* Para agrupar elementos de una lista con un título */
+            margin-bottom: 15px;
+        }
+        .list-item-group strong {
+            color: #34495e;
+        }
+        .emoji {
+            margin-right: 10px;
+            font-size: 1.3em;
+        }
+        .warning-box {
+            background-color: #fef9e7; /* Amarillo pálido */
+            border: 1px solid #f1c40f; /* Amarillo */
+            border-left-width: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning-box strong {
+            color: #c0392b; /* Rojo oscuro */
+        }
+        .data-box {
+            background-color: #eaf6ff; /* Azul claro */
+            border: 1px solid #3498db; /* Azul */
+            border-left-width: 5px;
+            padding: 10px;
+            margin: 15px 0;
+            font-size: 0.95em;
+            border-radius: 4px;
+        }
+        .data-box strong {
+            color: #2980b9;
+        }
+        .prohibited-item {
+            color: #c0392b; /* Rojo oscuro para elementos prohibidos */
+            font-weight: bold;
+        }
+        .allowed-item {
+            color: #27ae60; /* Verde para elementos permitidos */
+            font-weight: bold;
+        }
+        .checklist ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .checklist li::before {
+            content: "📋";
+            margin-right: 10px;
+        }
+        .reflection-quote {
+            font-style: italic;
+            text-align: center;
+            background-color: #ecf0f1; /* Gris claro */
+            padding: 20px;
+            border-left: 5px solid #7f8c8d; /* Gris */
+            margin: 30px 0;
+            border-radius: 4px;
+            font-size: 1.1em;
+            color: #34495e;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+         /* Menu Styles */
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .menu {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none; /* Hidden by default */
+            z-index: 1; /* Ensure it's on top */
+        }
+
+        .menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .menu li {
+            padding: 5px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-button" onclick="toggleMenu()">&#9776;</div>
+    <div class="menu" id="sideMenu">
+        <ul>
+            <li><a href="index.html">Página Principal</a></li>
+            <li><a href="Mecanizado Fácil - Suite Integral para Talleres Mecánicos.html">Mecanizado Fácil - Suite Integral para Talleres Mecánicos</a></li>
+            <li><a href="Consejos para Principiantes en Mecanizado - Mecanizado Fácil.html">Consejos para Principiantes en Mecanizado</a></li>
+            <li><a href="Seguridad en Talleres de Mecanizado - Mecanizado Fácil.html">Seguridad en Talleres de Mecanizado</a></li>
+            <li><a href="Test de Seguridad en Mecanizado.html">Test de Seguridad en Mecanizado</a></li>
+            <li><a href="Renuncia de Responsabilidad - Mecanizado Fácil.html">Renuncia de Responsabilidad</a></li>
+            <li><a href="Generador de Código G71 y Guía para Torno CNC.html">Generador de Código G71 y Guía para Torno CNC</a></li>
+            <li><a href="Calculadora de Código G G76 (Fanuc) y Guía.html">Calculadora de Código G G76 (Fanuc) y Guía</a></li>
+            <li><a href="Calculadora de Triángulos.html">Calculadora de Triángulos</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Chaveteros.html">Calculadora de Chaveteros</a></li>
+            <li><a href="Calculadora Avanzada de Engranajes.html">Calculadora Avanzada de Engranajes</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Inclinación de Cabezal.html">Calculadora de Inclinación de Cabezal</a></li>
+            <li><a href="Calculadora de Tolerancias ISO - Mecanizado Fácil.html">Calculadora de Tolerancias ISO</a></li>
+            <li><a href="Calculadora para Cabezal Divisor.html">Calculadora para Cabezal Divisor</a></li>
+            <li><a href="Calculadora de Cuerdas y Coordenadas de Agujeros.html">Calculadora de Cuerdas y Coordenadas de Agujeros</a></li>
+            <li><a href="Calculadora de Peso de Materiales.html">Calculadora de Peso de Materiales</a></li>
+            <li><a href="Calculadora de Inclinación y Conicidad.html">Calculadora de Inclinación y Conicidad</a></li>
+            <li><a href="Consultor de Roscas para Taller.html">Consultor de Roscas para Taller</a></li>
+            <li><a href="Calculadora de Avances Para Freasadoras - Mecanizado Fácil.html">Calculadora de Avances Para Freasadoras</a></li>
+            <li><a href="Calculadora de Desarrollo de Cilindros y Conos.html">Calculadora de Desarrollo de Cilindros y Conos</a></li>
+            <li><a href="Conversiones Técnicas para Talleres Mecánicos.html">Conversiones Técnicas para Talleres Mecánicos</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <header>
+            <h1><span class="emoji">🚨</span> SEGURIDAD EN TALLERES DE MECANIZADO</h1>
+            <p class="subtitle">PROTECCIÓN, RIESGOS Y BUENAS PRÁCTICAS</p>
+        </header>
+
+        <p>"La seguridad no es un protocolo... es una cultura. En el mecanizado, donde conviven máquinas de alto voltaje, herramientas cortantes y materiales pesados, un descuido puede tener consecuencias irreversibles. Esta guía exhaustiva cubre todo lo que un operador debe saber para trabajar seguro."</p>
+
+        <section id="proteccion-personal">
+            <h2><span class="emoji">👁️🩹</span> PROTECCIÓN PERSONAL: EQUIPO QUE SALVA VIDAS</h2>
+
+            <h4>1. PROTECCIÓN OCULAR (NO NEGOCIABLE)</h4>
+            <div class="list-item-group">
+                <strong>Lentes de seguridad antiimpacto (ANSI Z87.1+):</strong>
+                <ul>
+                    <li>Obligatorios en todo momento dentro del taller, incluso si no estás operando una máquina.</li>
+                    <li>Casos críticos: fresado, torneado, taladrado, esmerilado y desbarbado.</li>
+                </ul>
+            </div>
+            <div class="list-item-group">
+                <strong>Pantallas faciales de policarbonato:</strong>
+                <p>Uso obligatorio cuando:</p>
+                <ul>
+                    <li>Se trabaja con esmeriles angulares (&gt;10,000 RPM).</li>
+                    <li>Hay riesgo de salpicaduras químicas (fluidos de corte contaminados).</li>
+                    <li>Se mecanizan materiales frágiles (fundición, vidrio, cerámicos).</li>
+                </ul>
+            </div>
+            <p><strong>Gafas de ventilación indirecta:</strong> Para trabajos con vapores o nieblas de aceite.</p>
+            <div class="warning-box">
+                <p><strong>⚠️ Caso real:</strong> En 2022, un operario en Querétaro perdió visión en un ojo por no usar lentes al limpiar virutas de acero inoxidable (viruta saltó a 120 km/h).</p>
+            </div>
+
+            <h4>2. PROTECCIÓN AUDITIVA</h4>
+            <p><strong>Niveles de ruido peligrosos (ejemplos):</strong></p>
+            <ul>
+                <li>Taladro neumático: 95 dB</li>
+                <li>Esmeriladora: 105 dB</li>
+                <li>Compresores industriales: 90 dB</li>
+            </ul>
+            <p><strong>Soluciones:</strong></p>
+            <ul>
+                <li>Tapones desechables (NRR 25 dB): Para exposiciones cortas.</li>
+                <li>Orejeras electrónicas (NRR 30 dB): Permiten escuchar alarmas pero bloquean ruidos dañinos.</li>
+                <li>Zonas señalizadas: Usar carteles "Protección auditiva obligatoria".</li>
+            </ul>
+            <div class="data-box">
+                <p><strong>📊 Datos:</strong> La pérdida auditiva por ruido es irreversible y acumulativa (OSHA establece límite de 85 dB por 8 horas).</p>
+            </div>
+
+            <h4>3. PROTECCIÓN RESPIRATORIA</h4>
+            <p><strong>Riesgos comunes:</strong></p>
+            <ul>
+                <li>Polvos metálicos (aluminio, berilio → toxicidad).</li>
+                <li>Nieblas de aceite soluble (pueden causar neumonitis química).</li>
+                <li>Humos de soldadura (hexavalente cromo, óxidos de nitrógeno).</li>
+            </ul>
+            <p><strong>Equipos recomendados:</strong></p>
+            <ul>
+                <li>Mascarilla N95: Para polvos y partículas.</li>
+                <li>Respirador de media cara con filtros P100: Para metales pesados.</li>
+                <li>Sistemas de extracción localizada (LEV): En máquinas CNC con alta generación de partículas.</li>
+            </ul>
+            <div class="data-box">
+                <p><strong>🔍 Inspección:</strong> Reemplazar filtros cada 40 horas de uso o cuando haya resistencia al respirar.</p>
+            </div>
+        </section>
+
+        <section id="riesgos-mecanicos">
+            <h2><span class="emoji">🔄</span> RIESGOS MECÁNICOS: PREVENCIÓN DE ATRAPAMIENTOS Y CORTES</h2>
+            
+            <h4>1. ROPA Y ACCESORIOS PROHIBIDOS</h4>
+            <div class="list-item-group">
+                <strong>Guantes:</strong>
+                <ul>
+                    <li><span class="allowed-item">✅ Permitidos:</span> Para manejar piezas cortantes o material abrasivo.</li>
+                    <li><span class="prohibited-item">❌ Prohibidos:</span> Al operar tornos, fresadoras, taladros o cualquier máquina con partes rotativas (riesgo de avulsión).</li>
+                </ul>
+            </div>
+            <div class="list-item-group">
+                <strong>Vestimenta:</strong>
+                <ul>
+                    <li>Mangas ajustadas (sin puños sueltos).</li>
+                    <li>Pantalones sin dobladillos (pueden engancharse).</li>
+                    <li>Zapatos de seguridad con puntera (ASTM F2413).</li>
+                </ul>
+            </div>
+            <p><span class="prohibited-item">Prohibido:</span> Anillos, relojes, collares o pulseras (ejemplo: en 2021, un operador en Puebla sufrió degloving al engancharse su anillo en un husillo).</p>
+
+            <h4>2. SEGURIDAD EN MÁQUINAS ROTATIVAS</h4>
+            <div class="list-item-group">
+                <strong>Bloqueo/Etiquetado (LOTO):</strong>
+                <p>Antes de cualquier mantenimiento:</p>
+                <ul>
+                    <li>Apagar y desenergizar.</li>
+                    <li>Colocar candado personal en el interruptor.</li>
+                    <li>Verificar energía cero (prueba de arranque fantasma).</li>
+                </ul>
+            </div>
+            <div class="list-item-group">
+                <strong>Protecciones de máquina:</strong>
+                <ul>
+                    <li>Nunca retirar guardas de transmisiones, poleas o engranajes.</li>
+                    <li>Respetar distancias de seguridad en zonas de giro (ejemplo: radio de 1.5 m en tornos grandes).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="prevencion-incendios">
+            <h2><span class="emoji">🔥</span> PREVENCIÓN DE INCENDIOS Y QUÍMICOS</h2>
+
+            <h4>1. LÍQUIDOS INFLAMABLES</h4>
+            <div class="list-item-group">
+                <strong>Aceites y fluidos de corte:</strong>
+                <ul>
+                    <li>Almacenar en recipientes metálicos con cierre hermético.</li>
+                    <li>Limpiar derrames inmediatamente (usar absorbentes no combustibles).</li>
+                </ul>
+            </div>
+            <div class="warning-box">
+                <p><strong>Trapo con aceite = BOMBA DE TIEMPO:</strong> Guardar trapos usados en contenedores metálicos autosellables.</p>
+            </div>
+
+            <h4>2. EXTINTORES (TIPOS Y USO)</h4>
+            <ul>
+                <li><strong>Clase A:</strong> Sólidos (madera, papel).</li>
+                <li><strong>Clase B:</strong> Líquidos inflamables (aceites).</li>
+                <li><strong>Clase C:</strong> Equipos eléctricos.</li>
+                <li><strong>Clase D:</strong> Metales combustibles (magnesio, titanio).</li>
+            </ul>
+            <p><strong>Técnica PASS:</strong></p>
+            <ul>
+                <li><strong>P</strong>ull (quitar seguro).</li>
+                <li><strong>A</strong>im (apuntar a la base del fuego).</li>
+                <li><strong>S</strong>queeze (presionar gatillo).</li>
+                <li><strong>S</strong>weep (movimiento en barrido).</li>
+            </ul>
+        </section>
+
+        <section id="primeros-auxilios">
+            <h2><span class="emoji">🚑</span> PRIMEROS AUXILIOS: ¿QUÉ HACER EN CASO DE...?</h2>
+            
+            <h4>1. HERIDAS POR CORTE</h4>
+            <ul>
+                <li>Presionar con gasa estéril (no usar trapos sucios).</li>
+                <li>Elevar la zona afectada.</li>
+                <li>¡No retirar objetos clavados! (esperar a personal médico).</li>
+            </ul>
+
+            <h4>2. QUEMADURAS QUÍMICAS</h4>
+            <ul>
+                <li>Lavar con agua 15+ minutos (excepto para metales reactivos como sodio).</li>
+                <li>Quitar ropa contaminada.</li>
+            </ul>
+
+            <h4>3. ATRAPAMIENTO</h4>
+            <ul>
+                <li>No intentar liberar al operador manualmente (apagar máquina primero).</li>
+                <li>Llamar a emergencias y aplicar torniquete si hay amputación.</li>
+            </ul>
+        </section>
+
+        <section id="checklist">
+            <h2><span class="emoji">📋</span> LISTA DE VERIFICACIÓN DIARIA (CHECKLIST)</h2>
+            <ul class="checklist">
+                <li>Revisar estado de EPP (gafas, protectores, calzado).</li>
+                <li>Verificar que las guardas de máquinas estén en su lugar.</li>
+                <li>Inspeccionar herramientas de corte (afilado, grietas).</li>
+                <li>Confirmar que extintores estén cargados y accesibles.</li>
+            </ul>
+        </section>
+
+        <section id="reflexion">
+            <h2><span class="emoji">📌</span> PARA REFLEXIONAR:</h2>
+            <div class="reflection-quote">
+                <p>"En el taller, cada seguridad omitida es un accidente esperando su momento. Tus familiares prefieren que regreses tarde... a que no regreses."</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2025 Mecanizado Fácil</p>
+        </footer>
+    </div>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("sideMenu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+    </script>
+</body></html>

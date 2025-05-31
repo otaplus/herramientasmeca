@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanizado Fácil - Suite Integral para Talleres Mecánicos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 25px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+        }
+        header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 0.2em;
+        }
+        header .subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+        }
+        section {
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #2980b9;
+            font-size: 1.8em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #16a085;
+            font-size: 1.4em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        p, li {
+            font-size: 1em;
+            color: #555;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        li {
+            background-color: #fdfdfd;
+            border-left: 4px solid #3498db;
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 0 4px 4px 0;
+        }
+        .quote {
+            font-style: italic;
+            background-color: #eaf6ff;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+        .quote p {
+            margin: 0;
+        }
+        .emoji {
+            margin-right: 8px;
+        }
+        .check-list li {
+            background-color: transparent;
+            border-left: none;
+            padding-left: 0;
+            margin-bottom: 5px;
+        }
+        .check-list li::before {
+            content: "✅";
+            margin-right: 10px;
+            color: #27ae60;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        /* --- Menú lateral y botón --- */
+        .menu-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            font-size: 24px;
+            z-index: 1001;
+            background: #fff;
+            border-radius: 5px;
+            padding: 4px 12px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+            border: 1px solid #ccc;
+        }
+        .menu {
+            position: absolute;
+            top: 60px;
+            left: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            min-width: 260px;
+        }
+        .menu ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+        .menu li {
+            padding: 5px;
+        }
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        .menu a:hover {
+            background: #f4f7f6;
+            color: #3498db;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 5px;
+            }
+            .menu {
+                min-width: 180px;
+                left: 5px;
+                top: 50px;
+            }
+            .menu-button {
+                top: 10px;
+                left: 10px;
+                font-size: 22px;
+                padding: 2px 8px;
+            }
+        }
+    </style>
+    <script>
+        function toggleMenu() {
+            var menu = document.getElementById("sideMenu");
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+        // Opcional: cerrar menú al hacer clic fuera
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById("sideMenu");
+            var button = document.querySelector('.menu-button');
+            if (!menu.contains(event.target) && !button.contains(event.target)) {
+                menu.style.display = "none";
+            }
+        });
+    </script>
+</head>
+<body>
+    <div class="menu-button" onclick="toggleMenu()">&#9776;</div>
+    <div class="menu" id="sideMenu">
+        <ul>
+            <li><a href="index.html">Página Principal</a></li>
+            <li><a href="Mecanizado Fácil - Suite Integral para Talleres Mecánicos.html">Mecanizado Fácil - Suite Integral para Talleres Mecánicos</a></li>
+            <li><a href="Consejos para Principiantes en Mecanizado - Mecanizado Fácil.html">Consejos para Principiantes en Mecanizado</a></li>
+            <li><a href="Seguridad en Talleres de Mecanizado - Mecanizado Fácil.html">Seguridad en Talleres de Mecanizado</a></li>
+            <li><a href="Test de Seguridad en Mecanizado.html">Test de Seguridad en Mecanizado</a></li>
+            <li><a href="Renuncia de Responsabilidad - Mecanizado Fácil.html">Renuncia de Responsabilidad</a></li>
+            <li><a href="Generador de Código G71 y Guía para Torno CNC.html">Generador de Código G71 y Guía para Torno CNC</a></li>
+            <li><a href="Calculadora de Código G G76 (Fanuc) y Guía.html">Calculadora de Código G G76 (Fanuc) y Guía</a></li>
+            <li><a href="Calculadora de Triángulos.html">Calculadora de Triángulos</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Chaveteros.html">Calculadora de Chaveteros</a></li>
+            <li><a href="Calculadora Avanzada de Engranajes.html">Calculadora Avanzada de Engranajes</a></li>
+            <li><a href="Mecanizado Fácil - Calculadora de Inclinación de Cabezal.html">Calculadora de Inclinación de Cabezal</a></li>
+            <li><a href="Calculadora de Tolerancias ISO - Mecanizado Fácil.html">Calculadora de Tolerancias ISO</a></li>
+            <li><a href="Calculadora para Cabezal Divisor.html">Calculadora para Cabezal Divisor</a></li>
+            <li><a href="Calculadora de Cuerdas y Coordenadas de Agujeros.html">Calculadora de Cuerdas y Coordenadas de Agujeros</a></li>
+            <li><a href="Calculadora de Peso de Materiales.html">Calculadora de Peso de Materiales</a></li>
+            <li><a href="Calculadora de Inclinación y Conicidad.html">Calculadora de Inclinación y Conicidad</a></li>
+            <li><a href="Consultor de Roscas para Taller.html">Consultor de Roscas para Taller</a></li>
+            <li><a href="Calculadora de Avances Para Freasadoras - Mecanizado Fácil.html">Calculadora de Avances Para Freasadoras</a></li>
+            <li><a href="Calculadora de Desarrollo de Cilindros y Conos.html">Calculadora de Desarrollo de Cilindros y Conos</a></li>
+            <li><a href="Conversiones Técnicas para Talleres Mecánicos.html">Conversiones Técnicas para Talleres Mecánicos</a></li>
+        </ul>
+    </div>
+    <div class="container">
+        <header>
+            <h1>Mecanizado Fácil</h1>
+            <p class="subtitle">Suite Integral para Talleres Mecánicos</p>
+        </header>
+
+        <section id="presentacion">
+            <h2><span class="emoji">👋</span> Presentación: Isaac, Operador Experto</h2>
+            <div class="quote">
+                <p>"Hola, soy Isaac, operador de máquinas-herramientas con más de 20 años de experiencia en el sector. A lo largo de mi carrera, he trabajado con tornos, fresadoras CNC, centros de mecanizado y sistemas de fabricación avanzada. Además de mi expertise técnico, cuento con conocimientos en programación CNC y desarrollo de herramientas digitales para optimizar procesos industriales."</p>
+            </div>
+            <p>Este proyecto nace de mi pasión por simplificar el trabajo en taller combinando mi experiencia práctica con soluciones tecnológicas accesibles. ¡Bienvenidos a Mecanizado Fácil!</p>
+        </section>
+
+        <section id="que-es">
+            <h2><span class="emoji">🛠️</span> ¿Qué es "Mecanizado Fácil"?</h2>
+            <p>Una plataforma web unificada diseñada por y para profesionales del mecanizado, que integra:</p>
+            
+            <h3>Herramientas Principales</h3>
+            <ul>
+                <li><span class="emoji">📐</span> Calculadora de Roscas (Métricas/Unificadas/Whitworth)</li>
+                <li><span class="emoji">🔄</span> Conversor de Unidades Técnicas (longitud, fuerza, dureza, etc.)</li>
+                <li><span class="emoji">📏</span> Calculadora de Inclinación/Conicidad con gráficos interactivos</li>
+                <li><span class="emoji">⚙️</span> Generador de Códigos G (próximamente)</li>
+            </ul>
+
+            <h3><span class="emoji">🔍</span> Enfoque Práctico</h3>
+            <ul>
+                <li>Cálculos precisos basados en estándares ISO/ANSI.</li>
+                <li>Interfaz intuitiva diseñada desde la experiencia en taller.</li>
+                <li>Visualizaciones técnicas para evitar errores de interpretación.</li>
+            </ul>
+        </section>
+
+        <section id="objetivo">
+            <h2><span class="emoji">🎯</span> Objetivo del Proyecto</h2>
+            <div class="quote">
+                <p>"Como operador, sé lo frustrante que es perder tiempo buscando datos en el A. L. Casillas o haciendo cálculos manuales. Con Mecanizado Fácil, quiero ofrecer:</p>
+                <ul class="check-list">
+                    <li>Herramientas rápidas para tomar decisiones técnicas en segundos.</li>
+                    <li>Precisión garantizada en mediciones y conversiones.</li>
+                    <li>Aprendizaje integrado con ejemplos visuales y fórmulas explicadas."</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="confianza">
+            <h2><span class="emoji">🌟</span> ¿Por qué Confiar en Esta Plataforma?</h2>
+            <ul>
+                <li>Desarrollada por un experto en máquinas-herramientas (no solo por programadores).</li>
+                <li>Pruebas reales en entorno industrial para validar resultados.</li>
+                <li>En constante evolución con feedback de usuarios técnicos.</li>
+            </ul>
+        </section>
+
+        <section id="tecnologia">
+            <h2><span class="emoji">🚀</span> Tecnología y Accesibilidad</h2>
+            <ul>
+                <li>PWA (Aplicación Web Progresiva): Instálala en tu móvil/PC y úsala offline.</li>
+                <li>Diseño responsive: Funciona en cualquier dispositivo.</li>
+                <li>Código abierto (opcional): Para contribuciones de la comunidad.</li>
+            </ul>
+        </section>
+
+        <section id="invitacion">
+            <h2><span class="emoji">📢</span> Invitación a Usuarios</h2>
+            <div class="quote">
+                <p>"Si eres mecánico, tornero, fresador o ingeniero, esta herramienta es para ti. ¡Prueba Mecanizado Fácil y dime cómo puedo mejorarla para servirte mejor!"</p>
+            </div>
+        </section>
+
+        <footer>
+            <p>© 2024 Mecanizado Fácil - Desarrollado por Isaac.</p>
+        </footer>
+    </div>
+</body>
+<script>
+    function toggleMenu() {
+        var menu = document.getElementById("sideMenu");
+        if (menu.style.display === "block") {
+            menu.style.display = "none";
+        } else {
+            menu.style.display = "block";
+        }
+    }
+    // Opcional: cerrar menú al hacer clic fuera
+    document.addEventListener('click', function(event) {
+        var menu = document.getElementById("sideMenu");
+        var button = document.querySelector('.menu-button');
+        if (!menu.contains(event.target) && !button.contains(event.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>
+</html>
