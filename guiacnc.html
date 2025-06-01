@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Códigos G y M Comunes para CNC - Mecanizado Fácil</title>
+    <style>
+        html { /* Añadido para el scroll suave */
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header-container {
+            background: #333;
+            color: #fff;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-bottom: #007bff 4px solid; /* Un azul más vibrante para el header */
+        }
+        .header-container h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .header-container p {
+            font-size: 1.1rem;
+            margin-top: 5px;
+        }
+        .container {
+            width: 85%;
+            margin: 20px auto;
+            overflow: hidden;
+            padding: 25px;
+            background-color: #fff;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        h2 {
+            color: #0056b3; /* Azul industrial */
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 30px;
+        }
+        h2:first-child {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #0056b3;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .code {
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        .note, .warning {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 0.95em;
+        }
+        .note {
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            color: #856404;
+        }
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #333;
+            color: #fff;
+            margin-top: 30px;
+        }
+        .form-group { /* Estilo para el contenedor del select */
+            margin-bottom: 20px; /* Aumentado para más espacio */
+            margin-top: 10px; /* Espacio arriba del select */
+        }
+        .navigation-select { /* Estilo para el select */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            background-color: white;
+        }
+
+        /* Estilos para el botón "Volver Arriba" */
+        #scrollTopBtn {
+            display: none; /* Oculto por defecto */
+            position: fixed;
+            bottom: 20px;
+            right: 30px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: #0056b3;
+            color: white;
+            cursor: pointer;
+            padding: 12px 15px;
+            border-radius: 50%; /* Para hacerlo circular */
+            font-size: 18px; /* Tamaño de la flecha */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: background-color 0.3s, opacity 0.3s, visibility 0.3s;
+        }
+
+        #scrollTopBtn:hover {
+            background-color: #003d82; /* Un azul más oscuro al pasar el mouse */
+        }
+
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            .header-container h1 {
+                font-size: 2rem;
+            }
+            th, td {
+                padding: 8px;
+                font-size: 0.9em;
+            }
+            .navigation-select {
+                font-size: 0.95rem;
+            }
+            #scrollTopBtn {
+                bottom: 15px;
+                right: 15px;
+                padding: 10px 12px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header-container">
+        <h1>Mecanizado Fácil</h1>
+        <p>Referencia Rápida de Códigos G y M para Programación CNC</p>
+    </header>
+
+    <div class="container">
+        <h2>Introducción a los Códigos CNC</h2>
+        <p>Los códigos G (preparatorios) y M (misceláneos) son el lenguaje fundamental para instruir a las máquinas de Control Numérico Computarizado (CNC). Mientras los códigos G definen la geometría del movimiento y la operación de corte, los códigos M controlan funciones auxiliares de la máquina, como el arranque y parada del husillo, el cambio de herramienta o la activación del refrigerante.</p>
+        <p>La mayoría de estos códigos están estandarizados (por ejemplo, bajo normas como ISO 6983 o EIA RS-274-D), pero es crucial recordar que pueden existir variaciones o códigos específicos del fabricante del control CNC (Fanuc, Siemens, Haas, Mazak, Heidenhain, etc.).</p>
+        
+        <div class="warning">
+            <strong>¡Importante!</strong> Siempre consulte el manual de programación específico de su máquina CNC antes de ejecutar cualquier programa. Esta guía es una referencia general y no sustituye la documentación del fabricante. La funcionalidad exacta y los parámetros pueden variar.
+        </div>
+
+        <div class="form-group">
+            <label for="selectCncCode">Navegar a Código CNC (G o M):</label>
+            <select id="selectCncCode" class="navigation-select" onchange="navigateToCode(this.value)">
+                <option value="">Seleccione un Código...</option>
+            </select>
+        </div>
+
+        <h2 id="tabla-codigos-g">Lista de Códigos G Comunes (Funciones Preparatorias)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código G</th>
+                    <th>Función Principal</th>
+                    <th>Descripción / Ejemplo de Uso Común</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="G00">
+                    <td><span class="code">G00</span></td>
+                    <td>Posicionamiento Rápido</td>
+                    <td>Mueve la herramienta a la máxima velocidad posible a las coordenadas especificadas. No se usa para cortar. <br>Ej: <span class="code">G00 X50 Y25 Z5</span></td>
+                </tr>
+                <tr id="G01">
+                    <td><span class="code">G01</span></td>
+                    <td>Interpolación Lineal</td>
+                    <td>Mueve la herramienta en línea recta a una velocidad de avance (F) programada. <br>Ej: <span class="code">G01 X100 Y50 F150</span></td>
+                </tr>
+                <tr id="G02">
+                    <td><span class="code">G02</span></td>
+                    <td>Interpolación Circular Horaria (CW)</td>
+                    <td>Mueve la herramienta en un arco circular en sentido horario. Requiere punto final (X, Y, Z) y radio (R) o centro del arco (I, J, K). <br>Ej: <span class="code">G02 X20 Y30 R15 F100</span> o <span class="code">G02 X20 Y30 I5 J10 F100</span></td>
+                </tr>
+                <tr id="G03">
+                    <td><span class="code">G03</span></td>
+                    <td>Interpolación Circular Antihoraria (CCW)</td>
+                    <td>Similar a G02, pero el movimiento es en sentido antihorario. <br>Ej: <span class="code">G03 X20 Y30 R15 F100</span></td>
+                </tr>
+                <tr id="G04">
+                    <td><span class="code">G04</span></td>
+                    <td>Temporización / Pausa (Dwell)</td>
+                    <td>Detiene el movimiento de los ejes por un tiempo especificado (P en milisegundos o X en segundos, según control). <br>Ej: <span class="code">G04 P500</span> (pausa de 500 ms)</td>
+                </tr>
+                <tr id="G10">
+                    <td><span class="code">G10</span></td>
+                    <td>Entrada de Datos Programable / Ajuste de Offset</td>
+                    <td>Permite modificar valores de offset (herramienta, trabajo) desde el programa. Su sintaxis varía mucho. <br><strong>¡Consultar manual!</strong></td>
+                </tr>
+                <tr id="G17">
+                    <td><span class="code">G17</span></td>
+                    <td>Selección de Plano XY</td>
+                    <td>Define el plano de trabajo para interpolaciones circulares y compensación de herramienta como XY (predeterminado en fresadoras).</td>
+                </tr>
+                <tr id="G18">
+                    <td><span class="code">G18</span></td>
+                    <td>Selección de Plano XZ</td>
+                    <td>Define el plano de trabajo como XZ (común en tornos para interpolaciones).</td>
+                </tr>
+                <tr id="G19">
+                    <td><span class="code">G19</span></td>
+                    <td>Selección de Plano YZ</td>
+                    <td>Define el plano de trabajo como YZ.</td>
+                </tr>
+                <tr id="G20">
+                    <td><span class="code">G20</span></td>
+                    <td>Programación en Pulgadas</td>
+                    <td>Interpreta todas las unidades dimensionales (X, Y, Z, F, R, etc.) como pulgadas.</td>
+                </tr>
+                <tr id="G21">
+                    <td><span class="code">G21</span></td>
+                    <td>Programación en Milímetros</td>
+                    <td>Interpreta todas las unidades dimensionales como milímetros (predeterminado en muchos controles).</td>
+                </tr>
+                <tr id="G28">
+                    <td><span class="code">G28</span></td>
+                    <td>Retorno a Cero Máquina (Home)</td>
+                    <td>Envía los ejes especificados (o todos si no se especifica) a su posición de referencia (cero máquina) a través de un punto intermedio si se especifica. <br>Ej: <span class="code">G28 Z0</span> o <span class="code">G28 U0 W0</span> (torno)</td>
+                </tr>
+                <tr id="G30">
+                    <td><span class="code">G30</span></td>
+                    <td>Retorno a 2º, 3º o 4º Cero Máquina</td>
+                    <td>Similar a G28, pero a puntos de referencia secundarios definidos en la máquina.</td>
+                </tr>
+                 <tr id="G31">
+                    <td><span class="code">G31</span></td>
+                    <td>Función de Salto (Probe)</td>
+                    <td>Mueve la herramienta hasta que una señal de palpador (probe) se activa, almacenando la posición. Usado para medición.</td>
+                </tr>
+                <tr id="G40">
+                    <td><span class="code">G40</span></td>
+                    <td>Cancelar Compensación de Radio de Herramienta</td>
+                    <td>Desactiva la compensación del radio de la herramienta (G41/G42).</td>
+                </tr>
+                <tr id="G41">
+                    <td><span class="code">G41</span></td>
+                    <td>Compensación de Radio de Herramienta a la Izquierda</td>
+                    <td>Aplica la compensación del radio de la herramienta, manteniéndola a la izquierda del perfil programado (mirando en la dirección del avance). Requiere un valor D (número de corrector de herramienta).</td>
+                </tr>
+                <tr id="G42">
+                    <td><span class="code">G42</span></td>
+                    <td>Compensación de Radio de Herramienta a la Derecha</td>
+                    <td>Similar a G41, pero la herramienta se mantiene a la derecha del perfil programado.</td>
+                </tr>
+                <tr id="G43">
+                    <td><span class="code">G43</span></td>
+                    <td>Compensación de Longitud de Herramienta (Positiva)</td>
+                    <td>Aplica la compensación de longitud de la herramienta. El valor H especifica el número de corrector de longitud. <br>Ej: <span class="code">G43 H01 Z50</span></td>
+                </tr>
+                <tr id="G44">
+                    <td><span class="code">G44</span></td>
+                    <td>Compensación de Longitud de Herramienta (Negativa)</td>
+                    <td>Similar a G43, pero la compensación se aplica en dirección negativa. Menos común.</td>
+                </tr>
+                <tr id="G49">
+                    <td><span class="code">G49</span></td>
+                    <td>Cancelar Compensación de Longitud de Herramienta</td>
+                    <td>Desactiva la compensación de longitud de la herramienta (G43/G44).</td>
+                </tr>
+                <tr id="G50">
+                    <td><span class="code">G50</span></td>
+                    <td>Establecer Sistema de Coordenadas / Límite de RPM (Torno)</td>
+                    <td>En tornos, puede definir el sistema de coordenadas o limitar la velocidad máxima del husillo (con G96). En fresadoras, a veces usado para escalado (obsoleto). <br><strong>¡Consultar manual!</strong> Ej Torno: <span class="code">G50 S2500</span></td>
+                </tr>
+                <tr id="G52">
+                    <td><span class="code">G52</span></td>
+                    <td>Ajuste de Sistema de Coordenadas Local</td>
+                    <td>Desplaza temporalmente el origen del sistema de coordenadas de trabajo activo (G54-G59) por los valores X, Y, Z especificados. Se cancela con <span class="code">G52 X0 Y0 Z0</span>.</td>
+                </tr>
+                <tr id="G53">
+                    <td><span class="code">G53</span></td>
+                    <td>Movimiento en Coordenadas de Máquina</td>
+                    <td>Realiza un movimiento (generalmente G00 o G01) a una posición absoluta en el sistema de coordenadas de la máquina, ignorando el sistema de coordenadas de trabajo (G54-G59). <br>Ej: <span class="code">G53 G00 X0 Y0 Z-100</span></td>
+                </tr>
+                <tr id="G54-G59"> <!-- ID para el rango -->
+                    <td><span class="code">G54</span> - <span class="code">G59</span></td>
+                    <td>Selección de Sistema de Coordenadas de Trabajo (WCS)</td>
+                    <td>Activa uno de los sistemas de coordenadas de trabajo predefinidos, donde se establece el cero pieza. <br>Ej: <span class="code">G54</span> (Existen más, ej. G54.1 P1...)</td>
+                </tr>
+                <tr id="G65">
+                    <td><span class="code">G65</span></td>
+                    <td>Llamada a Macro Personalizada (Simple)</td>
+                    <td>Ejecuta una subrutina de macro (programa Oxxxx) pasando argumentos.</td>
+                </tr>
+                <tr id="G68">
+                    <td><span class="code">G68</span></td>
+                    <td>Rotación de Sistema de Coordenadas</td>
+                    <td>Rota el sistema de coordenadas alrededor de un punto y un ángulo especificados. <span class="code">G69</span> cancela.</td>
+                </tr>
+                <tr id="G69">
+                    <td><span class="code">G69</span></td>
+                    <td>Cancelar Rotación de Sistema de Coordenadas</td>
+                    <td>Cancela G68.</td>
+                </tr>
+                <tr id="G70">
+                    <td><span class="code">G70</span></td>
+                    <td>Ciclo de Acabado (Torno)</td>
+                    <td>Usado en tornos después de un ciclo de desbaste (G71, G72) para repasar el perfil final. Hace referencia a los bloques N definidos en el ciclo de desbaste.</td>
+                </tr>
+                <tr id="G71">
+                    <td><span class="code">G71</span></td>
+                    <td>Ciclo de Desbaste Longitudinal (Torno)</td>
+                    <td>Ciclo de torneado para remover material a lo largo del eje Z. Requiere parámetros como U (profundidad de pasada), R (retroceso), P (bloque N inicial del perfil), Q (bloque N final del perfil), F, S.</td>
+                </tr>
+                <tr id="G72">
+                    <td><span class="code">G72</span></td>
+                    <td>Ciclo de Desbaste Transversal (Torno)</td>
+                    <td>Ciclo de refrentado para remover material a lo largo del eje X. Similar a G71 en parámetros.</td>
+                </tr>
+                <tr id="G73">
+                    <td><span class="code">G73</span></td>
+                    <td>Ciclo de Taladrado con Rotura de Viruta (Fresadora)</td>
+                    <td>Similar a G83 pero con pequeñas retracciones para romper viruta, sin salir completamente del agujero en cada picoteo.</td>
+                </tr>
+                <tr id="G74">
+                    <td><span class="code">G74</span></td>
+                    <td>Ciclo de Roscado Izquierdo (Torno) / Taladrado Profundo (Fresadora)</td>
+                    <td>En tornos, ciclo de roscado a izquierdas. En algunas fresadoras, ciclo de taladrado profundo. <br><strong>¡Consultar manual!</strong></td>
+                </tr>
+                <tr id="G76">
+                    <td><span class="code">G76</span></td>
+                    <td>Ciclo de Roscado Múltiple (Torno)</td>
+                    <td>Ciclo complejo para roscado en tornos, permitiendo múltiples pasadas, ángulo de entrada, etc.</td>
+                </tr>
+                <tr id="G80">
+                    <td><span class="code">G80</span></td>
+                    <td>Cancelar Ciclo Fijo</td>
+                    <td>Cancela cualquier ciclo fijo activo (G73-G74, G81-G89).</td>
+                </tr>
+                <tr id="G81">
+                    <td><span class="code">G81</span></td>
+                    <td>Ciclo Fijo de Taladrado</td>
+                    <td>Realiza una operación de taladrado simple (avance rápido a Z de aproximación, avance de corte a Z final, retroceso rápido). <br>Ej: <span class="code">G81 X10 Y10 Z-15 R2 F100</span></td>
+                </tr>
+                <tr id="G82">
+                    <td><span class="code">G82</span></td>
+                    <td>Ciclo Fijo de Taladrado con Temporización</td>
+                    <td>Similar a G81, pero con una pausa (P) en el fondo del agujero. <br>Ej: <span class="code">G82 X10 Y10 Z-15 R2 P500 F100</span></td>
+                </tr>
+                <tr id="G83">
+                    <td><span class="code">G83</span></td>
+                    <td>Ciclo Fijo de Taladrado Profundo (Picoteo)</td>
+                    <td>Realiza un taladrado con retracciones intermitentes para romper la viruta. El parámetro Q define la profundidad de cada picoteo. <br>Ej: <span class="code">G83 X10 Y10 Z-25 R2 Q5 F80</span></td>
+                </tr>
+                <tr id="G84">
+                    <td><span class="code">G84</span></td>
+                    <td>Ciclo Fijo de Roscado (Macho Derecho)</td>
+                    <td>Realiza una operación de roscado con macho. La velocidad de avance (F) está ligada a la velocidad del husillo (S) y al paso de la rosca.</td>
+                </tr>
+                <tr id="G85">
+                    <td><span class="code">G85</span></td>
+                    <td>Ciclo Fijo de Mandrinado (Entrada y Salida con Avance)</td>
+                    <td>Mandrina a la profundidad Z, luego retrocede con avance.</td>
+                </tr>
+                <tr id="G86">
+                    <td><span class="code">G86</span></td>
+                    <td>Ciclo Fijo de Mandrinado (Entrada con Avance, Parada Husillo, Salida Rápida)</td>
+                    <td>Mandrina a Z, para el husillo, retrocede rápido.</td>
+                </tr>
+                <tr id="G90">
+                    <td><span class="code">G90</span></td>
+                    <td>Programación en Coordenadas Absolutas</td>
+                    <td>Todas las coordenadas dimensionales (X, Y, Z) se interpretan como posiciones absolutas con respecto al origen del sistema de coordenadas activo.</td>
+                </tr>
+                <tr id="G91">
+                    <td><span class="code">G91</span></td>
+                    <td>Programación en Coordenadas Incrementales</td>
+                    <td>Todas las coordenadas dimensionales se interpretan como distancias a moverse desde el punto actual.</td>
+                </tr>
+                <tr id="G92">
+                    <td><span class="code">G92</span></td>
+                    <td>Establecer Sistema de Coordenadas / Límite de RPM (Varía)</td>
+                    <td>Función variable. Comúnmente usado para preestablecer un sistema de coordenadas (obsoleto en muchos controles modernos, se prefiere G54-G59) o para limitar la velocidad máxima del husillo en tornos (con G96). <br><strong>¡Consultar manual!</strong></td>
+                </tr>
+                <tr id="G94">
+                    <td><span class="code">G94</span></td>
+                    <td>Avance por Minuto (mm/min o inch/min)</td>
+                    <td>Define la unidad de la velocidad de avance (F) como distancia por minuto (común en fresadoras).</td>
+                </tr>
+                <tr id="G95">
+                    <td><span class="code">G95</span></td>
+                    <td>Avance por Revolución (mm/rev o inch/rev)</td>
+                    <td>Define la unidad de la velocidad de avance (F) como distancia por revolución del husillo (común en tornos).</td>
+                </tr>
+                <tr id="G96">
+                    <td><span class="code">G96</span></td>
+                    <td>Velocidad de Corte Constante (CSS) Activada</td>
+                    <td>Mantiene una velocidad de corte superficial constante ajustando automáticamente las RPM del husillo según el diámetro de corte (común en tornos). Se usa con S (velocidad de corte en m/min o sfm).</td>
+                </tr>
+                <tr id="G97">
+                    <td><span class="code">G97</span></td>
+                    <td>Velocidad de Corte Constante (CSS) Desactivada / RPM Directas</td>
+                    <td>Desactiva G96. El husillo gira a las RPM programadas con S.</td>
+                </tr>
+                <tr id="G98">
+                    <td><span class="code">G98</span></td>
+                    <td>Retorno al Punto Inicial en Ciclos Fijos</td>
+                    <td>En ciclos fijos, la herramienta retorna al nivel Z inicial (antes del plano R) después de cada operación.</td>
+                </tr>
+                <tr id="G99">
+                    <td><span class="code">G99</span></td>
+                    <td>Retorno al Plano R en Ciclos Fijos</td>
+                    <td>En ciclos fijos, la herramienta retorna al plano R (aproximación) después de cada operación.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 id="tabla-codigos-m">Lista de Códigos M Comunes (Funciones Misceláneas)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Código M</th>
+                    <th>Función Principal</th>
+                    <th>Descripción / Ejemplo de Uso Común</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="M00">
+                    <td><span class="code">M00</span></td>
+                    <td>Parada Programada</td>
+                    <td>Detiene la ejecución del programa y la máquina. Requiere intervención del operario para continuar.</td>
+                </tr>
+                <tr id="M01">
+                    <td><span class="code">M01</span></td>
+                    <td>Parada Opcional</td>
+                    <td>Similar a M00, pero solo se activa si el interruptor de "Parada Opcional" en el panel de control está habilitado.</td>
+                </tr>
+                <tr id="M02">
+                    <td><span class="code">M02</span></td>
+                    <td>Fin de Programa</td>
+                    <td>Indica el final del programa principal. Puede resetear algunos estados de la máquina. En algunos controles, similar a M30.</td>
+                </tr>
+                <tr id="M03">
+                    <td><span class="code">M03</span></td>
+                    <td>Arranque del Husillo en Sentido Horario (CW)</td>
+                    <td>Pone en marcha el husillo para que gire en sentido horario. Generalmente requiere una velocidad S. <br>Ej: <span class="code">S1500 M03</span></td>
+                </tr>
+                <tr id="M04">
+                    <td><span class="code">M04</span></td>
+                    <td>Arranque del Husillo en Sentido Antihorario (CCW)</td>
+                    <td>Pone en marcha el husillo para que gire en sentido antihorario. <br>Ej: <span class="code">S1500 M04</span></td>
+                </tr>
+                <tr id="M05">
+                    <td><span class="code">M05</span></td>
+                    <td>Parada del Husillo</td>
+                    <td>Detiene la rotación del husillo.</td>
+                </tr>
+                <tr id="M06">
+                    <td><span class="code">M06</span></td>
+                    <td>Cambio de Herramienta</td>
+                    <td>Inicia la secuencia de cambio de herramienta. Generalmente precedido por Txx para seleccionar la herramienta. <br>Ej: <span class="code">T01 M06</span></td>
+                </tr>
+                <tr id="M08">
+                    <td><span class="code">M08</span></td>
+                    <td>Refrigerante Activado</td>
+                    <td>Abre el suministro de refrigerante principal.</td>
+                </tr>
+                <tr id="M09">
+                    <td><span class="code">M09</span></td>
+                    <td>Refrigerante Desactivado</td>
+                    <td>Cierra el suministro de refrigerante.</td>
+                </tr>
+                <tr id="M19">
+                    <td><span class="code">M19</span></td>
+                    <td>Orientación del Husillo</td>
+                    <td>Detiene el husillo en una posición angular específica. Útil para cambios de herramienta o mandrinado.</td>
+                </tr>
+                <tr id="M30">
+                    <td><span class="code">M30</span></td>
+                    <td>Fin de Programa y Reset</td>
+                    <td>Indica el final del programa, detiene la máquina y resetea el control (vuelve al inicio del programa). Es el más común para finalizar.</td>
+                </tr>
+                <tr id="M41-M44"> <!-- ID para el rango -->
+                    <td><span class="code">M41</span> - <span class="code">M44</span></td>
+                    <td>Selección de Rango de Velocidad del Husillo (Gamas)</td>
+                    <td>En máquinas con caja de cambios, selecciona un rango de velocidad específico (Baja, Media, Alta). La numeración exacta varía.</td>
+                </tr>
+                <tr id="M98">
+                    <td><span class="code">M98</span></td>
+                    <td>Llamada a Subprograma</td>
+                    <td>Llama a un subprograma (identificado por Oxxxx o Pxxxx). <br>Ej: <span class="code">M98 P1000</span> (llama al programa O1000)</td>
+                </tr>
+                <tr id="M99">
+                    <td><span class="code">M99</span></td>
+                    <td>Fin de Subprograma / Bucle</td>
+                    <td>Indica el final de un subprograma y retorna al programa principal. También puede usarse para crear bucles dentro de un programa.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="note">
+            <p><strong>Notas Adicionales sobre Códigos M:</strong></p>
+            <ul>
+                <li>Al igual que los códigos G, algunos códigos M pueden ser modales, pero la mayoría son no modales (se ejecutan una vez).</li>
+                <li>La ejecución de algunos códigos M puede depender del estado de la máquina o de la finalización de otras operaciones.</li>
+                <li>Existen muchos códigos M específicos del fabricante para controlar accesorios como contrapuntos, alimentadores de barras, sistemas de medición, puertas automáticas, etc.</li>
+            </ul>
+        </div>
+
+        <p>Esperamos que esta guía ampliada te sea de gran utilidad en tus proyectos de mecanizado CNC. ¡Recuerda la importancia de la práctica y la consulta de la documentación específica de tu equipo!</p>
+
+    </div>
+
+    <button id="scrollTopBtn" title="Volver arriba">↑</button>
+
+    <footer>
+        <p>&copy; <script>document.write(new Date().getFullYear())</script> Mecanizado Fácil. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function populateSelectWithOptions() {
+            const gCodeHeading = document.getElementById('tabla-codigos-g');
+            const mCodeHeading = document.getElementById('tabla-codigos-m');
+            
+            let gCodeTableBody = null;
+            if (gCodeHeading && gCodeHeading.nextElementSibling && gCodeHeading.nextElementSibling.tagName === 'TABLE') {
+                gCodeTableBody = gCodeHeading.nextElementSibling.querySelector("tbody");
+            }
+
+            let mCodeTableBody = null;
+            if (mCodeHeading && mCodeHeading.nextElementSibling && mCodeHeading.nextElementSibling.tagName === 'TABLE') {
+                mCodeTableBody = mCodeHeading.nextElementSibling.querySelector("tbody");
+            }
+            
+            const selectCncCode = document.getElementById("selectCncCode");
+
+            function addOptionsToSelect(tableBody, selectElement, codeType) {
+                if (tableBody && selectElement) {
+                    tableBody.querySelectorAll("tr").forEach(row => {
+                        const id = row.id; 
+                        const codeCell = row.cells[0].querySelector(".code");
+                        const descriptionCell = row.cells[1];
+                        
+                        if (id && codeCell && descriptionCell) {
+                            const codeText = codeCell.textContent.trim();
+                            const descriptionText = descriptionCell.textContent.trim();
+                            const option = document.createElement("option");
+                            option.value = "#" + id; 
+                            option.textContent = `${codeText} (${codeType}) - ${descriptionText}`;
+                            selectElement.appendChild(option);
+                        }
+                    });
+                }
+            }
+
+            if (selectCncCode) { 
+                 addOptionsToSelect(gCodeTableBody, selectCncCode, "G");
+                 addOptionsToSelect(mCodeTableBody, selectCncCode, "M");
+            }
+        }
+
+        function navigateToCode(anchor) {
+            if (anchor && anchor !== "") { 
+                const targetElement = document.querySelector(anchor);
+                if (targetElement && typeof targetElement.scrollIntoView === 'function') {
+                    // Usar scrollIntoView para el salto inicial, que respeta el scroll-behavior: smooth
+                    targetElement.scrollIntoView({ block: 'start' }); 
+                    // Actualizar el hash después de un breve retraso para que la URL refleje la posición
+                    // y para que el scroll suave no sea interrumpido por el cambio de hash inmediato.
+                    setTimeout(() => {
+                        if (document.querySelector(anchor)) { // Doble chequeo por si el elemento desaparece
+                           window.location.hash = anchor;
+                        }
+                    }, 50); // Un timeout muy corto es usualmente suficiente
+                } else if (targetElement) { 
+                    window.location.hash = anchor; // Fallback si scrollIntoView no está o no es una función
+                }
+            }
+        }
+
+        // Lógica para el botón "Volver Arriba"
+        const scrollTopButton = document.getElementById("scrollTopBtn");
+
+        window.onscroll = function() {scrollFunction()};
+
+        function scrollFunction() {
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                scrollTopButton.style.display = "block";
+            } else {
+                scrollTopButton.style.display = "none";
+            }
+        }
+
+        scrollTopButton.addEventListener("click", function() {
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        });
+
+        document.addEventListener("DOMContentLoaded", populateSelectWithOptions);
+    </script>
+</body>
+</html>

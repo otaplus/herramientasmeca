@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversiones Técnicas para Talleres Mecánicos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 25px 0;
+            text-align: center;
+            border-bottom: 5px solid #e74c3c;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1.1em;
+            color: #bdc3c7;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .conversion-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #fdfdfd;
+        }
+        .conversion-section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+            font-size: 1.8em;
+        }
+        .converter {
+            margin-bottom: 25px;
+        }
+        .converter h3 {
+            color: #34495e;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .input-group label {
+            min-width: 120px;
+            margin-right: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        .input-group input[type="number"],
+        .input-group select {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        .input-group button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-left: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .input-group button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #e9f5ff;
+            border: 1px solid #b3d7f0;
+            border-radius: 4px;
+            font-size: 1.1em;
+            color: #1c4c74;
+        }
+        .results p {
+            margin: 5px 0;
+        }
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+            .conversion-section h2 {
+                font-size: 1.5em;
+            }
+            .converter h3 {
+                font-size: 1.2em;
+            }
+            .input-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-group label {
+                margin-bottom: 5px;
+            }
+            .input-group input[type="number"],
+            .input-group select,
+            .input-group button {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 8px;
+            }
+            .input-group button {
+                margin-top: 10px;
+            }
+        }
+        /* Estilos para el selector de calculadoras */
+        .calculator-selector-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .calculator-selector-container label {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #2c3e50; /* Color similar a los títulos h2 */
+        }
+        #calculator-selector {
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            min-width: 250px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Conversiones para Talleres Mecánicos</h1>
+        <p>Herramienta completa de conversión de unidades técnicas</p>
+    </header>
+
+    <div class="calculator-selector-container">
+        <label for="calculator-selector">Seleccione una Calculadora:</label>
+        <select id="calculator-selector">
+            <option value="">-- Elija una opción --</option>
+            <option value="section-longitud-distancia">Longitud y Distancia</option>
+            <option value="section-peso-fuerza">Peso y Fuerza</option>
+            <option value="section-presion-torque">Presión y Torque</option>
+            <option value="section-dureza-temperatura">Dureza y Temperatura</option>
+            <option value="section-velocidad-avance">Velocidad y Avance</option>
+            <option value="section-angulos">Ángulos</option>
+            <option value="section-otras">Otras Conversiones</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <div class="conversion-section" id="section-longitud-distancia">
+            <h2>Longitud y Distancia</h2>
+            <div class="converter">
+                <h3>Milímetros ↔ Pulgadas</h3>
+                <div class="input-group">
+                    <label for="mm-pulgadas">Valor:</label>
+                    <input type="number" id="mm-pulgadas" placeholder="Ingrese valor">
+                    <select id="mm-pulgadas-unit">
+                        <option value="mm">Milímetros (mm)</option>
+                        <option value="pulgadas">Pulgadas (in)</option>
+                    </select>
+                    <button onclick="convertir('mm-pulgadas', 'mm-pulgadas-unit', 'mm-pulgadas-results', 'longitud')">Convertir</button>
+                </div>
+                <div class="results" id="mm-pulgadas-results"></div>
+            </div>
+            <div class="converter">
+                <h3>Metros ↔ Pies</h3>
+                <div class="input-group">
+                    <label for="m-pies">Valor:</label>
+                    <input type="number" id="m-pies" placeholder="Ingrese valor">
+                    <select id="m-pies-unit">
+                        <option value="m">Metros (m)</option>
+                        <option value="pies">Pies (ft)</option>
+                    </select>
+                    <button onclick="convertir('m-pies', 'm-pies-unit', 'distance-results', 'distancia')">Convertir</button>
+                </div>
+                <div class="results" id="distance-results"></div>
+            </div>
+        </div>
+        <div class="conversion-section" id="section-peso-fuerza">
+            <h2>Peso y Fuerza</h2>
+            <div class="converter">
+                <h3>Kilogramos ↔ Libras</h3>
+                <div class="input-group">
+                    <label for="kg-lbs">Valor:</label>
+                    <input type="number" id="kg-lbs" placeholder="Ingrese valor">
+                    <select id="kg-lbs-unit">
+                        <option value="kg">Kilogramos (kg)</option>
+                        <option value="lbs">Libras (lb)</option>
+                    </select>
+                    <button onclick="convertir('kg-lbs', 'kg-lbs-unit', 'weight-results', 'peso')">Convertir</button>
+                </div>
+                <div class="results" id="weight-results"></div>
+            </div>
+            <div class="converter">
+                <h3>Newton ↔ Kilogramo-fuerza</h3>
+                <div class="input-group">
+                    <label for="n-kgf">Valor:</label>
+                    <input type="number" id="n-kgf" placeholder="Ingrese valor">
+                    <select id="n-kgf-unit">
+                        <option value="N">Newton (N)</option>
+                        <option value="kgf">Kilogramo-fuerza (kgf)</option>
+                    </select>
+                    <button onclick="convertir('n-kgf', 'n-kgf-unit', 'force-results', 'fuerza')">Convertir</button>
+                </div>
+                <div class="results" id="force-results"></div>
+            </div>
+        </div>
+        <div class="conversion-section" id="section-presion-torque">
+            <h2>Presión y Torque</h2>
+            <div class="converter">
+                <h3>Bar ↔ PSI</h3>
+                <div class="input-group">
+                    <label for="bar-psi">Valor:</label>
+                    <input type="number" id="bar-psi" placeholder="Ingrese valor">
+                    <select id="bar-psi-unit">
+                        <option value="bar">Bar</option>
+                        <option value="psi">PSI (lb/in²)</option>
+                    </select>
+                    <button onclick="convertir('bar-psi', 'bar-psi-unit', 'pressure-results', 'presion')">Convertir</button>
+                </div>
+                <div class="results" id="pressure-results"></div>
+            </div>
+            <div class="converter">
+                <h3>Newton-metro ↔ Libra-pie</h3>
+                <div class="input-group">
+                    <label for="nm-lbft">Valor:</label>
+                    <input type="number" id="nm-lbft" placeholder="Ingrese valor">
+                    <select id="nm-lbft-unit">
+                        <option value="Nm">Newton-metro (Nm)</option>
+                        <option value="lbft">Libra-pie (lb-ft)</option>
+                    </select>
+                    <button onclick="convertir('nm-lbft', 'nm-lbft-unit', 'torque-results', 'torque')">Convertir</button>
+                </div>
+                <div class="results" id="torque-results"></div>
+            </div>
+        </div>
+        <div class="conversion-section" id="section-dureza-temperatura">
+            <h2>Dureza y Temperatura</h2>
+            <div class="converter">
+                <h3>Escalas de Dureza</h3>
+                <p>La conversión entre escalas de dureza (Rockwell, Brinell, Vickers) es compleja y depende del material. Se recomienda usar tablas de conversión específicas.</p>
+                <div class="input-group">
+                    <label for="dureza-valor">Valor:</label>
+                    <input type="number" id="dureza-valor" placeholder="Valor de dureza">
+                    <label for="dureza-escala-origen">De:</label>
+                    <select id="dureza-escala-origen">
+                        <option value="HRC">Rockwell C (HRC)</option>
+                        <option value="HRB">Rockwell B (HRB)</option>
+                        <option value="HB">Brinell (HB)</option>
+                        <option value="HV">Vickers (HV)</option>
+                    </select>
+                    <label for="dureza-escala-destino">A:</label>
+                    <select id="dureza-escala-destino">
+                        <option value="HRC">Rockwell C (HRC)</option>
+                        <option value="HRB">Rockwell B (HRB)</option>
+                        <option value="HB">Brinell (HB)</option>
+                        <option value="HV">Vickers (HV)</option>
+                    </select>
+                </div>
+                 <div class="results" id="hardness-results">Resultado aproximado (consultar tablas).</div>
+            </div>
+            <div class="converter">
+                <h3>Celsius ↔ Fahrenheit</h3>
+                <div class="input-group">
+                    <label for="temp-cf">Valor:</label>
+                    <input type="number" id="temp-cf" placeholder="Ingrese temperatura">
+                    <select id="temp-cf-unit">
+                        <option value="C">Celsius (°C)</option>
+                        <option value="F">Fahrenheit (°F)</option>
+                    </select>
+                    <button onclick="convertir('temp-cf', 'temp-cf-unit', 'temperature-results', 'temperatura')">Convertir</button>
+                </div>
+                <div class="results" id="temperature-results"></div>
+            </div>
+        </div>
+        <div class="conversion-section" id="section-velocidad-avance">
+            <h2>Velocidad y Avance</h2>
+            <div class="converter">
+                <h3>RPM ↔ m/min</h3>
+                <p>Para velocidad de corte (Vc). Necesita el diámetro (D) en mm.</p>
+                <div class="input-group">
+                    <label for="rpm-vc-valor">Valor (RPM o Vc):</label>
+                    <input type="number" id="rpm-vc-valor" placeholder="RPM o Vc">
+                    <label for="rpm-vc-diametro">Diámetro (mm):</label>
+                    <input type="number" id="rpm-vc-diametro" placeholder="Diámetro D">
+                    <select id="rpm-vc-unit">
+                        <option value="rpm_to_vc">RPM a Vc (m/min)</option>
+                        <option value="vc_to_rpm">Vc (m/min) a RPM</option>
+                    </select>
+                    <button onclick="convertirVelocidadCorte()">Calcular</button>
+                </div>
+                <div class="results" id="cutting-speed-results"></div>
+            </div>
+            <div class="converter">
+                <h3>Avance por revolución (mm/rev) ↔ Avance por minuto (mm/min)</h3>
+                <p>Necesita las RPM (n).</p>
+                <div class="input-group">
+                    <label for="feed-valor">Valor (mm/rev o mm/min):</label>
+                    <input type="number" id="feed-valor" placeholder="Avance">
+                    <label for="feed-rpm">RPM (n):</label>
+                    <input type="number" id="feed-rpm" placeholder="RPM">
+                     <select id="feed-unit">
+                        <option value="mmrev_to_mmmin">mm/rev a mm/min</option>
+                        <option value="mmmin_to_mmrev">mm/min a mm/rev</option>
+                    </select>
+                    <button onclick="convertirAvance()">Calcular</button>
+                </div>
+                <div class="results" id="feed-results"></div>
+            </div>
+        </div>
+        <div class="conversion-section" id="section-angulos">
+            <h2>Ángulos: Grados y Minutos</h2>
+            <div class="converter">
+                <h3>Grados ↔ Minutos</h3>
+                <div class="input-group">
+                    <label for="angle-value">Valor:</label>
+                    <input type="number" id="angle-value" step="any" placeholder="Grados o Minutos">
+                    <select id="angle-unit">
+                        <option value="deg_to_min">Grados a Minutos</option>
+                        <option value="min_to_deg">Minutos a Grados</option>
+                    </select>
+                    <button onclick="convertirAngulos()">Convertir</button>
+                </div>
+                <div class="results" id="angle-results"></div>
+            </div>
+        </div>
+        <div class="conversion-section" id="section-otras">
+            <h2>Otras Conversiones</h2>
+            <div class="converter">
+                <h3>Área Seccional</h3>
+                <p>Calcula el área de una sección circular (mm²).</p>
+                <div class="input-group">
+                    <label for="diametro-area">Diámetro (mm):</label>
+                    <input type="number" id="diametro-area" placeholder="Diámetro">
+                    <button onclick="calcularAreaSeccional()">Calcular Área</button>
+                </div>
+                <div class="results" id="area-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function convertir(inputId, unitId, resultId, tipo) {
+            const valorInput = document.getElementById(inputId);
+            const unidadSelect = document.getElementById(unitId);
+            const resultsDiv = document.getElementById(resultId);
+
+            if (!valorInput || !unidadSelect || !resultsDiv) {
+                console.error("Elementos no encontrados:", inputId, unitId, resultId);
+                resultsDiv.innerHTML = "<p>Error: Elementos del DOM no encontrados.</p>";
+                return;
+            }
+
+            const valor = parseFloat(valorInput.value);
+            const unidad = unidadSelect.value;
+            let resultado = "";
+
+            if (isNaN(valor)) {
+                resultsDiv.innerHTML = "<p>Por favor, ingrese un número válido.</p>";
+                return;
+            }
+
+            switch (tipo) {
+                case 'longitud': // mm y pulgadas
+                    if (unidad === 'mm') {
+                        resultado = `<p>${valor} mm = ${(valor / 25.4).toFixed(4)} pulgadas</p>`;
+                    } else if (unidad === 'pulgadas') {
+                        resultado = `<p>${valor} pulgadas = ${(valor * 25.4).toFixed(4)} mm</p>`;
+                    }
+                    break;
+                case 'distancia': // m y pies
+                    if (unidad === 'm') {
+                        resultado = `<p>${valor} m = ${(valor * 3.28084).toFixed(4)} pies</p>`;
+                    } else if (unidad === 'pies') {
+                        resultado = `<p>${valor} pies = ${(valor / 3.28084).toFixed(4)} m</p>`;
+                    }
+                    break;
+                case 'peso': // kg y lbs
+                    if (unidad === 'kg') {
+                        resultado = `<p>${valor} kg = ${(valor * 2.20462).toFixed(4)} lbs</p>`;
+                    } else if (unidad === 'lbs') {
+                        resultado = `<p>${valor} lbs = ${(valor / 2.20462).toFixed(4)} kg</p>`;
+                    }
+                    break;
+                case 'fuerza': // N y kgf
+                    if (unidad === 'N') {
+                        resultado = `<p>${valor} N = ${(valor / 9.80665).toFixed(4)} kgf</p>`;
+                    } else if (unidad === 'kgf') {
+                        resultado = `<p>${valor} kgf = ${(valor * 9.80665).toFixed(4)} N</p>`;
+                    }
+                    break;
+                case 'presion': // bar y psi
+                    if (unidad === 'bar') {
+                        resultado = `<p>${valor} bar = ${(valor * 14.5038).toFixed(4)} PSI</p>`;
+                    } else if (unidad === 'psi') {
+                        resultado = `<p>${valor} PSI = ${(valor / 14.5038).toFixed(4)} bar</p>`;
+                    }
+                    break;
+                case 'torque': // Nm y lb-ft
+                    if (unidad === 'Nm') {
+                        resultado = `<p>${valor} Nm = ${(valor * 0.73756).toFixed(4)} lb-ft</p>`;
+                    } else if (unidad === 'lbft') {
+                        resultado = `<p>${valor} lb-ft = ${(valor / 0.73756).toFixed(4)} Nm</p>`;
+                    }
+                    break;
+                case 'temperatura': // C y F
+                    if (unidad === 'C') {
+                        resultado = `<p>${valor}°C = ${((valor * 9/5) + 32).toFixed(2)}°F</p>`;
+                    } else if (unidad === 'F') {
+                        resultado = `<p>${valor}°F = ${((valor - 32) * 5/9).toFixed(2)}°C</p>`;
+                    }
+                    break;
+                default:
+                    resultado = "<p>Tipo de conversión no reconocido.</p>";
+            }
+            resultsDiv.innerHTML = resultado;
+        }
+
+        function convertirVelocidadCorte() {
+            const valorInput = document.getElementById('rpm-vc-valor');
+            const diametroInput = document.getElementById('rpm-vc-diametro');
+            const unitSelect = document.getElementById('rpm-vc-unit');
+            const resultsDiv = document.getElementById('cutting-speed-results');
+
+            const valor = parseFloat(valorInput.value);
+            const D = parseFloat(diametroInput.value); // Diámetro en mm
+            const unit = unitSelect.value;
+            let resultado = "";
+
+            if (isNaN(valor) || isNaN(D)) {
+                resultsDiv.innerHTML = "<p>Ingrese valores válidos para RPM/Vc y Diámetro.</p>";
+                return;
+            }
+            if (D <= 0) {
+                resultsDiv.innerHTML = "<p>El diámetro debe ser mayor que cero.</p>";
+                return;
+            }
+
+            if (unit === 'rpm_to_vc') { // Convertir RPM a Vc (m/min)
+                // Vc = (π * D * n) / 1000
+                const Vc = (Math.PI * D * valor) / 1000;
+                resultado = `<p>${valor} RPM con D=${D}mm  =>  Vc = ${Vc.toFixed(2)} m/min</p>`;
+            } else if (unit === 'vc_to_rpm') { // Convertir Vc (m/min) a RPM
+                // n = (Vc * 1000) / (π * D)
+                const n = (valor * 1000) / (Math.PI * D);
+                resultado = `<p>${valor} m/min con D=${D}mm  =>  n = ${n.toFixed(0)} RPM</p>`;
+            }
+            resultsDiv.innerHTML = resultado;
+        }
+
+        function convertirAvance() {
+            const valorInput = document.getElementById('feed-valor');
+            const rpmInput = document.getElementById('feed-rpm');
+            const unitSelect = document.getElementById('feed-unit');
+            const resultsDiv = document.getElementById('feed-results');
+
+            const valor = parseFloat(valorInput.value);
+            const n_rpm = parseFloat(rpmInput.value); // RPM
+            const unit = unitSelect.value;
+            let resultado = "";
+
+            if (isNaN(valor) || isNaN(n_rpm)) {
+                resultsDiv.innerHTML = "<p>Ingrese valores válidos para Avance y RPM.</p>";
+                return;
+            }
+             if (n_rpm <= 0 && (unit === 'mmrev_to_mmmin' || unit === 'mmmin_to_mmrev_needs_rpm')) {
+                resultsDiv.innerHTML = "<p>Las RPM deben ser mayores que cero para esta conversión.</p>";
+                return;
+            }
+
+
+            if (unit === 'mmrev_to_mmmin') { // Convertir f (mm/rev) a Vf (mm/min)
+                // Vf = f * n
+                const Vf = valor * n_rpm;
+                resultado = `<p>${valor} mm/rev a ${n_rpm} RPM  =>  Vf = ${Vf.toFixed(2)} mm/min</p>`;
+            } else if (unit === 'mmmin_to_mmrev') { // Convertir Vf (mm/min) a f (mm/rev)
+                // f = Vf / n
+                if (n_rpm === 0) {
+                     resultsDiv.innerHTML = "<p>Las RPM no pueden ser cero para convertir mm/min a mm/rev.</p>";
+                     return;
+                }
+                const f = valor / n_rpm;
+                resultado = `<p>${valor} mm/min a ${n_rpm} RPM  =>  f = ${f.toFixed(4)} mm/rev</p>`;
+            }
+            resultsDiv.innerHTML = resultado;
+        }
+        
+        function convertirAngulos() {
+            const valorInput = document.getElementById('angle-value');
+            const unitSelect = document.getElementById('angle-unit');
+            const resultsDiv = document.getElementById('angle-results');
+
+            const valor = parseFloat(valorInput.value);
+            const unit = unitSelect.value;
+            let resultado = "";
+
+            if (isNaN(valor)) {
+                resultsDiv.innerHTML = "<p>Por favor, ingrese un número válido.</p>";
+                return;
+            }
+
+            if (unit === 'deg_to_min') {
+                const minutos = valor * 60;
+                resultado = `<p>${valor}° = ${minutos.toFixed(2)}' (minutos)</p>`;
+            } else if (unit === 'min_to_deg') {
+                const grados = valor / 60;
+                resultado = `<p>${valor}' = ${grados.toFixed(4)}° (grados)</p>`;
+            }
+            resultsDiv.innerHTML = resultado;
+        }
+
+
+        function calcularAreaSeccional() {
+            const diametroInput = document.getElementById('diametro-area');
+            const resultsDiv = document.getElementById('area-results');
+            const D = parseFloat(diametroInput.value); // Diámetro en mm
+            let resultado = "";
+
+            if (isNaN(D) || D <= 0) {
+                resultsDiv.innerHTML = "<p>Ingrese un diámetro válido y mayor que cero.</p>";
+                return;
+            }
+            // Área = π * (D/2)^2 = π * D^2 / 4
+            const area = (Math.PI * Math.pow(D, 2)) / 4;
+            resultado = `<p>Área seccional para D=${D}mm: ${area.toFixed(2)} mm²</p>`;
+            resultsDiv.innerHTML = resultado;
+        }
+
+        // Función genérica para mostrar resultados o errores
+        function mostrarResultado(resultId, mensaje) {
+            const resultsDiv = document.getElementById(resultId);
+            if (resultsDiv) {
+                resultsDiv.innerHTML = `<p>${mensaje}</p>`;
+            } else {
+                console.error("Div de resultados no encontrado:", resultId);
+            }
+        }
+
+        // Lógica para el selector de calculadoras
+        document.addEventListener('DOMContentLoaded', function() {
+            const selector = document.getElementById('calculator-selector');
+            const sections = document.querySelectorAll('.conversion-section');
+
+            function displaySelectedCalculator() {
+                const selectedValue = selector.value;
+                
+                sections.forEach(section => {
+                    if (section.id === selectedValue) {
+                        section.style.display = 'block';
+                    } else {
+                        section.style.display = 'none';
+                    }
+                });
+            }
+
+            // Ocultar todas las secciones inicialmente
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+
+            if (selector) {
+                selector.addEventListener('change', displaySelectedCalculator);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Tolerancias ISO - Mecanizado Fácil</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+        }
+        .radio-option input {
+            width: auto;
+            margin-right: 5px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        .tolerance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .tolerance-table th, .tolerance-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        .tolerance-table th {
+            background-color: #f2f2f2;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+        @media (max-width: 600px) {
+            .radio-group {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calculadora de Tolerancias ISO</h1>
+        <p>Determina las medidas máximas y mínimas permitidas para ejes y agujeros</p>
+    </header>
+    <div class="container">
+        <form id="tolerance-form">
+            <div class="radio-group">
+                <label>Tipo de elemento:</label>
+                <div class="radio-option">
+                    <input type="radio" id="hole" name="element-type" value="hole" checked>
+                    <label for="hole">Agujero</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" id="shaft" name="element-type" value="shaft">
+                    <label for="shaft">Eje</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="nominal-size">Medida nominal (mm):</label>
+                <input type="number" id="nominal-size" step="0.001" min="0" required>
+            </div>
+            <div class="form-group">
+                <label for="deviation">Desviación fundamental:</label>
+                <select id="deviation" required>
+                    <option value="">Seleccione una desviación</option>
+                    <!-- Desviaciones para agujeros -->
+                    <optgroup label="Agujeros (Letras mayúsculas)" class="hole-deviations">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                        <option value="E">E</option>
+                        <option value="F">F</option>
+                        <option value="G">G</option>
+                        <option value="H">H</option>
+                        <option value="JS">JS</option>
+                        <option value="K">K</option>
+                        <option value="M">M</option>
+                        <option value="N">N</option>
+                        <option value="P">P</option>
+                        <option value="R">R</option>
+                        <option value="S">S</option>
+                        <option value="T">T</option>
+                        <option value="U">U</option>
+                        <option value="V">V</option>
+                        <option value="X">X</option>
+                        <option value="Y">Y</option>
+                        <option value="Z">Z</option>
+                    </optgroup>
+                    <!-- Desviaciones para ejes -->
+                    <optgroup label="Ejes (Letras minúsculas)" class="shaft-deviations" style="display:none;">
+                        <option value="a">a</option>
+                        <option value="b">b</option>
+                        <option value="c">c</option>
+                        <option value="d">d</option>
+                        <option value="e">e</option>
+                        <option value="f">f</option>
+                        <option value="g">g</option>
+                        <option value="h">h</option>
+                        <option value="js">js</option>
+                        <option value="k">k</option>
+                        <option value="m">m</option>
+                        <option value="n">n</option>
+                        <option value="p">p</option>
+                        <option value="r">r</option>
+                        <option value="s">s</option>
+                        <option value="t">t</option>
+                        <option value="u">u</option>
+                        <option value="v">v</option>
+                        <option value="x">x</option>
+                        <option value="y">y</option>
+                        <option value="z">z</option>
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="tolerance-grade">Grado de tolerancia:</label>
+                <select id="tolerance-grade" required>
+                    <option value="">Seleccione un grado</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <!-- Puedes agregar más grados si lo deseas -->
+                </select>
+            </div>
+            <button type="button" onclick="calculateTolerance()">Calcular Tolerancias</button>
+        </form>
+        <div class="results" id="results" style="display: none;">
+            <h3>Resultados de Tolerancia</h3>
+            <table class="tolerance-table">
+                <tr>
+                    <th>Medida Nominal</th>
+                    <th>Tolerancia</th>
+                    <th>Medida Máxima</th>
+                    <th>Medida Mínima</th>
+                </tr>
+                <tr>
+                    <td id="nominal-result">--</td>
+                    <td id="tolerance-result">--</td>
+                    <td id="max-result">--</td>
+                    <td id="min-result">--</td>
+                </tr>
+            </table>
+            <p class="note">* Valores calculados según norma ISO 286-1:2010</p>
+        </div>
+    </div>
+    <script>
+        // Mostrar/Ocultar desviaciones según tipo de elemento
+        document.querySelectorAll('input[name="element-type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'hole') {
+                    document.querySelector('.hole-deviations').style.display = 'block';
+                    document.querySelector('.shaft-deviations').style.display = 'none';
+                    document.getElementById('deviation').value = '';
+                } else {
+                    document.querySelector('.hole-deviations').style.display = 'none';
+                    document.querySelector('.shaft-deviations').style.display = 'block';
+                    document.getElementById('deviation').value = '';
+                }
+            });
+        });
+
+        // Base de datos de tolerancias (valores simplificados para ejemplo)
+        const toleranceValues = {
+            6: { upTo3: 6, upTo6: 8, upTo10: 9, upTo18: 11, upTo30: 13, upTo50: 16, upTo80: 19, upTo120: 22, upTo180: 25, upTo250: 29 },
+            7: { upTo3: 10, upTo6: 12, upTo10: 15, upTo18: 18, upTo30: 21, upTo50: 25, upTo80: 30, upTo120: 35, upTo180: 40, upTo250: 46 },
+            8: { upTo3: 14, upTo6: 18, upTo10: 22, upTo18: 27, upTo30: 33, upTo50: 39, upTo80: 46, upTo120: 54, upTo180: 63, upTo250: 72 },
+            // Puedes agregar más grados si lo deseas
+        };
+
+        function getToleranceValue(grade, nominalSize) {
+            // Lógica simplificada para determinar el valor de tolerancia
+            if (nominalSize <= 3) return toleranceValues[grade].upTo3;
+            if (nominalSize <= 6) return toleranceValues[grade].upTo6;
+            if (nominalSize <= 10) return toleranceValues[grade].upTo10;
+            if (nominalSize <= 18) return toleranceValues[grade].upTo18;
+            if (nominalSize <= 30) return toleranceValues[grade].upTo30;
+            if (nominalSize <= 50) return toleranceValues[grade].upTo50;
+            if (nominalSize <= 80) return toleranceValues[grade].upTo80;
+            if (nominalSize <= 120) return toleranceValues[grade].upTo120;
+            if (nominalSize <= 180) return toleranceValues[grade].upTo180;
+            return toleranceValues[grade].upTo250;
+        }
+
+        function calculateTolerance() {
+            const nominalSize = parseFloat(document.getElementById('nominal-size').value);
+            const toleranceGrade = document.getElementById('tolerance-grade').value;
+            const deviation = document.getElementById('deviation').value;
+            const elementType = document.querySelector('input[name="element-type"]:checked').value;
+
+            if (!nominalSize || !toleranceGrade || !deviation) {
+                alert("Por favor complete todos los campos");
+                return;
+            }
+
+            // Obtener valores de tolerancia (en micras)
+            const tolerance = getToleranceValue(toleranceGrade, nominalSize);
+
+            // Convertir a mm
+            const toleranceMm = tolerance / 1000;
+
+            // Calcular desviaciones (lógica simplificada)
+            let upperDeviation, lowerDeviation;
+
+            if (elementType === 'hole') {
+                if (deviation === 'H') {
+                    upperDeviation = toleranceMm;
+                    lowerDeviation = 0;
+                } else {
+                    // Ejemplo para otras desviaciones de agujero
+                    upperDeviation = toleranceMm/2;
+                    lowerDeviation = -toleranceMm/2;
+                }
+            } else {
+                if (deviation === 'h') {
+                    upperDeviation = 0;
+                    lowerDeviation = -toleranceMm;
+                } else {
+                    // Ejemplo para otras desviaciones de eje
+                    upperDeviation = -toleranceMm/2;
+                    lowerDeviation = -toleranceMm;
+                }
+            }
+
+            // Calcular medidas máxima y mínima
+            const maxSize = nominalSize + upperDeviation;
+            const minSize = nominalSize + lowerDeviation;
+
+            // Mostrar resultados
+            document.getElementById('nominal-result').textContent = nominalSize.toFixed(3) + " mm";
+            document.getElementById('tolerance-result').textContent = "±" + (toleranceMm/2).toFixed(3) + " mm";
+            document.getElementById('max-result').textContent = maxSize.toFixed(3) + " mm";
+            document.getElementById('min-result').textContent = minSize.toFixed(3) + " mm";
+
+            document.getElementById('results').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

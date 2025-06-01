@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanizado Fácil - Calculadora de Chaveteros</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            color: #0056b3; /* Azul industrial */
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        /* Estilos para las solapas */
+        .tab-container {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #0056b3;
+        }
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #e9ecef;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-button.active {
+            background-color: #0056b3;
+            color: white;
+        }
+        .tab-content {
+            display: none; /* Oculto por defecto */
+            padding-top: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        input:focus, select:focus {
+            border-color: #0056b3;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 86, 179, 0.25);
+        }
+        button {
+            background-color: #28a745; /* Verde para la acción */
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: none;
+        }
+        .result h3 {
+            margin-top: 0;
+            color: #0056b3;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0056b3;
+            color: white;
+        }
+        td {
+            background-color: #fff;
+        }
+        .error {
+            color: #e74c3c;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .guia-usuario p, .guia-usuario ul, .guia-usuario ol {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        .guia-usuario ul, .guia-usuario ol {
+            padding-left: 20px;
+        }
+        .guia-usuario strong {
+            color: #0056b3;
+        }
+        .guia-usuario h2 {
+            color: #0056b3;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        .guia-usuario .norma-ref {
+            font-style: italic;
+            color: #555;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Chaveteros</h1>
+
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="abrirSolapa(event, 'Calculadora')">Calculadora</button>
+                <button class="tab-button" onclick="abrirSolapa(event, 'GuiaUsuario')">Guía del Usuario</button>
+            </div>
+
+            <div id="Calculadora" class="tab-content active">
+                <p>Esta herramienta calcula las medidas estándar de chaveteros según normas ISO/DIN basadas en el diámetro del eje o agujero.</p>
+        
+                <div class="form-group">
+                    <label for="diameter">Diámetro del eje/agujero (mm):</label>
+                    <input type="number" id="diameter" step="0.01" min="6" max="500" placeholder="Ej: 25">
+                </div>
+                
+                <div class="form-group">
+                    <label for="type">Tipo:</label>
+                    <select id="type">
+                        <option value="shaft">Eje</option>
+                        <option value="hole">Agujero</option>
+                    </select>
+                </div>
+                
+                <button onclick="calculateKeyway()">Calcular Medidas</button>
+                
+                <div id="error" class="error" style="display: none;"></div>
+                
+                <div id="result" class="result">
+                    <h3>Resultados:</h3>
+                    <div id="resultContent"></div>
+                </div>
+            </div>
+
+            <div id="GuiaUsuario" class="tab-content guia-usuario">
+                <h2>Guía del Usuario: Calculadora de Chaveteros</h2>
+                <p>Bienvenido a la Calculadora de Chaveteros de Mecanizado Fácil. Esta herramienta te permite obtener rápidamente las dimensiones estándar para chaveteros paralelos (chavetas planas) basándose en el diámetro del eje o del agujero donde se alojará.</p>
+
+                <h3>¿Cómo usar la Calculadora?</h3>
+                <ol>
+                    <li>
+                        <strong>Diámetro del eje/agujero (mm):</strong> Ingresa el diámetro nominal del eje o del agujero donde se mecanizará el chavetero.
+                        <ul>
+                            <li>El valor debe estar entre <strong>6 mm y 500 mm</strong>.</li>
+                            <li>Este diámetro es el que determina las dimensiones estándar del chavetero.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Tipo:</strong> Selecciona si el chavetero se mecanizará en un <strong>Eje</strong> o en un <strong>Agujero</strong> (cubo, polea, engranaje, etc.).
+                        <ul>
+                            <li>Esta selección es importante porque la profundidad del chavetero (t1 o t2) varía dependiendo de si es para un eje o para un agujero.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>Calcular Medidas:</strong> Haz clic en este botón. La herramienta buscará en la tabla de normas la correspondencia para el diámetro ingresado y mostrará los resultados.
+                    </li>
+                </ol>
+
+                <h3>Interpretación de los Resultados</h3>
+                <p>Una vez calculadas, se mostrarán las siguientes dimensiones:</p>
+                <ul>
+                    <li><strong>Ancho del chavetero (b):</strong> Es el ancho nominal de la chaveta y del canal del chavetero.</li>
+                    <li><strong>Altura del chavetero (h):</strong> Es la altura nominal total de la chaveta.</li>
+                    <li><strong>Profundidad en el eje (t1):</strong> Es la profundidad del canal del chavetero medida desde la superficie del eje. Se muestra si seleccionaste "Eje".</li>
+                    <li><strong>Profundidad en el agujero (t2):</strong> Es la profundidad del canal del chavetero medida desde la superficie del agujero. Se muestra si seleccionaste "Agujero".</li>
+                </ul>
+                <p>Todas las dimensiones se proporcionan en milímetros (mm).</p>
+
+                <h3>Normativa de Referencia</h3>
+                <p>Los datos utilizados por esta calculadora se basan en estándares internacionales comúnmente aceptados para chaveteros paralelos, como:</p>
+                <ul>
+                    <li><strong>ISO/R 773:</strong> "Keys and keyways" (Chavetas y chaveteros).</li>
+                    <li><strong>DIN 6885-1:</strong> "Drive type - Keys and keyways - Dimensions and application" (Chavetas de arrastre - Chavetas y ranuras para chavetas - Dimensiones y aplicación).</li>
+                </ul>
+                <p class="norma-ref">Aunque existen otras normas y tipos de chavetas (ej. Woodruff, tangenciales), esta calculadora se enfoca en las chavetas paralelas planas, que son las más comunes en la industria.</p>
+                <p><strong>Importante:</strong> Siempre es recomendable verificar las dimensiones con las normativas específicas o los planos del proyecto antes de proceder con el mecanizado. Esta herramienta es una guía de referencia rápida.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tabla de chaveteros según norma ISO/R773 (similar a DIN 6885)
+        const keywayStandards = [
+            { minDia: 6, maxDia: 8, b: 2, h: 2, t1: 1.2, t2: 1.0 },
+            { minDia: 8, maxDia: 10, b: 3, h: 3, t1: 1.8, t2: 1.4 },
+            { minDia: 10, maxDia: 12, b: 4, h: 4, t1: 2.5, t2: 1.8 },
+            { minDia: 12, maxDia: 17, b: 5, h: 5, t1: 3.0, t2: 2.3 },
+            { minDia: 17, maxDia: 22, b: 6, h: 6, t1: 3.5, t2: 2.8 },
+            { minDia: 22, maxDia: 30, b: 8, h: 7, t1: 4.0, t2: 3.3 },
+            { minDia: 30, maxDia: 38, b: 10, h: 8, t1: 5.0, t2: 3.3 },
+            { minDia: 38, maxDia: 44, b: 12, h: 8, t1: 5.0, t2: 3.3 },
+            { minDia: 44, maxDia: 50, b: 14, h: 9, t1: 5.5, t2: 3.8 },
+            { minDia: 50, maxDia: 58, b: 16, h: 10, t1: 6.0, t2: 4.3 },
+            { minDia: 58, maxDia: 65, b: 18, h: 11, t1: 7.0, t2: 4.4 },
+            { minDia: 65, maxDia: 75, b: 20, h: 12, t1: 7.5, t2: 4.9 },
+            { minDia: 75, maxDia: 85, b: 22, h: 14, t1: 9.0, t2: 5.4 },
+            { minDia: 85, maxDia: 95, b: 25, h: 14, t1: 9.0, t2: 5.4 },
+            { minDia: 95, maxDia: 110, b: 28, h: 16, t1: 10.0, t2: 6.4 },
+            { minDia: 110, maxDia: 130, b: 32, h: 18, t1: 11.0, t2: 7.4 },
+            { minDia: 130, maxDia: 150, b: 36, h: 20, t1: 12.0, t2: 8.4 },
+            { minDia: 150, maxDia: 170, b: 40, h: 22, t1: 13.0, t2: 9.4 },
+            { minDia: 170, maxDia: 200, b: 45, h: 25, t1: 15.0, t2: 10.4 },
+            { minDia: 200, maxDia: 230, b: 50, h: 28, t1: 17.0, t2: 11.4 },
+            { minDia: 230, maxDia: 260, b: 56, h: 32, t1: 20.0, t2: 12.4 },
+            { minDia: 260, maxDia: 290, b: 63, h: 32, t1: 20.0, t2: 12.4 },
+            { minDia: 290, maxDia: 330, b: 70, h: 36, t1: 22.0, t2: 14.4 },
+            { minDia: 330, maxDia: 380, b: 80, h: 40, t1: 25.0, t2: 15.4 },
+            { minDia: 380, maxDia: 440, b: 90, h: 45, t1: 28.0, t2: 17.4 },
+            { minDia: 440, maxDia: 500, b: 100, h: 50, t1: 31.0, t2: 19.5 }
+        ];
+
+        function abrirSolapa(evt, nombreSolapa) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(nombreSolapa).style.display = "block";
+            if (evt && evt.currentTarget) {
+                evt.currentTarget.className += " active";
+            }
+        }
+
+        function calculateKeyway() {
+            const diameterInput = document.getElementById('diameter');
+            const diameter = parseFloat(diameterInput.value);
+            const type = document.getElementById('type').value;
+            const errorElement = document.getElementById('error');
+            const resultElement = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            
+            errorElement.style.display = 'none'; // Ocultar error previo
+            errorElement.textContent = "";
+            
+            // Validar entrada
+            if (isNaN(diameter) || diameter < 6 || diameter > 500) {
+                errorElement.textContent = "Por favor ingrese un diámetro válido entre 6mm y 500mm.";
+                errorElement.style.display = 'block';
+                resultElement.style.display = 'none';
+                diameterInput.focus();
+                return;
+            }
+            
+            // Encontrar el chavetero correspondiente
+            // La norma especifica "Diámetro d sobre ... hasta ..."
+            // Por lo tanto, si el diámetro es exactamente maxDia, debe tomar ese rango.
+            // Ejemplo: para d=8, debe tomar { minDia: 6, maxDia: 8, ... }
+            // Si d > standard.minDia y d <= standard.maxDia
+            let keyway = null;
+            for (const standard of keywayStandards) {
+                // Ajuste en la condición para incluir el maxDia en el rango actual
+                if (diameter > standard.minDia && diameter <= standard.maxDia) {
+                    keyway = standard;
+                    break;
+                }
+                // Caso especial para el primer rango donde minDia puede ser igual al diámetro
+                if (diameter === standard.minDia && standard.minDia === 6) { 
+                     keyway = standard;
+                     break;
+                }
+            }
+             // Si después del bucle no se encontró y el diámetro es exactamente el minDia de algún rango
+            if (!keyway) {
+                for (const standard of keywayStandards) {
+                    if (diameter === standard.minDia) {
+                        keyway = standard;
+                        break;
+                    }
+                }
+            }
+            
+            if (!keyway) {
+                errorElement.textContent = "No se encontró un chavetero estándar para el diámetro ingresado. Verifique los límites de los rangos.";
+                errorElement.style.display = 'block';
+                resultElement.style.display = 'none';
+                return;
+            }
+            
+            // Mostrar resultados
+            let html = `
+                <p><strong>Diámetro del eje/agujero:</strong> ${diameter.toFixed(2)} mm</p>
+                <p><strong>Tipo:</strong> ${type === 'shaft' ? 'Eje' : 'Agujero'}</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Medida</th>
+                            <th>Valor (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ancho del chavetero (b)</td>
+                            <td>${keyway.b}</td>
+                        </tr>
+                        <tr>
+                            <td>Altura del chavetero (h)</td>
+                            <td>${keyway.h}</td>
+                        </tr>
+            `;
+            
+            if (type === 'shaft') {
+                html += `
+                        <tr>
+                            <td>Profundidad en el eje (t1)</td>
+                            <td>${keyway.t1}</td>
+                        </tr>
+                    </tbody>
+                `;
+            } else {
+                html += `
+                        <tr>
+                            <td>Profundidad en el agujero (t2)</td>
+                            <td>${keyway.t2}</td>
+                        </tr>
+                    </tbody>
+                `;
+            }
+            
+            html += `</table>`;
+            
+            resultContent.innerHTML = html;
+            resultElement.style.display = 'block';
+        }
+
+        // Configuración inicial al cargar la página
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Por defecto, la primera solapa (Calculadora) ya está activa por el HTML.
+            // No es necesario llamar a abrirSolapa aquí si la clase 'active' ya está en el HTML.
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Ciclos de Taladrado G81/G83 - Mecanizado Fácil</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .header-container {
+            background: #333;
+            color: #fff;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-bottom: #007bff 4px solid;
+            width: 100%;
+        }
+        .header-container h1 {
+            margin: 0;
+            font-size: 2.2rem;
+        }
+        .container {
+            width: 100%;
+            max-width: 700px;
+            margin: 20px auto;
+            padding: 0; /* Eliminado padding para que las solapas lo manejen */
+            background-color: #fff; /* Mantenido para el fondo general del área de solapas */
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #0056b3;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+        /* Estilos para las solapas */
+        .tab-container {
+            width: 100%;
+            /* margin-bottom: 20px; No es necesario si el container no tiene padding */
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 2px solid #0056b3; /* Color del borde inferior de las pestañas */
+        }
+        .tab-button {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            background-color: #e9ecef; /* Color de fondo de pestaña inactiva */
+            font-size: 1rem;
+            font-weight: bold;
+            color: #495057; /* Color de texto de pestaña inactiva */
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .tab-button.active {
+            background-color: #0056b3; /* Color de fondo de pestaña activa */
+            color: white; /* Color de texto de pestaña activa */
+        }
+        .tab-content {
+            display: none; /* Oculto por defecto */
+            padding: 25px; /* Padding para el contenido de la solapa */
+            /* border: 1px solid #ddd;  Opcional, si se quiere un borde alrededor del contenido */
+            /* border-top: none; */
+            background-color: #fff; /* Fondo del contenido de la solapa */
+            border-radius: 0 0 8px 8px; /* Redondear esquinas inferiores si el container tiene border-radius */
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px 20px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 10px;
+        }
+        .form-group label {
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="number"],
+        .form-group select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .form-group input[type="number"]:focus,
+        .form-group select:focus {
+            border-color: #0056b3;
+            outline: none;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .radio-group label, .checkbox-group label {
+            font-weight: normal;
+            margin-left: 5px;
+            margin-right: 15px;
+        }
+        .radio-group input[type="radio"], .checkbox-group input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        .action-buttons button {
+            flex-grow: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.3s ease;
+        }
+        #generateBtn {
+            background-color: #28a745; /* Verde */
+            color: white;
+        }
+        #generateBtn:hover {
+            background-color: #218838;
+        }
+        #copyBtn {
+            background-color: #007bff; /* Azul */
+            color: white;
+        }
+        #copyBtn:hover {
+            background-color: #0056b3;
+        }
+        #gCodeOutput {
+            width: 100%;
+            height: 200px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            white-space: pre;
+            overflow-x: auto;
+            background-color: #e9ecef;
+        }
+        .hidden {
+            display: none;
+        }
+        .copy-notification {
+            text-align: center;
+            color: green;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #333;
+            color: #fff;
+            margin-top: auto; /* Empuja el footer hacia abajo */
+            width: 100%;
+        }
+        /* Estilos para la Guía del Usuario */
+        .guia-usuario h3 {
+            color: #0056b3;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .guia-usuario p, .guia-usuario ul, .guia-usuario ol {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+        .guia-usuario ul, .guia-usuario ol {
+            padding-left: 20px;
+        }
+        .guia-usuario .code { 
+            font-family: 'Courier New', Courier, monospace;
+            background-color: #e9ecef;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header-container">
+        <h1>Mecanizado Fácil</h1>
+    </header>
+
+    <div class="container">
+        <div class="tab-container">
+            <div class="tab-buttons">
+                <button class="tab-button active" onclick="abrirSolapa(event, 'Generador')">Generador de Código</button>
+                <button class="tab-button" onclick="abrirSolapa(event, 'GuiaUsuario')">Guía del Usuario</button>
+            </div>
+
+            <div id="Generador" class="tab-content active">
+                <h2>Generador de Ciclos de Taladrado (G81/G83)</h2>
+
+                <div class="form-group">
+                    <label>Tipo de Ciclo de Taladrado:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="g81" name="cycleType" value="G81" checked>
+                        <label for="g81">G81 (Taladrado Directo)</label>
+                        <input type="radio" id="g83" name="cycleType" value="G83">
+                        <label for="g83">G83 (Taladrado Profundo/Picoteo)</label>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="coordX">Coordenada X:</label>
+                        <input type="number" id="coordX" placeholder="Ej: 50.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="coordY">Coordenada Y:</label>
+                        <input type="number" id="coordY" placeholder="Ej: 75.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="zSafe">Z de Aproximación Segura:</label>
+                        <input type="number" id="zSafe" value="50" placeholder="Ej: 50">
+                    </div>
+                    <div class="form-group">
+                        <label for="rPlane">Plano R (Retracción en ciclo):</label>
+                        <input type="number" id="rPlane" value="2" placeholder="Ej: 2.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="zFinal">Profundidad Final Z:</label>
+                        <input type="number" id="zFinal" placeholder="Ej: -20.0 (valor negativo)">
+                    </div>
+                    <div class="form-group hidden" id="qPeckGroup">
+                        <label for="qPeck">Profundidad de Picoteo Q (para G83):</label>
+                        <input type="number" id="qPeck" value="5" placeholder="Ej: 5.0">
+                    </div>
+                    <div class="form-group">
+                        <label for="feedRate">Avance F (mm/min):</label>
+                        <input type="number" id="feedRate" value="120" placeholder="Ej: 120">
+                    </div>
+                    <div class="form-group">
+                        <label for="spindleSpeed">Velocidad Husillo S (RPM):</label>
+                        <input type="number" id="spindleSpeed" placeholder="Ej: 1500">
+                    </div>
+                    <div class="form-group">
+                        <label for="toolNumber">Número Herramienta T (Opcional):</label>
+                        <input type="number" id="toolNumber" placeholder="Ej: 1">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Dirección de Giro del Husillo:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="m03" name="spindleDirection" value="M03" checked>
+                        <label for="m03">M03 (Horario)</label>
+                        <input type="radio" id="m04" name="spindleDirection" value="M04">
+                        <label for="m04">M04 (Antihorario)</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Modo de Retracción en Ciclo:</label>
+                    <div class="radio-group">
+                        <input type="radio" id="g98" name="retractMode" value="G98" checked>
+                        <label for="g98">G98 (Retorno a Z Inicial)</label>
+                        <input type="radio" id="g99" name="retractMode" value="G99">
+                        <label for="g99">G99 (Retorno a Plano R)</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="coolantOn" name="coolant" checked>
+                        <label for="coolantOn">Activar Refrigerante (M08)</label>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="generateBtn">Generar Código G</button>
+                    <button id="copyBtn">Copiar Código</button>
+                </div>
+                
+                <div id="copyNotification" class="copy-notification hidden">¡Código copiado al portapapeles!</div>
+
+                <textarea id="gCodeOutput" readonly placeholder="El código G generado aparecerá aquí..."></textarea>
+            </div>
+
+            <div id="GuiaUsuario" class="tab-content guia-usuario">
+                <h2>Guía del Usuario: Generador de Ciclos de Taladrado</h2>
+                <p>Esta herramienta te ayuda a generar rápidamente el código G para ciclos de taladrado comunes: <span class="code">G81</span> (Taladrado Directo) y <span class="code">G83</span> (Taladrado Profundo o Picoteo).</p>
+
+                <h3>Cómo Usar el Generador</h3>
+                <ol>
+                    <li><strong>Selecciona el Tipo de Ciclo:</strong> Elige entre <span class="code">G81</span> o <span class="code">G83</span>. Si seleccionas <span class="code">G83</span>, aparecerá un campo adicional para la "Profundidad de Picoteo Q".</li>
+                    <li><strong>Ingresa las Coordenadas (X, Y):</strong> Especifica la posición donde se realizará el taladrado.</li>
+                    <li><strong>Z de Aproximación Segura:</strong> Es una altura Z por encima de la pieza a la que la herramienta se moverá rápidamente antes de iniciar la compensación de longitud y el ciclo. Debe ser mayor que el Plano R.</li>
+                    <li><strong>Plano R (Retracción en ciclo):</strong> Es la altura Z a la que la herramienta se aproxima rápidamente antes de empezar a taladrar con avance F, y a la que retorna entre picoteos (en G83) o al final del ciclo (si se usa G99). Debe ser un valor positivo por encima de la pieza y menor que Z de Aproximación Segura.</li>
+                    <li><strong>Profundidad Final Z:</strong> La profundidad final del agujero, medida desde el cero pieza (Z0). <strong>Debe ser un valor negativo.</strong></li>
+                    <li><strong>Profundidad de Picoteo Q (solo para G83):</strong> La profundidad de cada "picoteo" antes de que la herramienta se retraiga para romper la viruta. Debe ser un valor positivo.</li>
+                    <li><strong>Avance F:</strong> La velocidad de avance de corte en mm/min (o pulgadas/min, según la configuración de tu máquina). Se proporciona un valor común por defecto.</li>
+                    <li><strong>Velocidad Husillo S:</strong> Las RPM a las que girará la herramienta.</li>
+                    <li><strong>Número Herramienta T (Opcional):</strong> Si deseas incluir un cambio de herramienta (<span class="code">M06</span>), ingresa el número de la herramienta. El código también usará este número para la compensación de longitud (<span class="code">G43 Hxx</span>). Si se deja vacío, se asumirá H01 para G43 si se necesita.</li>
+                    <li><strong>Dirección de Giro del Husillo:</strong> Selecciona <span class="code">M03</span> (horario, más común para brocas estándar) o <span class="code">M04</span> (antihorario).</li>
+                    <li><strong>Modo de Retracción en Ciclo:</strong>
+                        <ul>
+                            <li><span class="code">G98</span>: Al finalizar el ciclo en una posición, la herramienta retorna a la "Z de Aproximación Segura" antes de moverse a la siguiente posición X,Y. Útil si hay obstáculos entre agujeros.</li>
+                            <li><span class="code">G99</span>: Al finalizar el ciclo en una posición, la herramienta retorna solo al "Plano R". Más rápido si no hay obstáculos.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Activar Refrigerante:</strong> Marca esta casilla para incluir <span class="code">M08</span> (refrigerante ON) antes del ciclo y <span class="code">M09</span> (refrigerante OFF) después.</li>
+                    <li><strong>Haz clic en "Generar Código G".</strong></li>
+                    <li>El código aparecerá en el área de texto. Puedes usar el botón "Copiar Código" para llevarlo a tu programa CNC.</li>
+                </ol>
+
+                <h3>Entendiendo los Ciclos</h3>
+                <p><strong><span class="code">G81</span> - Ciclo de Taladrado Directo:</strong></p>
+                <ul>
+                    <li>Movimiento rápido a X, Y.</li>
+                    <li>Movimiento rápido a Plano R.</li>
+                    <li>Avance de corte (F) hasta Profundidad Z.</li>
+                    <li>Retroceso rápido a Plano R (con G99) o a Z Inicial (con G98).</li>
+                </ul>
+                <p>Sintaxis generada: <span class="code">G98/G99 G81 X... Y... Z... R... F...</span></p>
+
+                <p><strong><span class="code">G83</span> - Ciclo de Taladrado Profundo (Picoteo):</strong></p>
+                <ul>
+                    <li>Movimiento rápido a X, Y.</li>
+                    <li>Movimiento rápido a Plano R.</li>
+                    <li>Taladra una profundidad Q con avance F.</li>
+                    <li>Retrocede completamente al Plano R (o Z inicial según el control) para romper viruta y permitir refrigeración.</li>
+                    <li>Avanza rápidamente hasta un poco por encima del último punto taladrado.</li>
+                    <li>Repite los picoteos hasta alcanzar la Profundidad Z final.</li>
+                    <li>Retroceso rápido final a Plano R (con G99) o a Z Inicial (con G98).</li>
+                </ul>
+                <p>Sintaxis generada: <span class="code">G98/G99 G83 X... Y... Z... R... Q... F...</span></p>
+
+                <h3>Notas Importantes</h3>
+                <ul>
+                    <li>El código generado asume que la máquina está en modo absoluto (<span class="code">G90</span>) y que las unidades son milímetros (aunque los valores son numéricos y se adaptarán a pulgadas si la máquina está en <span class="code">G20</span>).</li>
+                    <li>La compensación de longitud de herramienta (<span class="code">G43 Hxx</span>) se aplica usando el número de herramienta T. Si no se ingresa T, se usa H01 por defecto en el código generado; asegúrate de que H01 contenga el valor correcto en tu máquina o modifica el código.</li>
+                    <li>Siempre simula y prueba el código generado en un entorno seguro antes de ejecutarlo en una pieza real.</li>
+                    <li>Esta herramienta es una ayuda. La responsabilidad final del código y su correcta ejecución recae en el programador/operario.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; <script>document.write(new Date().getFullYear())</script> Mecanizado Fácil. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        function abrirSolapa(evt, nombreSolapa) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(nombreSolapa).style.display = "block";
+            document.getElementById(nombreSolapa).classList.add("active"); // Añadir clase active al contenido
+            if (evt && evt.currentTarget) { // Asegurarse de que evt y currentTarget existen
+                 evt.currentTarget.className += " active";
+            }
+        }
+
+        const cycleTypeRadios = document.querySelectorAll('input[name="cycleType"]');
+        const qPeckGroup = document.getElementById('qPeckGroup');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const gCodeOutput = document.getElementById('gCodeOutput');
+        const copyNotification = document.getElementById('copyNotification');
+
+        // Asegurarse que la primera solapa esté visible al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            const firstTabContent = document.getElementById('Generador');
+            if (firstTabContent) { // Verificar que el elemento existe
+                firstTabContent.style.display = 'block';
+                firstTabContent.classList.add('active');
+            }
+            // Inicializar visibilidad de Q
+            if (document.querySelector('input[name="cycleType"]:checked').value === 'G83') {
+                qPeckGroup.classList.remove('hidden');
+            } else {
+                qPeckGroup.classList.add('hidden');
+            }
+        });
+
+        cycleTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'G83') {
+                    qPeckGroup.classList.remove('hidden');
+                } else {
+                    qPeckGroup.classList.add('hidden');
+                }
+            });
+        });
+
+        generateBtn.addEventListener('click', function() {
+            const cycleType = document.querySelector('input[name="cycleType"]:checked').value;
+            const x = document.getElementById('coordX').value;
+            const y = document.getElementById('coordY').value;
+            const zSafe = document.getElementById('zSafe').value;
+            const rPlane = document.getElementById('rPlane').value;
+            const zFinal = document.getElementById('zFinal').value;
+            const qPeck = document.getElementById('qPeck').value;
+            const feedRate = document.getElementById('feedRate').value;
+            const spindleSpeed = document.getElementById('spindleSpeed').value;
+            const toolNumber = document.getElementById('toolNumber').value;
+            const spindleDirection = document.querySelector('input[name="spindleDirection"]:checked').value;
+            const coolantOn = document.getElementById('coolantOn').checked;
+            const retractMode = document.querySelector('input[name="retractMode"]:checked').value;
+
+            // Validaciones básicas (se pueden expandir)
+            if (x === '' || y === '' || rPlane === '' || zFinal === '' || feedRate === '' || spindleSpeed === '' || zSafe === '') {
+                gCodeOutput.value = "Error: Por favor, complete todos los campos obligatorios (X, Y, Z Safe, R, Z Final, F, S).";
+                return;
+            }
+            if (parseFloat(zFinal) >= 0) {
+                gCodeOutput.value = "Error: La Profundidad Final Z debe ser un valor negativo.";
+                return;
+            }
+            if (parseFloat(rPlane) <= parseFloat(zFinal)) {
+                gCodeOutput.value = "Error: El Plano R debe ser mayor que la Profundidad Final Z.";
+                return;
+            }
+             if (parseFloat(zSafe) <= parseFloat(rPlane)) {
+                gCodeOutput.value = "Error: Z de Aproximación Segura debe ser mayor que el Plano R.";
+                return;
+            }
+
+
+            let code = "";
+
+            if (toolNumber) {
+                code += `T${toolNumber} M06\n`;
+            }
+            code += `S${spindleSpeed} ${spindleDirection}\n`; // Giro de husillo
+            code += `G00 G90 X${x} Y${y}\n`; // Posicionamiento X, Y
+            code += `G43 H${toolNumber || '01'} Z${zSafe}\n`; // Compensación de herramienta y aproximación Z
+                                                        // Asumir H01 si no se especifica T
+
+            if (coolantOn) {
+                code += `M08 (REFRIGERANTE ON)\n`;
+            }
+
+            code += `${retractMode} ${cycleType} X${x} Y${y} Z${zFinal} R${rPlane} `;
+            if (cycleType === 'G83') {
+                if (qPeck === '' || parseFloat(qPeck) <= 0) {
+                     gCodeOutput.value = "Error: Para G83, la Profundidad de Picoteo Q debe ser un valor positivo.";
+                     return;
+                }
+                code += `Q${qPeck} `;
+            }
+            code += `F${feedRate}\n`;
+            code += `G80 (CANCELAR CICLO FIJO)\n`;
+
+            if (coolantOn) {
+                code += `M09 (REFRIGERANTE OFF)\n`;
+            }
+            code += `M05 (PARADA DE HUSILLO)\n`;
+            // Opcional: Mover Z a una posición segura final
+            // code += `G00 Z${zSafe}\n`; 
+            // code += `M30 (FIN DE PROGRAMA Y RESET)\n`; // M30 es usualmente el final del programa completo
+
+            gCodeOutput.value = code;
+            copyNotification.classList.add('hidden'); // Ocultar notificación previa
+        });
+
+        copyBtn.addEventListener('click', function() {
+            if (gCodeOutput.value) {
+                navigator.clipboard.writeText(gCodeOutput.value).then(function() {
+                    copyNotification.textContent = '¡Código copiado al portapapeles!';
+                    copyNotification.style.color = 'green';
+                    copyNotification.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyNotification.classList.add('hidden');
+                    }, 2000);
+                }, function(err) {
+                    copyNotification.textContent = 'Error al copiar el código.';
+                    copyNotification.style.color = 'red';
+                    copyNotification.classList.remove('hidden');
+                    setTimeout(() => {
+                        copyNotification.classList.add('hidden');
+                    }, 2000);
+                    console.error('Error al copiar: ', err);
+                });
+            } else {
+                copyNotification.textContent = 'No hay código para copiar.';
+                copyNotification.style.color = 'orange';
+                copyNotification.classList.remove('hidden');
+                 setTimeout(() => {
+                    copyNotification.classList.add('hidden');
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>

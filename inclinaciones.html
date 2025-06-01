@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Inclinación y Conicidad</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #eee;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .visualization {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        canvas {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+        }
+        
+        .formula {
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 3px;
+            margin: 10px 0;
+        }
+        
+        @media (max-width: 600px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                margin-right: 0;
+                margin-bottom: 5px;
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calculadora de Inclinación y Conicidad</h1>
+        <p>Herramienta para talleres mecánicos y de maquinaria</p>
+    </header>
+    
+    <div class="container">
+        <div class="tabs">
+            <div class="tab active" onclick="openTab('inclination')">Cálculo de Inclinación</div>
+            <div class="tab" onclick="openTab('taper')">Cálculo de Conicidad</div>
+        </div>
+        
+        <div id="inclination" class="tab-content active">
+            <h2>Cálculo de Inclinación</h2>
+            <p>Ingrese los diámetros y la longitud para calcular la inclinación (en grados)</p>
+            
+            <div class="input-group">
+                <label for="inc-diameter1">Diámetro mayor (D):</label>
+                <input type="number" id="inc-diameter1" placeholder="En milímetros" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="inc-diameter2">Diámetro menor (d):</label>
+                <input type="number" id="inc-diameter2" placeholder="En milímetros" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="inc-length">Longitud (L):</label>
+                <input type="number" id="inc-length" placeholder="En milímetros" step="0.01">
+            </div>
+            
+            <button onclick="calculateInclination()">Calcular Inclinación</button>
+            
+            <div class="results" id="inclination-results">
+                <p>Inclinación: <span id="inclination-value">--</span>°</p>
+                <div class="formula">Fórmula: θ = arctan((D - d)/(2L))</div>
+            </div>
+            
+            <div class="visualization">
+                <h3>Representación Gráfica</h3>
+                <canvas id="inclination-canvas" width="600" height="300"></canvas>
+            </div>
+        </div>
+        
+        <div id="taper" class="tab-content">
+            <h2>Cálculo de Conicidad</h2>
+            <p>Ingrese los diámetros para calcular la conicidad (relación D-d:L)</p>
+            
+            <div class="input-group">
+                <label for="taper-diameter1">Diámetro mayor (D):</label>
+                <input type="number" id="taper-diameter1" placeholder="En milímetros" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="taper-diameter2">Diámetro menor (d):</label>
+                <input type="number" id="taper-diameter2" placeholder="En milímetros" step="0.01">
+            </div>
+            
+            <div class="input-group">
+                <label for="taper-length">Longitud (L):</label>
+                <input type="number" id="taper-length" placeholder="En milímetros" step="0.01">
+            </div>
+            
+            <button onclick="calculateTaper()">Calcular Conicidad</button>
+            
+            <div class="results" id="taper-results">
+                <p>Conicidad: <span id="taper-value">--</span></p>
+                <p>Conicidad en porcentaje: <span id="taper-percentage">--</span>%</p>
+                <div class="formula">Fórmula: Conicidad = (D - d) / L</div>
+            </div>
+            
+            <div class="visualization">
+                <h3>Representación Gráfica</h3>
+                <canvas id="taper-canvas" width="600" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables para los canvas
+        let incCanvas, incCtx, taperCanvas, taperCtx;
+        
+        // Inicializar los canvas cuando la página cargue
+        window.onload = function() {
+            incCanvas = document.getElementById('inclination-canvas');
+            incCtx = incCanvas.getContext('2d');
+            
+            taperCanvas = document.getElementById('taper-canvas');
+            taperCtx = taperCanvas.getContext('2d');
+            
+            // Dibujar canvas iniciales
+            drawInclination(0, 0, 0);
+            drawTaper(0, 0, 0);
+        };
+        
+        // Función para cambiar entre pestañas
+        function openTab(tabName) {
+            // Oculta todos los contenidos de pestañas
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Desactiva todas las pestañas
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Activa la pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+        
+        // Función para calcular inclinación
+        function calculateInclination() {
+            const D = parseFloat(document.getElementById('inc-diameter1').value);
+            const d = parseFloat(document.getElementById('inc-diameter2').value);
+            const L = parseFloat(document.getElementById('inc-length').value);
+            
+            if (isNaN(D) || isNaN(d) || isNaN(L) || L === 0) {
+                alert("Por favor ingrese valores válidos para todos los campos");
+                return;
+            }
+            
+            // Calcular inclinación en radianes
+            const inclinationRad = Math.atan((D - d) / (2 * L));
+            // Convertir a grados
+            const inclinationDeg = inclinationRad * (180 / Math.PI);
+            
+            // Mostrar resultado
+            document.getElementById('inclination-value').textContent = inclinationDeg.toFixed(4);
+            
+            // Dibujar representación
+            drawInclination(D, d, L);
+        }
+        
+        // Función para calcular conicidad
+        function calculateTaper() {
+            const D = parseFloat(document.getElementById('taper-diameter1').value);
+            const d = parseFloat(document.getElementById('taper-diameter2').value);
+            const L = parseFloat(document.getElementById('taper-length').value);
+            
+            if (isNaN(D) || isNaN(d) || isNaN(L) || L === 0) {
+                alert("Por favor ingrese valores válidos para todos los campos");
+                return;
+            }
+            
+            // Calcular conicidad
+            const taper = (D - d) / L;
+            const taperPercentage = taper * 100;
+            
+            // Mostrar resultados
+            document.getElementById('taper-value').textContent = "1:" + (1/taper).toFixed(4);
+            document.getElementById('taper-percentage').textContent = taperPercentage.toFixed(4);
+            
+            // Dibujar representación
+            drawTaper(D, d, L);
+        }
+        
+        // Función para dibujar la inclinación
+        function drawInclination(D, d, L) {
+            const canvas = incCanvas;
+            const ctx = incCtx;
+            
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Escalar los valores para que quepan en el canvas
+            const scaleFactor = Math.min(
+                (canvas.width * 0.8) / Math.max(L, 100),
+                (canvas.height * 0.8) / Math.max(D, d, 50)
+            );
+            
+            const scaledL = L * scaleFactor;
+            const scaledD = D * scaleFactor;
+            const scaledd = d * scaleFactor;
+            
+            // Posición inicial
+            const startX = (canvas.width - scaledL) / 2;
+            const startY = canvas.height / 2;
+            
+            // Dibujar la pieza cónica
+            ctx.beginPath();
+            ctx.moveTo(startX, startY - scaledD/2);
+            ctx.lineTo(startX + scaledL, startY - scaledd/2);
+            ctx.lineTo(startX + scaledL, startY + scaledd/2);
+            ctx.lineTo(startX, startY + scaledD/2);
+            ctx.closePath();
+            
+            // Estilo de relleno y borde
+            ctx.fillStyle = 'rgba(52, 152, 219, 0.2)';
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            
+            ctx.fill();
+            ctx.stroke();
+            
+            // Dibujar líneas de diámetro
+            ctx.beginPath();
+            ctx.moveTo(startX, startY - scaledD/2 - 20);
+            ctx.lineTo(startX, startY + scaledD/2 + 20);
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(startX + scaledL, startY - scaledd/2 - 20);
+            ctx.lineTo(startX + scaledL, startY + scaledd/2 + 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Etiquetas
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            
+            if (D > 0) {
+                ctx.fillText('D = ' + D.toFixed(2) + ' mm', startX, startY - scaledD/2 - 25);
+            }
+            if (d > 0) {
+                ctx.fillText('d = ' + d.toFixed(2) + ' mm', startX + scaledL, startY - scaledd/2 - 25);
+            }
+            if (L > 0) {
+                ctx.fillText('L = ' + L.toFixed(2) + ' mm', startX + scaledL/2, startY + Math.max(scaledD, scaledd)/2 + 30);
+            }
+            
+            // Dibujar ángulo si hay inclinación
+            if (D !== d && L > 0) {
+                const angle = Math.atan((D - d) / (2 * L)) * (180 / Math.PI);
+                if (angle > 0) {
+                    ctx.font = '16px Arial';
+                    ctx.fillText('θ = ' + angle.toFixed(2) + '°', startX + scaledL + 50, startY - 10);
+                    
+                    // Arco de ángulo
+                    ctx.beginPath();
+                    ctx.arc(startX, startY, 40, -Math.PI/2, -Math.PI/2 + Math.atan((D - d) / (2 * L)), false);
+                    ctx.strokeStyle = '#e67e22';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            }
+        }
+        
+        // Función para dibujar la conicidad
+        function drawTaper(D, d, L) {
+            const canvas = taperCanvas;
+            const ctx = taperCtx;
+            
+            // Limpiar canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Escalar los valores para que quepan en el canvas
+            const scaleFactor = Math.min(
+                (canvas.width * 0.8) / Math.max(L, 100),
+                (canvas.height * 0.8) / Math.max(D, d, 50)
+            );
+            
+            const scaledL = L * scaleFactor;
+            const scaledD = D * scaleFactor;
+            const scaledd = d * scaleFactor;
+            
+            // Posición inicial
+            const startX = (canvas.width - scaledL) / 2;
+            const startY = canvas.height / 2;
+            
+            // Dibujar la pieza cónica
+            ctx.beginPath();
+            ctx.moveTo(startX, startY - scaledD/2);
+            ctx.lineTo(startX + scaledL, startY - scaledd/2);
+            ctx.lineTo(startX + scaledL, startY + scaledd/2);
+            ctx.lineTo(startX, startY + scaledD/2);
+            ctx.closePath();
+            
+            // Estilo de relleno y borde
+            ctx.fillStyle = 'rgba(52, 152, 219, 0.2)';
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            
+            ctx.fill();
+            ctx.stroke();
+            
+            // Dibujar líneas de diámetro
+            ctx.beginPath();
+            ctx.moveTo(startX, startY - scaledD/2 - 20);
+            ctx.lineTo(startX, startY + scaledD/2 + 20);
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 3]);
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(startX + scaledL, startY - scaledd/2 - 20);
+            ctx.lineTo(startX + scaledL, startY + scaledd/2 + 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            // Etiquetas
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            
+            if (D > 0) {
+                ctx.fillText('D = ' + D.toFixed(2) + ' mm', startX, startY - scaledD/2 - 25);
+            }
+            if (d > 0) {
+                ctx.fillText('d = ' + d.toFixed(2) + ' mm', startX + scaledL, startY - scaledd/2 - 25);
+            }
+            if (L > 0) {
+                ctx.fillText('L = ' + L.toFixed(2) + ' mm', startX + scaledL/2, startY + Math.max(scaledD, scaledd)/2 + 30);
+            }
+            
+            // Mostrar conicidad si hay valores
+            if (D !== d && L > 0) {
+                const taper = (D - d) / L;
+                ctx.font = '16px Arial';
+                ctx.fillText('Conicidad = 1:' + (1/taper).toFixed(2), startX + scaledL + 60, startY - 10);
+            }
+        }
+    </script>
+</body>
+</html>

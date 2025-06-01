@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Peso de Materiales</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 5px solid #e74c3c;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .main-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .input-group, .results-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #fdfdfd;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        select, input[type="number"], input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        input[type="button"] {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="button"]:hover {
+            background-color: #2980b9;
+        }
+        .results-container h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .results-container p {
+            font-size: 1.1em;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calculadora de Peso de Materiales</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="input-group">
+            <label for="shape-selector">Seleccione la Forma del Material:</label>
+            <select id="shape-selector">
+                <option value="">-- Elija una forma --</option>
+                <option value="rectangular">Rectangular (Barra/Placa)</option>
+                <option value="round">Redondo (Barra/Eje)</option>
+                <option value="tube">Tubo (Hueco)</option>
+                <option value="hexagonal">Hexagonal (Barra)</option>
+                <option value="sheet">Chapa</option>
+            </select>
+        </div>
+
+        <div id="dimensions-inputs" class="input-group hidden">
+            <h2 id="dimensions-title">Dimensiones</h2>
+            <!-- Inputs will be dynamically added here -->
+        </div>
+
+        <div class="input-group">
+            <label for="material-selector">Seleccione el Material:</label>
+            <select id="material-selector">
+                <option value="">-- Elija un material --</option>
+                <option value="acero">Acero (General)</option>
+                <option value="aluminio">Aluminio (General)</option>
+                <option value="acero_inoxidable">Acero Inoxidable</option>
+                <option value="laton">Latón</option>
+                <option value="cobre">Cobre</option>
+                <option value="bronce">Bronce</option>
+                <option value="hierro_fundido">Hierro Fundido</option>
+                <option value="titanio">Titanio</option>
+            </select>
+        </div>
+
+        <input type="button" value="Calcular Peso" onclick="calculateWeight()">
+
+        <div id="results-container" class="results-container hidden">
+            <h3>Resultado del Cálculo</h3>
+            <p id="weight-result"></p>
+        </div>
+    </div>
+
+    <script>
+        const densityData = {
+            acero: 7.85,       // g/cm³ (acero general)
+            aluminio: 2.7,     // g/cm³ (aluminio general)
+            acero_inoxidable: 7.93, // g/cm³ (aprox.)
+            laton: 8.5,        // g/cm³ (aprox.)
+            cobre: 8.96,       // g/cm³
+            bronce: 8.73,      // g/cm³ (aprox.)
+            hierro_fundido: 7.2, // g/cm³ (aprox.)
+            titanio: 4.51       // g/cm³ (aprox.)
+        };
+
+        const shapeSelector = document.getElementById('shape-selector');
+        const dimensionsInputsDiv = document.getElementById('dimensions-inputs');
+        const dimensionsTitle = document.getElementById('dimensions-title');
+        const materialSelector = document.getElementById('material-selector');
+        const resultsDiv = document.getElementById('results-container');
+        const weightResult = document.getElementById('weight-result');
+
+        shapeSelector.addEventListener('change', function() {
+            const selectedShape = this.value;
+            dimensionsInputsDiv.classList.toggle('hidden', !selectedShape);
+            dimensionsInputsDiv.innerHTML = ""; // Clear previous inputs
+
+            if (selectedShape) {
+                dimensionsTitle.textContent = "Dimensiones (en mm)"; // Set default unit
+
+                let inputsHTML = "";
+                switch (selectedShape) {
+                    case 'rectangular':
+                        inputsHTML = `
+                            <label for="rect-length">Longitud:</label>
+                            <input type="number" id="rect-length">
+                            <label for="rect-width">Ancho:</label>
+                            <input type="number" id="rect-width">
+                            <label for="rect-thickness">Espesor:</label>
+                            <input type="number" id="rect-thickness">
+                        `;
+                        break;
+                    case 'round':
+                        inputsHTML = `
+                            <label for="round-diameter">Diámetro:</label>
+                            <input type="number" id="round-diameter">
+                            <label for="round-length">Longitud:</label>
+                            <input type="number" id="round-length">
+                        `;
+                        break;
+                    case 'tube':
+                        inputsHTML = `
+                            <label for="tube-od">Diámetro Exterior (OD):</label>
+                            <input type="number" id="tube-od">
+                            <label for="tube-id">Diámetro Interior (ID):</label>
+                            <input type="number" id="tube-id">
+                            <label for="tube-length">Longitud:</label>
+                            <input type="number" id="tube-length">
+                        `;
+                        break;
+                    case 'hexagonal':
+                        inputsHTML = `
+                            <label for="hex-side">Lado del Hexágono:</label>
+                            <input type="number" id="hex-side">
+                            <label for="hex-length">Longitud:</label>
+                            <input type="number" id="hex-length">
+                        `;
+                        break;
+                    case 'sheet':
+                        inputsHTML = `
+                            <label for="sheet-length">Longitud:</label>
+                            <input type="number" id="sheet-length">
+                            <label for="sheet-width">Ancho:</label>
+                            <input type="number" id="sheet-width">
+                            <label for="sheet-thickness">Espesor:</label>
+                            <input type="number" id="sheet-thickness">
+                        `;
+                        break;
+                }
+                dimensionsInputsDiv.innerHTML = inputsHTML;
+            }
+        });
+
+        function calculateWeight() {
+            const selectedShape = shapeSelector.value;
+            const selectedMaterial = materialSelector.value;
+            let volume = 0;
+
+            if (!selectedShape || !selectedMaterial) {
+                alert("Por favor, seleccione la forma y el material.");
+                return;
+            }
+
+            // Get density
+            const density = densityData[selectedMaterial];
+            if (!density) {
+                alert("Densidad no encontrada para el material seleccionado.");
+                return;
+            }
+
+            // Get dimensions and calculate volume in mm³
+            switch (selectedShape) {
+                case 'rectangular':
+                    const rectLength = parseFloat(document.getElementById('rect-length').value);
+                    const rectWidth = parseFloat(document.getElementById('rect-width').value);
+                    const rectThickness = parseFloat(document.getElementById('rect-thickness').value);
+                    if (!rectLength || !rectWidth || !rectThickness) { return; }
+                    volume = rectLength * rectWidth * rectThickness;
+                    break;
+                case 'round':
+                    const roundDiameter = parseFloat(document.getElementById('round-diameter').value);
+                    const roundLength = parseFloat(document.getElementById('round-length').value);
+                    if (!roundDiameter || !roundLength) { return; }
+                    volume = Math.PI * Math.pow(roundDiameter / 2, 2) * roundLength;
+                    break;
+                case 'tube':
+                    const tubeOD = parseFloat(document.getElementById('tube-od').value);
+                    const tubeID = parseFloat(document.getElementById('tube-id').value);
+                    const tubeLength = parseFloat(document.getElementById('tube-length').value);
+                    if (!tubeOD || !tubeID || !tubeLength) { return; }
+                    if (tubeID >= tubeOD) {
+                        alert("El diámetro interior debe ser menor que el exterior.");
+                        return;
+                    }
+                    volume = Math.PI * (Math.pow(tubeOD / 2, 2) - Math.pow(tubeID / 2, 2)) * tubeLength;
+                    break;
+                case 'hexagonal':
+                    const hexSide = parseFloat(document.getElementById('hex-side').value);
+                    const hexLength = parseFloat(document.getElementById('hex-length').value);
+                    if (!hexSide || !hexLength) { return; }
+                    // Area of a hexagon = (3 * sqrt(3) / 2) * side²
+                    const hexArea = (3 * Math.sqrt(3) / 2) * Math.pow(hexSide, 2);
+                    volume = hexArea * hexLength;
+                    break;
+                case 'sheet':
+                    const sheetLength = parseFloat(document.getElementById('sheet-length').value);
+                    const sheetWidth = parseFloat(document.getElementById('sheet-width').value);
+                    const sheetThickness = parseFloat(document.getElementById('sheet-thickness').value);
+                    if (!sheetLength || !sheetWidth || !sheetThickness) { return; }
+                    volume = sheetLength * sheetWidth * sheetThickness;
+                    break;
+            }
+
+            if (isNaN(volume) || volume <= 0) {
+                alert("Por favor, ingrese dimensiones válidas (mayores que cero).");
+                return;
+            }
+
+            // Convert volume to cm³ (1 cm³ = 1000 mm³)
+            volume /= 1000;
+
+            // Calculate weight in grams
+            const weightGrams = volume * density;
+
+            // Convert weight to kilograms
+            const weightKg = weightGrams / 1000;
+
+            weightResult.textContent = `El peso aproximado del material es: ${weightKg.toFixed(3)} kg`;
+            resultsDiv.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

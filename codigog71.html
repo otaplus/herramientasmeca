@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Código G71 y Guía para Torno CNC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            /* padding: 20px; */ /* Removed to allow full-width tab container */
+            color: #333;
+            /* max-width: 1000px; */ /* Moved to a more specific container if needed */
+            /* margin: 0 auto; */ /* Moved to a more specific container if needed */
+            background-color: #f5f5f5;
+        }
+
+        .main-tab-container {
+            width: 95%;
+            max-width: 1100px; /* Max width for the main tab container */
+            margin: 20px auto;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .main-tab-buttons {
+            display: flex;
+            background-color: #2c3e50; /* Darker color for main tabs */
+        }
+        .main-tab-button {
+            padding: 15px 25px;
+            cursor: pointer;
+            border: none;
+            background-color: #2c3e50;
+            color: white;
+            font-size: 1.1em;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+        .main-tab-button:hover {
+            background-color: #34495e;
+        }
+        .main-tab-button.active {
+            background-color: #fff;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+        }
+        .main-tab-content {
+            padding: 25px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .main-tab-pane { display: none; }
+        .main-tab-pane.active { display: block; }
+
+        /* Styles for the calculator content, if needed to be nested */
+        .calculator-content-wrapper {
+             /* No specific styles needed if it just holds the existing structure */
+        }
+
+        /* Original styles, slightly adjusted for context */
+        .container { /* This class is still used by the original G71 generator's main div */
+            background-color: white;
+            /* padding: 20px; */ /* Padding is now handled by main-tab-content */
+            /* border-radius: 8px; */ /* Border radius handled by main-tab-container */
+            /* box-shadow: 0 2px 10px rgba(0,0,0,0.1); */ /* Shadow handled by main-tab-container */
+        }
+
+        h1, h2 { /* Titles within the content */
+            color: #2c3e50;
+            text-align: center; /* Center align main titles */
+        }
+        h2.tab-title { /* Specific for titles inside tab content */
+            text-align: left;
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #f5f5f5;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #3498db;
+            overflow-x: auto;
+            font-family: monospace;
+            white-space: pre;
+            margin-top: 20px;
+        }
+        .coordinates-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .coordinates-table th, .coordinates-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .coordinates-table th {
+            background-color: #f2f2f2;
+        }
+        .action-button { /* General class for action buttons like add row, generate, copy */
+            margin-bottom: 10px;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .sub-tab { /* Renamed from .tab to .sub-tab for clarity */
+            padding: 10px 20px;
+            background-color: #eee;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 4px 4px 0 0;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .sub-tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        .sub-tab-content { /* Renamed from .tab-content to .sub-tab-content */
+            display: none;
+        }
+        .sub-tab-content.active {
+            display: block;
+        }
+        .info-section {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3498db;
+        }
+        #drawing-container {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            position: relative;
+            overflow: visible;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        #drawing-canvas {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .drawing-controls {
+            margin-bottom: 15px;
+        }
+        .drawing-controls label {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        .drawing-controls input {
+            width: 60px;
+            display: inline-block;
+        }
+        .zoom-controls {
+            margin-bottom: 15px;
+        }
+
+        /* Styles for the User Guide tab */
+        .guia-usuario h3 {
+            color: #3498db; /* Accent color for subheadings */
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .guia-usuario h4 {
+            color: #2c3e50; /* Darker color for sub-subheadings */
+            margin-top: 20px;
+            margin-bottom: 8px;
+        }
+        .guia-usuario p, .guia-usuario li {
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .guia-usuario ul {
+            list-style-type: disc;
+            margin-left: 25px;
+            padding-left: 0;
+        }
+        .guia-usuario strong {
+            color: #2980b9; /* Slightly darker blue for emphasis */
+        }
+        .guia-usuario code {
+            background-color: #e9ecef;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-tab-container">
+        <div class="main-tab-buttons">
+            <button class="main-tab-button active" onclick="openMainTab(event, &#39;CalculadoraG71&#39;)">Calculadora G71</button>
+            <button class="main-tab-button" onclick="openMainTab(event, &#39;GuiaUsuarioG71&#39;)">Guía del Usuario</button>
+        </div>
+
+        <div id="CalculadoraG71" class="main-tab-content main-tab-pane active" style="display: block;">
+            <div class="calculator-content-wrapper container"> <!-- Added .container here for original styles -->
+                <h1>Generador de Código G71 para Torno CNC</h1>
+                
+                <div class="info-section">
+                    <h2 class="tab-title">¿Qué es el ciclo G71?</h2>
+                    <p>El ciclo G71 es un ciclo de desbaste estándar para tornos CNC que permite mecanizar piezas con contornos complejos de manera eficiente. Este generador crea automáticamente el código G necesario basado en tus parámetros y muestra una visualización del perfil de la pieza.</p>
+                </div>
+                
+                <div class="tabs">
+                    <div class="sub-tab active" onclick="openSubTab(event, &#39;parameters&#39;)">Parámetros</div>
+                    <div class="sub-tab" onclick="openSubTab(event, &#39;coordinates&#39;)">Coordenadas</div>
+                    <div class="sub-tab" onclick="openSubTab(event, &#39;visualization&#39;)">Visualización</div>
+                    <div class="sub-tab" onclick="openSubTab(event, &#39;code&#39;)">Código Generado</div>
+                </div>
+                
+                <div id="parameters" class="sub-tab-content active">
+                    <h2 class="tab-title">Parámetros de Mecanizado</h2>
+                    
+                    <div class="form-group">
+                        <label for="programNumber">Número de programa:</label>
+                        <input type="text" id="programNumber" value="1000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="spindleSpeed">Velocidad de giro (RPM o m/min para G96):</label>
+                        <input type="number" id="spindleSpeed" value="120">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="feedRate">Velocidad de avance (mm/rev):</label>
+                        <input type="number" id="feedRate" value="0.2" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="depthOfCut">Profundidad de corte por pasada (U, radio, mm):</label>
+                        <input type="number" id="depthOfCut" value="2.0" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="retractDistance">Distancia de retracción (R, mm):</label>
+                        <input type="number" id="retractDistance" value="1.0" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="stockAllowanceX">Sobrematerial para acabado en X (U, diámetro, mm):</label>
+                        <input type="number" id="stockAllowanceX" value="0.5" step="0.1">
+                    </div>
+                     <div class="form-group">
+                        <label for="stockAllowanceZ">Sobrematerial para acabado en Z (W, mm):</label>
+                        <input type="number" id="stockAllowanceZ" value="0.1" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="toolNumber">Número de herramienta (ej: 1 para T01xx):</label>
+                        <input type="number" id="toolNumber" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="toolOffset">Compensación de herramienta (ej: 1 para Txx01):</label>
+                        <input type="number" id="toolOffset" value="1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="startX">Posición inicial X (diámetro, mm):</label>
+                        <input type="number" id="startX" value="50.0" step="0.01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="startZ">Posición inicial Z (mm):</label>
+                        <input type="number" id="startZ" value="5.0" step="0.01">
+                    </div>
+                    
+                    <button class="action-button" onclick="generateCode()">Generar Código G71</button>
+                </div>
+                
+                <div id="coordinates" class="sub-tab-content">
+                    <h2 class="tab-title">Coordenadas del Perfil</h2>
+                    <p>Ingresa las coordenadas X (diámetro) y Z del perfil a mecanizar, en orden desde el punto más alejado del cabezal (mayor Z o Z más positivo) hacia el más cercano.</p>
+                    
+                    <table class="coordinates-table" id="coordinatesTable">
+                        <thead>
+                            <tr>
+                                <th>Punto</th>
+                                <th>X (Diámetro, mm)</th>
+                                <th>Z (mm)</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td><input type="number" class="coord-x" value="50.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><input type="number" class="coord-z" value="0.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><button onclick="removeRow(this)">Eliminar</button></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td><input type="number" class="coord-x" value="40.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><input type="number" class="coord-z" value="-20.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><button onclick="removeRow(this)">Eliminar</button></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td><input type="number" class="coord-x" value="40.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><input type="number" class="coord-z" value="-40.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><button onclick="removeRow(this)">Eliminar</button></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td><input type="number" class="coord-x" value="30.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><input type="number" class="coord-z" value="-40.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><button onclick="removeRow(this)">Eliminar</button></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td><input type="number" class="coord-x" value="30.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><input type="number" class="coord-z" value="-60.0" step="0.01" onchange="updateDrawing()"></td>
+                                <td><button onclick="removeRow(this)">Eliminar</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <button class="action-button" onclick="addRow()">Agregar Punto</button>
+                    <button class="action-button active" onclick="generateCode()">Generar Código G71</button>
+                </div>
+                
+                <div id="visualization" class="sub-tab-content">
+                    <h2 class="tab-title">Visualización de la Pieza</h2>
+                    <p>Esta representación gráfica muestra el perfil de la pieza según las coordenadas ingresadas. Puedes arrastrar el dibujo para moverlo y usar la rueda del mouse para hacer zoom.</p>
+                    
+                    <div class="drawing-controls">
+                        <label for="zoomFactor">Zoom:</label>
+                        <input type="number" id="zoomFactor" value="5" min="1" max="20" step="0.5" onchange="updateDrawing()">
+                        
+                        <label for="showDimensions">Mostrar medidas:</label>
+                        <input type="checkbox" id="showDimensions" checked="" onchange="updateDrawing()">
+                        
+                        <label for="showAxis">Mostrar ejes:</label>
+                        <input type="checkbox" id="showAxis" checked="" onchange="updateDrawing()">
+                    </div>
+                    
+                    <div id="drawing-container">
+                        <canvas id="drawing-canvas" width="800" height="500"></canvas>
+                    </div>
+                    
+                    <button class="action-button" onclick="generateCode()">Generar Código G71</button>
+                </div>
+                
+                <div id="code" class="sub-tab-content">
+                    <h2 class="tab-title">Código G71 Generado</h2>
+                    <p>Este es el código CNC generado automáticamente basado en tus parámetros. Copia y pega este código en tu controlador CNC.</p>
+                    
+                    <div class="code-block" id="generatedCode">O1000 (PROGRAMA DE TORNEADO CON CICLO G71)
+(GENERADO AUTOMATICAMENTE)
+
+N10 G50 S1500 (LIMITE DE VELOCIDAD DE HUSILLO)
+N20 G00 G40 G99 T0101
+N30 G96 S120 M03 (VELOCIDAD CONSTANTE Y GIRO HORARIO)
+N40 G00 X50.0 Z5.0 M08 (POSICION INICIAL Y REFRIGERANTE ON)
+
+(CICLO DE DESBASTE G71)
+N50 G71 U2.0 R1.0
+N60 G71 P70 Q110 U0.5 W0.1 F0.2
+
+(PERFIL DE LA PIEZA)
+N70 G01 X50 Z0
+N80 G01 X60 Z-20
+N90 G01 X60 Z-40
+N100 G01 X70 Z-40
+N110 G01 X70 Z-60
+
+(ACABADO)
+N120 G70 P70 Q110 F0.100 S320
+
+(FIN DEL PROGRAMA)
+N130 G00 X100.0 Z100.0 M09 (RETIRAR HERRAMIENTA)
+N140 M05 (PARAR HUSILLO)
+N150 M30 (FIN DEL PROGRAMA)
+% (FIN DE ARCHIVO)</div>
+                    
+                    <button class="action-button" onclick="copyCode()">Copiar Código</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="GuiaUsuarioG71" class="main-tab-content main-tab-pane" style="display: none;">
+            <div class="guia-usuario">
+                <h1>Guía de Usuario: Generador de Código G71</h1>
+                <p>Bienvenido al Generador de Código G71 para Torno CNC. Esta herramienta está diseñada para facilitar la creación de programas de desbaste de perfiles utilizando el ciclo G71 en controles tipo Fanuc.</p>
+
+                <h3>¿Qué es el Ciclo G71?</h3>
+                <p>El G71 es un potente ciclo fijo de desbaste en torneado. Permite eliminar material siguiendo un perfil definido por una secuencia de bloques (subprograma) en múltiples pasadas. Se define típicamente en dos líneas de código:</p>
+                <ul>
+                    <li><code>G71 U(Δd) R(e)</code></li>
+                    <li><code>G71 P(ns) Q(nf) U(Δu) W(Δw) F(f) S(s) T(t)</code></li>
+                </ul>
+                <p>Donde <code>U(Δd)</code> es la profundidad de corte por pasada (radial), <code>R(e)</code> es la distancia de retracción, <code>P(ns)</code> es el número de secuencia del primer bloque del perfil, <code>Q(nf)</code> es el número de secuencia del último bloque del perfil, <code>U(Δu)</code> es el sobrematerial para acabado en X (diametral), <code>W(Δw)</code> es el sobrematerial para acabado en Z, y <code>F(f)</code> es el avance.</p>
+
+                <h3>Cómo Usar el Generador</h3>
+                <p>La calculadora se divide en varias sub-solapas dentro de la solapa principal "Calculadora G71":</p>
+
+                <h4>1. Solapa "Parámetros"</h4>
+                <p>Aquí defines los parámetros generales del mecanizado y del ciclo G71.</p>
+                <ul>
+                    <li><strong>Número de programa:</strong> El identificador de tu programa CNC (ej: <code>O1000</code>).</li>
+                    <li><strong>Velocidad de giro (RPM o m/min para G96):</strong> Si usas G96 (velocidad de corte constante, común en torneado), este valor es en m/min. Si usas G97 (RPM constantes), es en RPM. El generador usa G96.</li>
+                    <li><strong>Velocidad de avance (mm/rev):</strong> El avance <code>F</code> para el ciclo de desbaste.</li>
+                    <li><strong>Profundidad de corte por pasada (U, radio, mm):</strong> El valor <code>U</code> en la primera línea de G71. Es la profundidad de cada pasada de desbaste, en valor de radio.</li>
+                    <li><strong>Distancia de retracción (R, mm):</strong> El valor <code>R</code> en la primera línea de G71. Cuánto se retira la herramienta después de cada pasada.</li>
+                    <li><strong>Sobrematerial para acabado en X (U, diámetro, mm):</strong> El valor <code>U</code> en la segunda línea de G71. Es el material que se dejará en el eje X (diámetro) para una pasada de acabado posterior (ej: con G70).</li>
+                    <li><strong>Sobrematerial para acabado en Z (W, mm):</strong> El valor <code>W</code> en la segunda línea de G71. Material a dejar en el eje Z para el acabado.</li>
+                    <li><strong>Número de herramienta (ej: 1 para T01xx):</strong> El número principal de la herramienta (ej: <code>1</code> para <code>T0101</code>).</li>
+                    <li><strong>Compensación de herramienta (ej: 1 para Txx01):</strong> El número de offset o corrector de la herramienta.</li>
+                    <li><strong>Posición inicial X (diámetro, mm):</strong> Coordenada X (diámetro) segura desde donde la herramienta comenzará el ciclo.</li>
+                    <li><strong>Posición inicial Z (mm):</strong> Coordenada Z segura desde donde la herramienta comenzará el ciclo.</li>
+                </ul>
+
+                <h4>2. Solapa "Coordenadas"</h4>
+                <p>Define el perfil final de la pieza que se va a mecanizar.</p>
+                <ul>
+                    <li><strong>Tabla de Coordenadas:</strong> Ingresa los puntos (X, Z) que definen tu perfil.
+                        <ul>
+                            <li><strong>X (Diámetro, mm):</strong> La coordenada X de cada punto del perfil, expresada como diámetro.</li>
+                            <li><strong>Z (mm):</strong> La coordenada Z de cada punto del perfil.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Orden de los Puntos:</strong> Es crucial ingresar los puntos en el orden correcto. Comienza desde el punto más alejado del cabezal (normalmente el de mayor Z o Z más positivo si se trabaja desde Z0 hacia Z negativas) y avanza hacia el cabezal. El perfil debe ser monotónico (continuamente decreciente o creciente en X y/o Z según el tipo de G71, para Tipo I generalmente Z decrece y X puede variar).</li>
+                    <li><strong>Agregar Punto:</strong> Añade una nueva fila a la tabla para un nuevo punto del perfil.</li>
+                    <li><strong>Eliminar:</strong> Quita la fila del punto correspondiente.</li>
+                    <li>Cada vez que modificas una coordenada, el dibujo en la solapa "Visualización" se actualiza automáticamente.</li>
+                </ul>
+
+                <h4>3. Solapa "Visualización"</h4>
+                <p>Muestra una representación gráfica del perfil de la pieza basado en las coordenadas ingresadas.</p>
+                <ul>
+                    <li><strong>Canvas de Dibujo:</strong> El área principal donde se muestra el perfil. Se dibuja la mitad superior de la pieza, asumiendo que es una pieza de revolución. El eje Z es horizontal y el eje X es vertical.</li>
+                    <li><strong>Controles de Visualización:</strong>
+                        <ul>
+                            <li><strong>Zoom:</strong> Aumenta o disminuye el tamaño de la vista del perfil. También puedes usar la rueda del mouse sobre el dibujo.</li>
+                            <li><strong>Mostrar medidas:</strong> Si está marcado, muestra las etiquetas de coordenadas (P1, P2, etc.) junto a cada punto en el dibujo.</li>
+                            <li><strong>Mostrar ejes:</strong> Si está marcado, dibuja los ejes X y Z.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Interacción:</strong> Puedes hacer clic y arrastrar el dibujo para desplazar la vista (pan).</li>
+                </ul>
+
+                <h4>4. Solapa "Código Generado"</h4>
+                <p>Aquí encontrarás el código G71 completo generado por la herramienta.</p>
+                <ul>
+                    <li><strong>Bloque de Código:</strong> Muestra el programa CNC. Revisa la estructura:
+                        <ul>
+                            <li>Encabezado: Número de programa (<code>Oxxxx</code>), límites de velocidad (<code>G50</code>), selección de herramienta (<code>Txxxx</code>), activación de velocidad de corte constante (<code>G96 S... M03</code>), posicionamiento inicial (<code>G00 X... Z... M08</code>).</li>
+                            <li>Ciclo G71: Las dos líneas <code>G71 U... R...</code> y <code>G71 P... Q... U... W... F...</code>.</li>
+                            <li>Definición del Perfil: Una secuencia de bloques <code>Nxx G01 X... Z...</code> que corresponden a las coordenadas ingresadas. Los números de secuencia P y Q del G71 apuntarán al inicio y fin de este bloque.</li>
+                            <li>Ciclo de Acabado G70: El generador incluye un ciclo <code>G70</code> que utiliza el mismo perfil (P y Q) para una pasada de acabado.</li>
+                            <li>Fin de Programa: Retirada de herramienta (<code>G00 X... Z... M09</code>), parada de husillo (<code>M05</code>), y fin de programa (<code>M30</code>).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Copiar Código:</strong> Botón para copiar fácilmente todo el código generado al portapapeles.</li>
+                </ul>
+                <p>El botón "Generar Código G71" está disponible en las solapas "Parámetros", "Coordenadas" y "Visualización" para tu conveniencia. Al presionarlo, se actualizará el código en esta solapa y se te redirigirá aquí.</p>
+
+                <h3>Notas Importantes y Consejos</h3>
+                <ul>
+                    <li><strong>Validación de Datos:</strong> Aunque la herramienta es útil, tú eres el responsable final de la corrección de los datos ingresados y del código generado.</li>
+                    <li><strong>Perfil Monotónico:</strong> Para el G71 Tipo I (el más común para desbaste exterior/interior longitudinal), el perfil definido entre P y Q debe ser monotónico en el eje Z (es decir, Z siempre debe aumentar o siempre disminuir, no puede ir y volver). La herramienta no valida esto explícitamente.</li>
+                    <li><strong>Sobremateriales (U, W):</strong> Recuerda que el sobrematerial U en la segunda línea de G71 es un valor diametral para el eje X. El W es para el eje Z y es un valor directo.</li>
+                    <li><strong>Simulación:</strong> ¡SIEMPRE! simula el código generado en un software de simulación CNC o en el modo gráfico de tu máquina antes de ejecutarlo en una pieza real. Esto ayuda a prevenir colisiones y errores costosos.</li>
+                    <li><strong>Adaptación al Control:</strong> Este generador está pensado para sintaxis Fanuc estándar. Algunos controles pueden tener ligeras variaciones o parámetros adicionales. Consulta siempre el manual de programación de tu máquina.</li>
+                </ul>
+                <p>¡Esperamos que esta herramienta te sea de gran ayuda en tus proyectos de torneado CNC!</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Variables globales
+        let canvas, ctx;
+        let zoom = 5;
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+        let lastX, lastY;
+        
+        // Inicializar el canvas cuando se cargue la página
+        window.onload = function() {
+            canvas = document.getElementById('drawing-canvas');
+            ctx = canvas.getContext('2d');
+            updateDrawing();
+            
+            // Configurar eventos de arrastre para el canvas
+            canvas.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                lastX = e.clientX;
+                lastY = e.clientY;
+            });
+            
+            canvas.addEventListener('mousemove', function(e) {
+                if (isDragging) {
+                    const dx = e.clientX - lastX;
+                    const dy = e.clientY - lastY;
+                    offsetX += dx;
+                    offsetY += dy;
+                    lastX = e.clientX;
+                    lastY = e.clientY;
+                    updateDrawing();
+                }
+            });
+            
+            canvas.addEventListener('mouseup', function() {
+                isDragging = false;
+            });
+            
+            canvas.addEventListener('mouseleave', function() {
+                isDragging = false;
+            });
+            
+            // Configurar zoom con la rueda del mouse
+            canvas.addEventListener('wheel', function(e) {
+                e.preventDefault();
+                const zoomFactor = document.getElementById('zoomFactor');
+                const delta = e.deltaY > 0 ? -0.5 : 0.5;
+                zoomFactor.value = Math.max(1, Math.min(20, parseFloat(zoomFactor.value) + delta));
+                updateDrawing();
+            });
+        };
+
+        function openMainTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("main-tab-pane");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("main-tab-button");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+        
+        function openSubTab(evt, tabName) { // Renamed from openTab to openSubTab
+            // Oculta todos los contenidos de pestañas
+            const tabContents = document.getElementsByClassName('sub-tab-content'); // Use new class
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            
+            // Desactiva todas las pestañas
+            const tabs = document.getElementsByClassName('sub-tab'); // Use new class
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            
+            // Activa la pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active'); // Use evt passed to the function
+            
+            // Si es la pestaña de visualización, actualiza el dibujo
+            if (tabName === 'visualization') {
+                updateDrawing();
+            }
+        }
+        
+        function addRow() {
+            const table = document.getElementById('coordinatesTable').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+            const rowCount = table.rows.length;
+            
+            newRow.innerHTML = `
+                <td>${rowCount}</td> <!-- Corrected to use rowCount directly for 1-based index after insertion -->
+                <td><input type="number" class="coord-x" value="0.0" step="0.01" onchange="updateDrawing()"></td>
+                <td><input type="number" class="coord-z" value="0.0" step="0.01" onchange="updateDrawing()"></td>
+                <td><button onclick="removeRow(this)">Eliminar</button></td>
+            `;
+        }
+        
+        function removeRow(button) {
+            const row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+            updateRowNumbers();
+            updateDrawing();
+        }
+        
+        function updateRowNumbers() {
+            const table = document.getElementById('coordinatesTable').getElementsByTagName('tbody')[0];
+            const rows = table.rows;
+            
+            for (let i = 0; i < rows.length; i++) {
+                rows[i].cells[0].textContent = i + 1;
+            }
+        }
+        
+        function getCoordinates() {
+            const coordinates = [];
+            const xInputs = document.getElementsByClassName('coord-x');
+            const zInputs = document.getElementsByClassName('coord-z');
+            
+            for (let i = 0; i < xInputs.length; i++) {
+                coordinates.push({
+                    x: parseFloat(xInputs[i].value) || 0,
+                    z: parseFloat(zInputs[i].value) || 0
+                });
+            }
+            
+            return coordinates;
+        }
+        
+        function updateDrawing() {
+            if (!ctx) return;
+            
+            const coordinates = getCoordinates();
+            if (coordinates.length < 2) return;
+            
+            zoom = parseFloat(document.getElementById('zoomFactor').value) || 5;
+            const showDimensions = document.getElementById('showDimensions').checked;
+            const showAxis = document.getElementById('showAxis').checked;
+            
+            // Limpiar el canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Configurar el contexto de dibujo
+            ctx.save();
+            ctx.translate(canvas.width / 2 + offsetX, canvas.height / 2 + offsetY);
+            ctx.scale(zoom, zoom);
+            
+            // Dibujar ejes si está habilitado
+            if (showAxis) {
+                ctx.strokeStyle = '#aaa';
+                ctx.lineWidth = 1 / zoom;
+                ctx.beginPath();
+                // Eje Z (horizontal)
+                ctx.moveTo(-canvas.width, 0);
+                ctx.lineTo(canvas.width, 0);
+                // Eje X (vertical)
+                ctx.moveTo(0, -canvas.height);
+                ctx.lineTo(0, canvas.height);
+                ctx.stroke();
+                
+                // Flechas de los ejes
+                ctx.fillStyle = '#aaa';
+                // Flecha eje Z
+                ctx.beginPath();
+                ctx.moveTo(canvas.width - 10/zoom, 0);
+                ctx.lineTo(canvas.width - 20/zoom, -5/zoom);
+                ctx.lineTo(canvas.width - 20/zoom, 5/zoom);
+                ctx.closePath();
+                ctx.fill();
+                // Flecha eje X
+                ctx.beginPath();
+                ctx.moveTo(0, -canvas.height + 10/zoom);
+                ctx.lineTo(-5/zoom, -canvas.height + 20/zoom);
+                ctx.lineTo(5/zoom, -canvas.height + 20/zoom);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Etiquetas de los ejes
+                ctx.font = `${12/zoom}px Arial`;
+                ctx.fillText('Z', canvas.width - 25/zoom, 15/zoom);
+                ctx.fillText('X', 15/zoom, -canvas.height + 25/zoom);
+            }
+            
+            // Dibujar el perfil de la pieza
+            ctx.strokeStyle = '#3498db';
+            ctx.fillStyle = 'rgba(52, 152, 219, 0.2)';
+            ctx.lineWidth = 2 / zoom;
+            
+            ctx.beginPath();
+            // Comenzar desde el primer punto (X máximo, Z mínimo)
+            ctx.moveTo(coordinates[0].z, -coordinates[0].x / 2);
+            
+            // Dibujar línea a cada punto subsiguiente
+            for (let i = 1; i < coordinates.length; i++) {
+                ctx.lineTo(coordinates[i].z, -coordinates[i].x / 2);
+            }
+            
+            // Completar el perfil para formar un área cerrada
+            ctx.lineTo(coordinates[coordinates.length - 1].z, 0);
+            ctx.lineTo(coordinates[0].z, 0);
+            ctx.closePath();
+            
+            ctx.fill();
+            ctx.stroke();
+            
+            // Dibujar puntos de control
+            ctx.fillStyle = '#e74c3c';
+            for (let i = 0; i < coordinates.length; i++) {
+                ctx.beginPath();
+                ctx.arc(coordinates[i].z, -coordinates[i].x / 2, 3/zoom, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Mostrar etiquetas de coordenadas si está habilitado
+                if (showDimensions) {
+                    ctx.font = `${10/zoom}px Arial`;
+                    ctx.fillStyle = '#2c3e50';
+                    ctx.fillText(`P${i+1} (X${coordinates[i].x}, Z${coordinates[i].z})`, 
+                                coordinates[i].z + 5/zoom, -coordinates[i].x / 2 - 5/zoom);
+                    ctx.fillStyle = '#e74c3c';
+                }
+            }
+            
+            // Dibujar línea central (eje de rotación)
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5/zoom, 5/zoom]);
+            ctx.beginPath();
+            ctx.moveTo(coordinates[0].z, 0);
+            ctx.lineTo(coordinates[coordinates.length - 1].z, 0);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            
+            ctx.restore();
+        }
+        
+        function generateCode() {
+            // Obtener parámetros básicos
+            const programNumber = document.getElementById('programNumber').value;
+            const spindleSpeed = document.getElementById('spindleSpeed').value;
+            const feedRate = document.getElementById('feedRate').value;
+            const depthOfCut = document.getElementById('depthOfCut').value;
+            const retractDistance = document.getElementById('retractDistance').value;
+            const stockAllowanceX = document.getElementById('stockAllowanceX').value; // For X
+            const stockAllowanceZ = document.getElementById('stockAllowanceZ').value; // For Z
+            const toolNumber = document.getElementById('toolNumber').value;
+            const toolOffset = document.getElementById('toolOffset').value;
+            const startX = document.getElementById('startX').value;
+            const startZ = document.getElementById('startZ').value;
+            
+            // Obtener coordenadas del perfil
+            const coordinates = getCoordinates();
+            
+            // Validar que haya al menos 2 puntos
+            if (coordinates.length < 2) {
+                alert("Debes ingresar al menos 2 puntos para definir el perfil.");
+                return;
+            }
+
+            // Validación para G71 Tipo I: Perfil monotónico en Z
+            // Asumimos que el mecanizado es hacia Z negativas (lo más común)
+            let zEsMonotonico = true;
+            if (coordinates.length > 1) {
+                const direccionZInicial = coordinates[1].z - coordinates[0].z;
+                // Si el primer segmento no se mueve en Z o se mueve en Z positiva (para un perfil que debería ir a Z negativas),
+                // podría ser un problema, pero la validación principal es que no cambie de dirección.
+                // Para un G71 Tipo I estricto, Z debería ser siempre decreciente (o no creciente).
+
+                for (let i = 1; i < coordinates.length - 1; i++) {
+                    // Para un perfil que va hacia Z negativas, cada Z[i+1] debe ser <= Z[i]
+                    if (coordinates[i+1].z > coordinates[i].z) {
+                        zEsMonotonico = false;
+                        break;
+                    }
+                }
+            }
+            if (!zEsMonotonico) {
+                alert("Error: El perfil para G71 Tipo I no es monotónico en el eje Z.\nLa coordenada Z debe ser continuamente decreciente (o no creciente) a lo largo del perfil.");
+                return;
+            }
+            
+            // Generar el código G
+            let gCode = `O${programNumber} (PROGRAMA DE TORNEADO CON CICLO G71)\n`;
+            gCode += `(GENERADO AUTOMATICAMENTE)\n\n`;
+            gCode += `N10 G50 S1500 (LIMITE DE VELOCIDAD DE HUSILLO)\n`;
+            gCode += `N20 G00 G40 G99 T0${toolNumber}0${toolOffset}\n`; // G97 removed, G96 will be used
+            gCode += `N30 G96 S${spindleSpeed} M03 (VELOCIDAD CONSTANTE Y GIRO HORARIO)\n`;
+            gCode += `N40 G00 X${startX} Z${startZ} M08 (POSICION INICIAL Y REFRIGERANTE ON)\n\n`;
+            gCode += `(CICLO DE DESBASTE G71)\n`;
+            gCode += `N50 G71 U${depthOfCut} R${retractDistance}\n`;
+            gCode += `N60 G71 P70 Q${70 + (coordinates.length -1) * 10} U${stockAllowanceX} W${stockAllowanceZ} F${feedRate}\n\n`;
+            gCode += `(PERFIL DE LA PIEZA)\n`;
+            
+            // Agregar puntos del perfil
+            coordinates.forEach((point, index) => {
+                const lineNumber = 70 + index * 10;
+                gCode += `N${lineNumber} G01 X${point.x} Z${point.z}\n`;
+            });
+            
+            gCode += `\n(ACABADO)\n`;
+            // The Q in G70 should be the last line of the profile.
+            gCode += `N${70 + coordinates.length * 10} G70 P70 Q${70 + (coordinates.length - 1) * 10} F${(parseFloat(feedRate) / 2).toFixed(3)} S${parseFloat(spindleSpeed) + 200}\n\n`; // Example: finishing feed and speed
+            gCode += `(FIN DEL PROGRAMA)\n`;
+            gCode += `N${80 + coordinates.length * 10} G00 X100.0 Z100.0 M09 (RETIRAR HERRAMIENTA)\n`;
+            gCode += `N${90 + coordinates.length * 10} M05 (PARAR HUSILLO)\n`;
+            gCode += `N${100 + coordinates.length * 10} M30 (FIN DEL PROGRAMA)\n`;
+            gCode += `% (FIN DE ARCHIVO)`;
+            
+            // Mostrar el código generado
+            document.getElementById('generatedCode').textContent = gCode;
+            
+            // Cambiar a la pestaña de código
+            openSubTab(event, 'code'); // Changed to openSubTab, ensure event is passed if needed or handle null
+        }
+        
+        function copyCode() {
+            const codeElement = document.getElementById('generatedCode');
+            const range = document.createRange();
+            range.selectNode(codeElement);
+            window.getSelection().removeAllRanges();
+            window.getSelection().addRange(range);
+            document.execCommand('copy');
+            window.getSelection().removeAllRanges();
+            
+            alert("¡Código copiado al portapapeles!");
+        }
+
+        // Activar la primera pestaña principal por defecto
+        document.addEventListener("DOMContentLoaded", function() {
+           document.querySelector('.main-tab-button.active').click();
+        });
+    </script>
+
+</body></html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mecanizado Facil - Editor CNC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CodeMirror CDN para editor avanzado -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/lint/lint.css">
+    <style>
+        body {
+            background: #23272e;
+            color: #eee;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #1a1d22;
+            padding: 18px 0 10px 0;
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            color: #4fc3f7;
+            box-shadow: 0 2px 8px #0004;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto; /* Ajustado el margen inferior para dar espacio al footer */
+            background: #2d323c;
+            border-radius: 12px;
+            box-shadow: 0 4px 24px #0006;
+            padding: 24px 18px 18px 18px;
+            flex-grow: 1; /* Permite que el container crezca y empuje el footer hacia abajo */
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 14px;
+            justify-content: flex-start;
+        }
+        .toolbar button, .toolbar label {
+            background: #4fc3f7;
+            color: #222;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 18px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .toolbar button:hover, .toolbar label:hover {
+            background: #039be5;
+            color: #fff;
+        }
+        .toolbar input[type="file"] {
+            display: none;
+        }
+        #editor {
+            height: 420px;
+            border-radius: 7px;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .CodeMirror { /* Asegura que el editor CodeMirror tome la altura definida */
+            height: 420px;
+            border-radius: 7px;
+            font-size: 1.1em;
+        }
+        .result {
+            background: #1a1d22;
+            color: #ffb74d;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            min-height: 28px;
+            font-size: 1em;
+            white-space: pre-wrap;
+        }
+        .cnc-reference-container {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1d22;
+            border-radius: 8px;
+        }
+        .cnc-reference-container h3 {
+            margin-top: 0;
+            color: #4fc3f7;
+        }
+        #cncCodeReferenceSelect {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            background-color: #2d323c;
+            color: #eee;
+            border: 1px solid #444;
+        }
+        #cncCodeDetails { /* Reutiliza y extiende estilos de .result */
+            min-height: 60px; /* Más altura para la descripción */
+            background-color: #23272e; /* Un fondo ligeramente diferente para distinguir */
+            color: #ccc; /* Un color de texto más suave para los detalles */
+        }
+        #cncCodeDetails code {
+            background-color: #2d323c;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+        }
+        footer {
+            background: #1a1d22;
+            color: #aaa;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: auto; /* Empuja el footer al final si el contenido es corto */
+            font-size: 0.9em;
+        }
+        @media (max-width: 700px) {
+            .container { 
+                max-width: 99vw; 
+                padding: 15px 2vw; /* Aumentado padding para mejor espaciado */
+                margin: 15px auto; 
+            }
+            #editor, .CodeMirror { 
+                height: 300px; /* Un poco más de altura en móvil */
+                font-size: 1em; 
+            }
+            header {
+                font-size: 1.5em;
+                padding: 15px 0 8px 0;
+            }
+            .toolbar button, .toolbar label {
+                padding: 7px 12px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Mecanizado Facil - Editor de Programas CNC
+    </header>
+    <div class="container">
+        <div class="toolbar">
+            <label>
+                Abrir archivo
+                <input type="file" id="openFile" accept=".nc,.gcode,.txt">
+            </label>
+            <button onclick="saveFile()">Guardar archivo</button>
+            <!-- Botón "Analizar y corregir" fue eliminado en la iteración anterior -->
+            <button onclick="clearEditor()">Limpiar</button>
+            <button onclick="insertTemplate()">Insertar plantilla</button>
+        </div>
+        <textarea id="editor"></textarea>
+        <div class="result" id="result"></div>
+
+        <div class="cnc-reference-container">
+            <h3>Referencia Rápida de Códigos CNC</h3>
+            <select id="cncCodeReferenceSelect">
+                <option value="">-- Seleccione un código --</option>
+            </select>
+            <div id="cncCodeDetails" class="result">
+                Seleccione un código de la lista para ver su descripción y estructura.
+            </div>
+        </div>
+    </div>
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/gfm/gfm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/clike/clike.min.js"></script>
+    <!-- Los siguientes modos no son estrictamente necesarios para G-code, pero se pueden mantener si se planea usarlos -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/xml/xml.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/lint/lint.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/hint/show-hint.min.css">
+    <script>
+        // Definir comandos G y M para autocompletado
+        const gcodeKeywords = [
+            "G00", "G01", "G02", "G03", "G04", "G17", "G18", "G19", "G20", "G21", "G28", "G40", "G41", "G42", "G43", "G49", "G54", "G55", "G56", "G57", "G58", "G59", "G80", "G81", "G82", "G83", "G84", "G85", "G86", "G87", "G88", "G89", "G90", "G91", "G92", "G94", "G95", "G96", "G97", "G98", "G99",
+            "M00", "M01", "M02", "M03", "M04", "M05", "M06", "M08", "M09", "M10", "M11", "M13", "M19", "M30", "M60",
+            "X", "Y", "Z", "A", "B", "C", "F", "S", "T", "R", "P", "Q", "I", "J", "K", "L", "D", "H"
+        ];
+
+        const cncCodeDatabase = [
+            // G-Codes
+            { code: "G00", name: "Posicionamiento Rápido", description: "Mueve los ejes a la máxima velocidad posible a una coordenada específica. No se usa para cortar.", structure: "G00 X_ Y_ Z_ A_ B_ C_" },
+            { code: "G01", name: "Interpolación Lineal", description: "Mueve los ejes en línea recta a una velocidad de avance (F) programada. Se usa para cortar.", structure: "G01 X_ Y_ Z_ A_ B_ C_ F_" },
+            { code: "G02", name: "Interpolación Circular Horaria", description: "Mueve los ejes en un arco circular en sentido horario.", structure: "G02 X_ Y_ Z_ I_ J_ K_ (o R_) F_" },
+            { code: "G03", name: "Interpolación Circular Antihoraria", description: "Mueve los ejes en un arco circular en sentido antihorario.", structure: "G03 X_ Y_ Z_ I_ J_ K_ (o R_) F_" },
+            { code: "G04", name: "Temporización (Dwell)", description: "Detiene el movimiento de los ejes por un período de tiempo especificado (P o X).", structure: "G04 P_ (milisegundos) o X_ (segundos)" },
+            { code: "G10", name: "Entrada de Datos Programable / Ajuste de Offset", description: "Permite modificar offsets de herramienta, coordenadas de trabajo, etc., desde el programa.", structure: "G10 L_ P_ R_ (X_ Y_ Z_...)" },
+            { code: "G15", name: "Cancelar Comando de Coordenadas Polares", description: "Cancela el modo de coordenadas polares (G16).", structure: "G15" },
+            { code: "G16", name: "Comando de Coordenadas Polares", description: "Activa el modo de programación en coordenadas polares.", structure: "G16 X_ Y_ (Radio, Ángulo)" },
+            { code: "G17", name: "Selección de Plano XY", description: "Establece el plano de trabajo XY para interpolación circular y compensación de herramienta.", structure: "G17" },
+            { code: "G18", name: "Selección de Plano XZ", description: "Establece el plano de trabajo XZ para interpolación circular y compensación de herramienta.", structure: "G18" },
+            { code: "G19", name: "Selección de Plano YZ", description: "Establece el plano de trabajo YZ para interpolación circular y compensación de herramienta.", structure: "G19" },
+            { code: "G20", name: "Programación en Pulgadas", description: "Establece las unidades del programa a pulgadas.", structure: "G20" },
+            { code: "G21", name: "Programación en Milímetros", description: "Establece las unidades del programa a milímetros.", structure: "G21" },
+            { code: "G28", name: "Retorno a Cero Máquina", description: "Envía los ejes especificados (o todos si no se especifica) a su posición de cero máquina.", structure: "G28 X_ Y_ Z_" },
+            { code: "G30", name: "Retorno al 2º, 3º o 4º Punto de Referencia", description: "Mueve los ejes a un punto de referencia secundario predefinido.", structure: "G30 P_ X_ Y_ Z_" },
+            { code: "G31", name: "Función de Salto (Sonda)", description: "Mueve el eje hasta que se recibe una señal de una sonda, luego almacena la posición.", structure: "G31 X_ Y_ Z_ F_" },
+            { code: "G32", name: "Roscado (Torno)", description: "Realiza una operación de roscado en un torno, sincronizado con el husillo.", structure: "G32 Z_ F_ (o E_ para paso de rosca)" },
+            { code: "G40", name: "Cancelar Compensación de Radio de Herramienta", description: "Cancela la compensación del radio de la herramienta (G41/G42).", structure: "G40" },
+            { code: "G41", name: "Compensación de Radio de Herramienta a la Izquierda", description: "Aplica compensación del radio de la herramienta a la izquierda de la trayectoria programada.", structure: "G41 D_ (número de offset)" },
+            { code: "G42", name: "Compensación de Radio de Herramienta a la Derecha", description: "Aplica compensación del radio de la herramienta a la derecha de la trayectoria programada.", structure: "G42 D_ (número de offset)" },
+            { code: "G43", name: "Compensación de Longitud de Herramienta Positiva", description: "Aplica compensación de longitud de herramienta.", structure: "G43 H_ (número de offset) Z_" },
+            { code: "G44", name: "Compensación de Longitud de Herramienta Negativa", description: "Aplica compensación de longitud de herramienta en dirección negativa.", structure: "G44 H_ (número de offset) Z_" },
+            { code: "G49", name: "Cancelar Compensación de Longitud de Herramienta", description: "Cancela la compensación de longitud de herramienta (G43/G44).", structure: "G49" },
+            { code: "G50", name: "Ajuste Sistema Coordenadas / Límite Vel. Husillo (Torno)", description: "En tornos, define el sistema de coordenadas o limita la velocidad máxima del husillo.", structure: "G50 S_ (Torno) o G50 X_ Z_ (Torno)" },
+            { code: "G52", name: "Ajuste de Sistema de Coordenadas Local", description: "Define un sistema de coordenadas local temporal relativo al sistema de coordenadas de trabajo activo.", structure: "G52 X_ Y_ Z_" },
+            { code: "G53", name: "Movimiento en Sistema de Coordenadas de Máquina", description: "Realiza un movimiento en el sistema de coordenadas de la máquina, ignorando los offsets de trabajo.", structure: "G53 G00 (o G01) X_ Y_ Z_" },
+            { code: "G54", name: "Selección de Sistema de Coordenadas de Trabajo 1", description: "Activa el primer sistema de coordenadas de trabajo.", structure: "G54" },
+            { code: "G55", name: "Selección de Sistema de Coordenadas de Trabajo 2", description: "Activa el segundo sistema de coordenadas de trabajo.", structure: "G55" },
+            { code: "G56", name: "Selección de Sistema de Coordenadas de Trabajo 3", description: "Activa el tercer sistema de coordenadas de trabajo.", structure: "G56" },
+            { code: "G57", name: "Selección de Sistema de Coordenadas de Trabajo 4", description: "Activa el cuarto sistema de coordenadas de trabajo.", structure: "G57" },
+            { code: "G58", name: "Selección de Sistema de Coordenadas de Trabajo 5", description: "Activa el quinto sistema de coordenadas de trabajo.", structure: "G58" },
+            { code: "G59", name: "Selección de Sistema de Coordenadas de Trabajo 6", description: "Activa el sexto sistema de coordenadas de trabajo.", structure: "G59" },
+            { code: "G65", name: "Llamada a Macro Personalizada (Simple)", description: "Ejecuta una subrutina de macro personalizada con paso de argumentos.", structure: "G65 P_ (argumentos...)" },
+            { code: "G66", name: "Llamada a Macro Personalizada (Modal)", description: "Ejecuta una subrutina de macro personalizada de forma modal después de cada movimiento.", structure: "G66 P_ (argumentos...)" },
+            { code: "G67", name: "Cancelar Llamada a Macro Modal", description: "Cancela la llamada a macro modal (G66).", structure: "G67" },
+            { code: "G68", name: "Rotación de Sistema de Coordenadas", description: "Rota el sistema de coordenadas programado alrededor de un punto y un ángulo.", structure: "G68 X_ Y_ R_ (Fresadora) o G68 A_ B_ R_ (Centro de mecanizado)" },
+            { code: "G69", name: "Cancelar Rotación de Sistema de Coordenadas", description: "Cancela la rotación del sistema de coordenadas (G68).", structure: "G69" },
+            { code: "G70", name: "Ciclo de Acabado (Torno)", description: "Utilizado después de G71, G72 o G73 para realizar una pasada de acabado siguiendo el perfil definido.", structure: "G70 P_ Q_" },
+            { code: "G71", name: "Ciclo de Desbaste Longitudinal (Torno)", description: "Realiza un ciclo de desbaste en la dirección del eje Z.", structure: "G71 U_ R_ ; G71 P_ Q_ U_ W_ F_ S_ T_" },
+            { code: "G72", name: "Ciclo de Desbaste Transversal (Torno)", description: "Realiza un ciclo de desbaste en la dirección del eje X.", structure: "G72 W_ R_ ; G72 P_ Q_ U_ W_ F_ S_ T_" },
+            { code: "G73", name: "Ciclo de Taladrado con Rotura de Viruta (Picoteo Rápido) / Repetición de Patrón (Torno)", description: "Ciclo de taladrado con retracciones cortas para romper viruta (Fresadora). Ciclo de repetición de patrón (Torno).", structure: "G73 X_ Y_ Z_ R_ Q_ F_ K_ (Fresadora) / G73 U_ W_ R_ ; G73 P_ Q_ U_ W_ F_ S_ T_ (Torno)" },
+            { code: "G74", name: "Ciclo de Roscado Izquierdo / Taladrado Profundo Frontal (Torno)", description: "Ciclo de roscado a izquierdas (Fresadora). Ciclo de taladrado profundo en la cara (Torno).", structure: "G74 X_ Y_ Z_ R_ P_ F_ K_ (Fresadora) / G74 R_ ; G74 Z_ Q_ F_ (Torno)" },
+            { code: "G76", name: "Ciclo de Roscado Múltiple (Torno) / Ciclo de Mandrinado Fino", description: "Realiza un ciclo de roscado con múltiples pasadas (Torno). Ciclo de mandrinado fino (Fresadora).", structure: "G76 P_ Q_ R_ ; G76 X_ Z_ R_ P_ Q_ F_ (Torno) / G76 X_ Y_ Z_ R_ Q_ P_ F_ K_ (Fresadora)" },
+            { code: "G80", name: "Cancelar Ciclo Fijo", description: "Cancela cualquier ciclo fijo activo (G81-G89).", structure: "G80" },
+            { code: "G81", name: "Ciclo Fijo de Taladrado", description: "Realiza un ciclo de taladrado simple.", structure: "G81 X_ Y_ Z_ R_ F_" },
+            { code: "G82", name: "Ciclo Fijo de Taladrado con Temporización", description: "Realiza un ciclo de taladrado con una temporización en el fondo del agujero.", structure: "G82 X_ Y_ Z_ R_ P_ F_" },
+            { code: "G83", name: "Ciclo Fijo de Taladrado Profundo (Picoteo)", description: "Realiza un ciclo de taladrado con retracciones para rotura de viruta.", structure: "G83 X_ Y_ Z_ R_ Q_ F_" },
+            { code: "G84", name: "Ciclo Fijo de Roscado (Derechas)", description: "Realiza un ciclo de roscado a derechas.", structure: "G84 X_ Y_ Z_ R_ P_ F_" },
+            { code: "G85", name: "Ciclo Fijo de Escariado", description: "Realiza un ciclo de escariado (entrada y salida con avance).", structure: "G85 X_ Y_ Z_ R_ F_" },
+            { code: "G86", name: "Ciclo Fijo de Mandrinado", description: "Realiza un ciclo de mandrinado con parada de husillo y retracción rápida.", structure: "G86 X_ Y_ Z_ R_ F_" },
+            { code: "G87", name: "Ciclo Fijo de Mandrinado Inverso", description: "Realiza un ciclo de mandrinado con desplazamiento y retracción.", structure: "G87 X_ Y_ Z_ R_ Q_ P_ F_" },
+            { code: "G88", name: "Ciclo Fijo de Mandrinado con Temporización y Parada Manual", description: "Mandrinado, temporización, parada de husillo, retracción manual.", structure: "G88 X_ Y_ Z_ R_ P_ F_" },
+            { code: "G89", name: "Ciclo Fijo de Mandrinado con Temporización (Entrada y Salida con Avance)", description: "Mandrinado con temporización, entrada y salida con avance.", structure: "G89 X_ Y_ Z_ R_ P_ F_" },
+            { code: "G90", name: "Programación Absoluta", description: "Las coordenadas se interpretan como posiciones absolutas respecto al origen del sistema de coordenadas activo.", structure: "G90" },
+            { code: "G91", name: "Programación Incremental", description: "Las coordenadas se interpretan como distancias relativas desde el punto anterior.", structure: "G91" },
+            { code: "G92", name: "Ciclo de Roscado (Torno) / Preajuste Sist. Coordenadas", description: "Ciclo de roscado simple (Torno). Establece un nuevo origen para el sistema de coordenadas actual (Fresadora).", structure: "G92 X_ Z_ F_ (Torno) / G92 X_ Y_ Z_ (Fresadora)" },
+            { code: "G94", name: "Avance por Minuto", description: "Establece el modo de avance a unidades por minuto (mm/min o inch/min).", structure: "G94" },
+            { code: "G95", name: "Avance por Revolución", description: "Establece el modo de avance a unidades por revolución del husillo (mm/rev o inch/rev).", structure: "G95" },
+            { code: "G96", name: "Control de Velocidad de Corte Constante (Torno)", description: "Mantiene constante la velocidad de corte superficial ajustando las RPM del husillo.", structure: "G96 S_ D_" },
+            { code: "G97", name: "Cancelar Control de Velocidad de Corte Constante / RPM Fijas", description: "El husillo gira a las RPM programadas con S.", structure: "G97 S_" },
+            { code: "G98", name: "Retorno al Plano Inicial en Ciclos Fijos", description: "En ciclos fijos, la herramienta retorna al plano Z inicial después de la operación.", structure: "G98" },
+            { code: "G99", name: "Retorno al Plano R en Ciclos Fijos", description: "En ciclos fijos, la herramienta retorna al plano R (retracción) después de la operación.", structure: "G99" },
+            // M-Codes
+            { code: "M00", name: "Parada de Programa", description: "Detiene la ejecución del programa y el husillo. El operario debe reanudar manualmente.", structure: "M00" },
+            { code: "M01", name: "Parada Opcional", description: "Detiene el programa si el interruptor de parada opcional está activado en la máquina.", structure: "M01" },
+            { code: "M02", name: "Fin de Programa", description: "Indica el final del programa principal. Puede resetear algunos estados de la máquina. No suele rebobinar.", structure: "M02" },
+            { code: "M03", name: "Arranque del Husillo (Sentido Horario)", description: "Inicia la rotación del husillo en sentido horario a la velocidad S programada.", structure: "M03 S_" },
+            { code: "M04", name: "Arranque del Husillo (Sentido Antihorario)", description: "Inicia la rotación del husillo en sentido antihorario a la velocidad S programada.", structure: "M04 S_" },
+            { code: "M05", name: "Parada del Husillo", description: "Detiene la rotación del husillo.", structure: "M05" },
+            { code: "M06", name: "Cambio de Herramienta", description: "Ejecuta un cambio de herramienta al número de herramienta T especificado.", structure: "M06 T_" },
+            { code: "M07", name: "Refrigerante por Neblina (Mist Coolant On)", description: "Activa el refrigerante por neblina.", structure: "M07" },
+            { code: "M08", name: "Refrigerante por Inundación (Flood Coolant On)", description: "Enciende el suministro de refrigerante por inundación.", structure: "M08" },
+            { code: "M09", name: "Desactivar Refrigerante", description: "Apaga todo el suministro de refrigerante (M07 y M08).", structure: "M09" },
+            { code: "M19", name: "Orientación del Husillo", description: "Orienta el husillo a una posición angular específica.", structure: "M19 P_ (o S_ o R_)" },
+            { code: "M29", name: "Modo de Roscado Rígido", description: "Activa el modo de roscado rígido, usado antes de un ciclo G84.", structure: "M29 S_" },
+            { code: "M30", name: "Fin de Programa y Reset", description: "Indica el final del programa, resetea la máquina y, a menudo, rebobina el programa al inicio.", structure: "M30" },
+            { code: "M98", name: "Llamada a Subprograma", description: "Llama a un subprograma (Oxxxx).", structure: "M98 P_ L_ (P: número de subprograma, L: número de repeticiones)" },
+            { code: "M99", name: "Fin de Subprograma / Retorno o Bucle", description: "Finaliza un subprograma y retorna al programa principal. Puede usarse para bucles.", structure: "M99 P_" }
+        ];
+
+        // Definir modo G-code para CodeMirror
+        CodeMirror.defineMode("gcode", function() {
+            const G_CODE_REGEX = /G\d{1,3}(\.\d+)?/i;
+            const M_CODE_REGEX = /M\d{1,3}/i;
+            const N_CODE_REGEX = /N\d+/i; // Line number
+            const O_CODE_REGEX = /O\d{1,4}/i; // Program number
+            const AXIS_LETTERS = /[XYZABC]/i;
+            const PARAM_LETTERS = /[FSTRPQIJLKDH]/i; // Parameters and Feed/Speed/Tool
+
+            return {
+                startState: function() { return { inComment: false }; },
+                token: function(stream, state) {
+                    if (state.inComment) {
+                        if (stream.skipTo(')')) {
+                            stream.next(); // Consume ')'
+                            state.inComment = false;
+                        } else {
+                            stream.skipToEnd(); // End of line, still in comment
+                        }
+                        return "comment";
+                    }
+
+                    if (stream.eatSpace()) return null;
+
+                    let ch = stream.peek();
+                    if (ch === '(') {
+                        stream.next(); // Consume '('
+                        state.inComment = true;
+                        if (stream.skipTo(')')) {
+                            stream.next(); // Consume ')'
+                            state.inComment = false;
+                        } else {
+                            stream.skipToEnd(); // No ')' on this line
+                        }
+                        return "comment";
+                    }
+
+                    if (stream.match('%')) return "keyword"; 
+                    
+                    if (stream.match(N_CODE_REGEX)) return "meta"; 
+                    if (stream.match(O_CODE_REGEX)) return "def";  
+
+                    if (stream.match(G_CODE_REGEX)) return "keyword"; 
+                    if (stream.match(M_CODE_REGEX)) return "keyword"; 
+
+                    if (stream.match(AXIS_LETTERS)) {
+                        return "variable-2"; // Style for X, Y, Z, A, B, C
+                    }
+                    if (stream.match(PARAM_LETTERS)) {
+                        return "attribute"; // Style for F, S, T, R, P, Q, etc.
+                    }
+                    if (stream.match(/[+\-]?\d+(\.\d+)?/)) {
+                        return "number";
+                    }
+                    
+                    stream.next(); // Unknown token
+                    return "error"; // Highlight unrecognized characters as errors
+                }
+            };
+        });
+        CodeMirror.defineMIME("text/x-gcode", "gcode");
+
+        // Inicializar CodeMirror
+        const editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+            lineNumbers: true,
+            mode: "gcode", // Usar el modo G-code personalizado
+            theme: "material-darker",
+            matchBrackets: true,
+            extraKeys: {
+                "Ctrl-Space": "autocomplete",
+                "Tab": function(cm) {
+                    cm.replaceSelection("    ", "end");
+                }
+            },
+            gutters: ["CodeMirror-linenumbers", "CodeMirror-lint-markers"],
+            lint: true,
+            hintOptions: {
+                hint: function(cm) {
+                    const cur = cm.getCursor();
+                    const token = cm.getTokenAt(cur);
+                    const start = token.start;
+                    const end = cur.ch;
+                    const word = token.string.slice(0, end - start).toUpperCase();
+                    const list = gcodeKeywords.filter(k => k.startsWith(word));
+                    return {
+                        list: list.length ? list : gcodeKeywords,
+                        from: CodeMirror.Pos(cur.line, start),
+                        to: CodeMirror.Pos(cur.line, end)
+                    };
+                }
+            }
+        });
+
+        // Linter para G-code
+        CodeMirror.registerHelper("lint", "gcode", function(text, options, cm) {
+            const found = [];
+            if (!text.trim()) return found; // No lint empty content
+
+            const lines = text.split('\n');
+            let programNumberDeclared = false;
+            let hasStartPercent = false;
+            let hasEndPercent = false;
+
+            // Check for % at the very start and end of the document (considering trimmed content)
+            const trimmedFullCode = text.trim();
+            if (trimmedFullCode.startsWith('%')) hasStartPercent = true;
+            if (trimmedFullCode.endsWith('%')) hasEndPercent = true;
+
+            lines.forEach((line, i) => {
+                const lineNumber = i;
+                const trimmedLine = line.trim();
+
+                // Check for program number Oxxxx (ignoring comments for this check)
+                const lineWithoutComment = trimmedLine.split('(')[0].trim();
+                if (/^O\d{1,4}/i.test(lineWithoutComment)) {
+                    programNumberDeclared = true;
+                }
+
+                // Check for balanced parentheses
+                let openParen = (trimmedLine.match(/\(/g) || []).length;
+                let closeParen = (trimmedLine.match(/\)/g) || []).length;
+                if (openParen !== closeParen) {
+                    found.push({
+                        from: CodeMirror.Pos(lineNumber, line.indexOf('(') !== -1 ? line.indexOf('(') : 0),
+                        to: CodeMirror.Pos(lineNumber, line.length),
+                        message: "Paréntesis desbalanceados.",
+                        severity: "error"
+                    });
+                }
+
+                // Check for unknown commands (G, M) and addresses
+                const codePart = trimmedLine.replace(/\(.*?\)/g, '').trim();
+                const tokens = codePart.split(/[\s]+/).filter(Boolean); 
+
+                tokens.forEach(token => {
+                    const upperToken = token.toUpperCase();
+                    if (/^[GM]\d+(\.\d+)?/i.test(upperToken)) {
+                        const mainCmd = upperToken.match(/^[GM]\d+/i)[0];
+                        if (!gcodeKeywords.some(kw => kw.toUpperCase() === mainCmd)) {
+                            let tokenStart = line.toUpperCase().indexOf(upperToken);
+                            if (tokenStart === -1) tokenStart = line.indexOf(token); // Fallback case-sensitive
+                            if (tokenStart === -1) tokenStart = 0; 
+                            found.push({
+                                from: CodeMirror.Pos(lineNumber, tokenStart),
+                                to: CodeMirror.Pos(lineNumber, tokenStart + token.length),
+                                message: `Comando desconocido o mal formado: "${token}"`,
+                                severity: "warning"
+                            });
+                        }
+                    }
+                });
+            });
+
+            if (!programNumberDeclared && !hasStartPercent) {
+                found.push({
+                    from: CodeMirror.Pos(0, 0),
+                    to: CodeMirror.Pos(0, lines[0] ? lines[0].length : 0),
+                    message: "Falta número de programa (Oxxxx) o símbolo % al inicio.",
+                    severity: "error"
+                });
+            }
+            if (!hasEndPercent && trimmedFullCode.length > 0) { // Only warn if there's content
+                let lastLineNum = lines.length - 1;
+                while(lastLineNum > 0 && !lines[lastLineNum].trim()) lastLineNum--; // Find last non-empty line
+                found.push({
+                    from: CodeMirror.Pos(lastLineNum, 0),
+                    to: CodeMirror.Pos(lastLineNum, lines[lastLineNum] ? lines[lastLineNum].length : 0),
+                    message: "Falta símbolo % al final del programa.",
+                    severity: "error"
+                });
+            }
+            // Simple check for very short programs (could be more sophisticated)
+            const actualCodeLines = lines.filter(l => l.trim() && !l.trim().startsWith('%') && !/^O\d{1,4}/i.test(l.trim()));
+            if (trimmedFullCode.length > 0 && actualCodeLines.length < 2 && programNumberDeclared) {
+                 found.push({
+                    from: CodeMirror.Pos(0,0), // Show at the beginning of the program
+                    to: CodeMirror.Pos(0,0),
+                    message: "El programa parece muy corto.",
+                    severity: "warning"
+                });
+            }
+            return found;
+        });
+
+        // Abrir archivo
+        document.getElementById('openFile').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                editor.setValue(evt.target.result);
+                document.getElementById('result').textContent = "Archivo cargado: " + file.name;
+            };
+            reader.readAsText(file);
+        });
+
+        // Guardar archivo
+        function saveFile() {
+            const text = editor.getValue();
+            const blob = new Blob([text], {type: "text/plain"});
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "programa_cnc.nc";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            document.getElementById('result').textContent = "Archivo guardado como programa_cnc.nc";
+        }
+
+        // Limpiar editor
+        function clearEditor() {
+            editor.setValue("");
+            document.getElementById('result').textContent = "Editor limpio.";
+        }
+
+        // Insertar plantilla básica
+        function insertTemplate() {
+            const plantilla = 
+`%
+O0001 (Ejemplo de programa CNC)
+G21 (Unidades en mm)
+G17 G90 G40 G49 G80
+G54
+M6 T1
+M3 S1200
+G00 X0 Y0 Z5
+G01 Z-5 F100
+G01 X50 Y0 F200
+G01 X50 Y50
+G01 X0 Y50
+G01 X0 Y0
+G00 Z5
+M05
+M30
+%`;
+            editor.setValue(plantilla);
+            document.getElementById('result').textContent = "Plantilla insertada.";
+        }
+
+        // La función analyzeCode ya no se invoca desde un botón,
+        // pero su lógica de corrección de % (si se quisiera reactivar) está aquí.
+        // Actualmente, el linter maneja la mayoría de estas validaciones en tiempo real.
+        function analyzeCodeAndApplyCorrections() { // Renombrada para claridad si se decide usarla
+            const code = editor.getValue();
+            const resultDiv = document.getElementById('result');
+            const lines = code.split('\n');
+            let errors = []; 
+            let warnings = []; 
+            let programNumberDeclared = false;
+            let hasStartPercent = false;
+            let hasEndPercent = false;
+
+            const trimmedFullCode = code.trim();
+            if (trimmedFullCode.startsWith('%')) hasStartPercent = true;
+            if (trimmedFullCode.endsWith('%')) hasEndPercent = true;
+
+            lines.forEach((line, idx) => {
+                const trimmedLine = line.trim();
+                if (!trimmedLine) return;
+                const lineWithoutComment = trimmedLine.split('(')[0].trim();
+                if (/^O\d{1,4}/i.test(lineWithoutComment)) programNumberDeclared = true;
+            });
+
+            if (!programNumberDeclared && !hasStartPercent) errors.push("Falta número de programa (Oxxxx) o símbolo % al inicio.");
+            if (!hasEndPercent && trimmedFullCode.length > 0) errors.push("Falta símbolo % al final del programa.");
+            
+            const actualCodeLines = lines.filter(l => l.trim() && !l.trim().startsWith('%') && !/^O\d{1,4}/i.test(l.trim()));
+            if (trimmedFullCode.length > 0 && actualCodeLines.length < 2 && programNumberDeclared) {
+                warnings.push("El programa parece muy corto.");
+            }
+
+            let msg = "";
+            if (errors.length === 0 && warnings.length === 0) {
+                msg = "Análisis completado. El linter en tiempo real te ayuda con más detalles.";
+            } else {
+                if (errors.length) msg += "Resumen de Errores:\n" + errors.join('\n') + "\n";
+                if (warnings.length) msg += "Resumen de Advertencias:\n" + warnings.join('\n');
+            }
+            resultDiv.textContent = msg;
+
+            // Corrección automática de formato (%)
+            let originalCodeForCorrection = editor.getValue();
+            let correctedCode = originalCodeForCorrection;
+            let modificationsMade = false;
+            const trimmedOriginalForCorrection = originalCodeForCorrection.trim();
+
+            if (trimmedOriginalForCorrection.length > 0) { 
+                let currentContent = originalCodeForCorrection;
+                if (!trimmedOriginalForCorrection.startsWith('%')) {
+                    currentContent = '%\n' + currentContent.trimLeft();
+                    modificationsMade = true;
+                }
+                if (!currentContent.trimRight().endsWith('%')) {
+                    currentContent = currentContent.trimRight() + '\n%';
+                    modificationsMade = true;
+                }
+                correctedCode = currentContent;
+            }
+
+            if (modificationsMade && correctedCode !== originalCodeForCorrection) {
+                const cursorPos = editor.getCursor(); 
+                editor.setValue(correctedCode);
+                editor.setCursor(cursorPos); 
+                resultDiv.textContent += "\nCorrecciones automáticas de formato (%) aplicadas.";
+            }
+        }
+
+        // Funciones para la referencia de códigos CNC
+        function populateCodeReference() {
+            const select = document.getElementById('cncCodeReferenceSelect');
+            const sortedCodes = [...cncCodeDatabase].sort((a, b) => a.code.localeCompare(b.code));
+
+            sortedCodes.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.code;
+                option.textContent = `${item.code} - ${item.name}`;
+                select.appendChild(option);
+            });
+        }
+
+        function displayCodeDetails() {
+            const select = document.getElementById('cncCodeReferenceSelect');
+            const detailsDiv = document.getElementById('cncCodeDetails');
+            const selectedCode = select.value;
+
+            if (selectedCode) {
+                const codeInfo = cncCodeDatabase.find(item => item.code === selectedCode);
+                if (codeInfo) {
+                    detailsDiv.innerHTML = `<strong>${codeInfo.code} - ${codeInfo.name}</strong><br><br><em>Descripción:</em> ${codeInfo.description}<br><br><em>Estructura Típica:</em> <code>${codeInfo.structure}</code>`;
+                } else {
+                    detailsDiv.textContent = "Información no encontrada para este código.";
+                }
+            } else {
+                detailsDiv.textContent = "Seleccione un código de la lista para ver su descripción y estructura.";
+            }
+        }
+
+        // Inicializar la referencia de códigos y otras funcionalidades al cargar la página
+        document.addEventListener('DOMContentLoaded', () => {
+            populateCodeReference();
+            document.getElementById('cncCodeReferenceSelect').addEventListener('change', displayCodeDetails);
+            
+            // Si decides que el botón "Analizar y corregir" debe existir y llamar a la función de corrección de %:
+            // const analyzeButton = document.getElementById('analyzeAndCorrectButton'); // Suponiendo que le das un ID al botón
+            // if (analyzeButton) {
+            //     analyzeButton.addEventListener('click', analyzeCodeAndApplyCorrections);
+            // }
+        });
+    </script>
+    <footer>
+        Rivas Isaac - Mecanizado Facil
+    </footer>
+</body>
+</html>

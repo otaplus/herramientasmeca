@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultor de Roscas para Taller</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 5px solid #e74c3c;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.2em;
+        }
+        .main-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        .selector-group, .calculator-section, .results-container {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            background-color: #fdfdfd;
+        }
+        .selector-group label, .calculator-section label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        select, input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+        input[type="button"] {
+            background-color: #3498db;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        input[type="button"]:hover {
+            background-color: #2980b9;
+        }
+        .calculator-section h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 2px solid #e74c3c;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #34495e;
+            color: white;
+            font-weight: bold;
+        }
+        td:first-child {
+            font-weight: 500;
+            background-color: #ecf0f1;
+        }
+        .hidden {
+            display: none;
+        }
+        .note {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #1abc9c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Consultor de Características de Roscas</h1>
+    </header>
+
+    <div class="main-container">
+        <div class="selector-group">
+            <label for="thread-type-selector">Seleccione el Tipo de Rosca:</label>
+            <select id="thread-type-selector">
+                <option value="">-- Elija un tipo --</option>
+                <option value="metric">Milimétrica (ISO)</option>
+                <option value="whitworth">Whitworth (BSW/BSF)</option>
+                <option value="npt">NPT (Tubería Cónica Americana)</option>
+            </select>
+        </div>
+
+        <div id="calculator-area" class="hidden">
+            <div class="calculator-section">
+                <h2 id="calculator-title">Calculadora de Rosca</h2>
+                
+                <label for="item-type-selector">Tipo de Elemento:</label>
+                <select id="item-type-selector">
+                    <option value="tornillo">Tornillo (Rosca Externa)</option>
+                    <option value="tuerca">Tuerca (Rosca Interna)</option>
+                </select>
+
+                <label for="thread-size-selector">Medida de la Rosca:</label>
+                <select id="thread-size-selector">
+                    <option value="">-- Seleccione medida --</option>
+                </select>
+
+                <div id="pitch-type-group" class="selector-group">
+                    <label for="pitch-type-selector">Tipo de Paso:</label>
+                    <select id="pitch-type-selector">
+                        <option value="coarse">Grueso (Estándar)</option>
+                        <option value="fine">Fino</option>
+                    </select>
+                </div>
+
+                <input type="button" value="Calcular Características" onclick="calculateAndDisplay()">
+            </div>
+        </div>
+
+        <div id="results-container" class="results-container hidden">
+            <h3>Características Técnicas (Dimensiones en milímetros)</h3>
+            <table id="results-table">
+                <thead>
+                    <tr>
+                        <th>Característica</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Tipo de Elemento</td><td id="res-item-type"></td></tr>
+                    <tr><td>Designación de Rosca</td><td id="res-thread-designation"></td></tr>
+                    <tr><td>Diámetro Nominal</td><td id="res-nominal-dia"></td></tr>
+                    <tr><td>Paso de Rosca</td><td id="res-pitch"></td></tr>
+                    <tr><td>Ángulo de Rosca</td><td id="res-angle"></td></tr>
+                    <tr><td>Altura del Filete (Profundidad Teórica)</td><td id="res-thread-height"></td></tr>
+                    <tr><td>Diámetro Máximo (Mayor)</td><td id="res-max-dia"></td></tr>
+                    <tr><td>Diámetro Mínimo (Menor/Núcleo/Taladro)</td><td id="res-min-dia"></td></tr>
+                    <tr><td>Diámetro de Flanco (Medio)</td><td id="res-pitch-dia"></td></tr>
+                    <tr id="npt-specific-row" class="hidden"><td>Conicidad (Taper)</td><td id="res-npt-taper">1° 47' (1 en 16 sobre diámetro)</td></tr>
+                </tbody>
+            </table>
+            <p class="note">Nota: Los valores son teóricos y se basan en perfiles básicos. Las tolerancias de fabricación pueden variar. Para NPT, los diámetros son en el extremo del tubo (rosca externa) o inicio del acople (rosca interna) y varían a lo largo de la conicidad. Todas las dimensiones numéricas se muestran en milímetros.</p>
+        </div>
+    </div>
+
+    <script>
+        const threadDatabase = {
+            metric: {
+                angle: 60,
+                unit: "mm", // Native unit for calculations
+                coarse: [
+                    { name: "M1.6", nominal: 1.6, pitch: 0.35 }, { name: "M2", nominal: 2, pitch: 0.4 },
+                    { name: "M2.5", nominal: 2.5, pitch: 0.45 }, { name: "M3", nominal: 3, pitch: 0.5 },
+                    { name: "M3.5", nominal: 3.5, pitch: 0.6 }, { name: "M4", nominal: 4, pitch: 0.7 },
+                    { name: "M5", nominal: 5, pitch: 0.8 }, { name: "M6", nominal: 6, pitch: 1.0 },
+                    { name: "M8", nominal: 8, pitch: 1.25 }, { name: "M10", nominal: 10, pitch: 1.5 },
+                    { name: "M12", nominal: 12, pitch: 1.75 }, { name: "M14", nominal: 14, pitch: 2.0 },
+                    { name: "M16", nominal: 16, pitch: 2.0 }, { name: "M18", nominal: 18, pitch: 2.5 },
+                    { name: "M20", nominal: 20, pitch: 2.5 }, { name: "M22", nominal: 22, pitch: 2.5 },
+                    { name: "M24", nominal: 24, pitch: 3.0 }, { name: "M27", nominal: 27, pitch: 3.0 },
+                    { name: "M30", nominal: 30, pitch: 3.5 }, { name: "M33", nominal: 33, pitch: 3.5 },
+                    { name: "M36", nominal: 36, pitch: 4.0 }, { name: "M39", nominal: 39, pitch: 4.0 },
+                    { name: "M42", nominal: 42, pitch: 4.5 }, { name: "M45", nominal: 45, pitch: 4.5 },
+                    { name: "M48", nominal: 48, pitch: 5.0 }, { name: "M50", nominal: 50, pitch: 5.0 }
+                ],
+                fine: [
+                    { name: "M8x1", nominal: 8, pitch: 1.0 }, { name: "M10x1", nominal: 10, pitch: 1.0 },
+                    { name: "M10x1.25", nominal: 10, pitch: 1.25 }, { name: "M12x1.25", nominal: 12, pitch: 1.25 },
+                    { name: "M12x1.5", nominal: 12, pitch: 1.5 }, { name: "M14x1.5", nominal: 14, pitch: 1.5 },
+                    { name: "M16x1.5", nominal: 16, pitch: 1.5 }, { name: "M18x1.5", nominal: 18, pitch: 1.5 },
+                    { name: "M20x1.5", nominal: 20, pitch: 1.5 }, { name: "M20x2", nominal: 20, pitch: 2.0 },
+                    { name: "M22x1.5", nominal: 22, pitch: 1.5 }, { name: "M24x2", nominal: 24, pitch: 2.0 },
+                    { name: "M27x2", nominal: 27, pitch: 2.0 }, { name: "M30x2", nominal: 30, pitch: 2.0 },
+                    { name: "M33x2", nominal: 33, pitch: 2.0 }, { name: "M36x3", nominal: 36, pitch: 3.0 },
+                    { name: "M39x3", nominal: 39, pitch: 3.0 }, { name: "M42x3", nominal: 42, pitch: 3.0 },
+                    { name: "M45x3", nominal: 45, pitch: 3.0 }, { name: "M48x3", nominal: 48, pitch: 3.0 },
+                    { name: "M50x3", nominal: 50, pitch: 3.0 }
+                ]
+            },
+            whitworth: {
+                angle: 55,
+                unit: "in", // Native unit for calculations
+                coarse: [ // BSW
+                    { name: "1/8\"", nominalDecimal: 0.125, tpi: 40 }, { name: "3/16\"", nominalDecimal: 0.1875, tpi: 24 },
+                    { name: "1/4\"", nominalDecimal: 0.25, tpi: 20 }, { name: "5/16\"", nominalDecimal: 0.3125, tpi: 18 },
+                    { name: "3/8\"", nominalDecimal: 0.375, tpi: 16 }, { name: "7/16\"", nominalDecimal: 0.4375, tpi: 14 },
+                    { name: "1/2\"", nominalDecimal: 0.5, tpi: 12 }, { name: "9/16\"", nominalDecimal: 0.5625, tpi: 12 },
+                    { name: "5/8\"", nominalDecimal: 0.625, tpi: 11 }, { name: "3/4\"", nominalDecimal: 0.75, tpi: 10 },
+                    { name: "7/8\"", nominalDecimal: 0.875, tpi: 9 }, { name: "1\"", nominalDecimal: 1.0, tpi: 8 },
+                    { name: "1 1/8\"", nominalDecimal: 1.125, tpi: 7 }, { name: "1 1/4\"", nominalDecimal: 1.25, tpi: 7 },
+                    { name: "1 3/8\"", nominalDecimal: 1.375, tpi: 6 }, { name: "1 1/2\"", nominalDecimal: 1.5, tpi: 6 },
+                    { name: "1 3/4\"", nominalDecimal: 1.75, tpi: 5 }, { name: "2\"", nominalDecimal: 2.0, tpi: 4.5 }
+                ],
+                fine: [ // BSF
+                    { name: "3/16\"", nominalDecimal: 0.1875, tpi: 32 }, { name: "1/4\"", nominalDecimal: 0.25, tpi: 26 },
+                    { name: "5/16\"", nominalDecimal: 0.3125, tpi: 22 }, { name: "3/8\"", nominalDecimal: 0.375, tpi: 20 },
+                    { name: "7/16\"", nominalDecimal: 0.4375, tpi: 18 }, { name: "1/2\"", nominalDecimal: 0.5, tpi: 16 },
+                    { name: "9/16\"", nominalDecimal: 0.5625, tpi: 16 }, { name: "5/8\"", nominalDecimal: 0.625, tpi: 14 },
+                    { name: "3/4\"", nominalDecimal: 0.75, tpi: 12 }, { name: "7/8\"", nominalDecimal: 0.875, tpi: 11 },
+                    { name: "1\"", nominalDecimal: 1.0, tpi: 10 }, { name: "1 1/8\"", nominalDecimal: 1.125, tpi: 9 },
+                    { name: "1 1/4\"", nominalDecimal: 1.25, tpi: 9 }, { name: "1 3/8\"", nominalDecimal: 1.375, tpi: 8 },
+                    { name: "1 1/2\"", nominalDecimal: 1.5, tpi: 8 }, { name: "1 3/4\"", nominalDecimal: 1.75, tpi: 7 },
+                    { name: "2\"", nominalDecimal: 2.0, tpi: 7 }
+                ]
+            },
+            npt: {
+                angle: 60,
+                unit: "in", // Native unit for calculations
+                taperAngleDeg: 1.7833, // 1 deg 47 min
+                coarse: [ 
+                    { name: "1/16\"", nps: "1/16", od_in: 0.3125, tpi: 27 },
+                    { name: "1/8\"", nps: "1/8", od_in: 0.405, tpi: 27 },
+                    { name: "1/4\"", nps: "1/4", od_in: 0.540, tpi: 18 },
+                    { name: "3/8\"", nps: "3/8", od_in: 0.675, tpi: 18 },
+                    { name: "1/2\"", nps: "1/2", od_in: 0.840, tpi: 14 },
+                    { name: "3/4\"", nps: "3/4", od_in: 1.050, tpi: 14 },
+                    { name: "1\"", nps: "1", od_in: 1.315, tpi: 11.5 },
+                    { name: "1 1/4\"", nps: "1 1/4", od_in: 1.660, tpi: 11.5 },
+                    { name: "1 1/2\"", nps: "1 1/2", od_in: 1.900, tpi: 11.5 },
+                    { name: "2\"", nps: "2", od_in: 2.375, tpi: 11.5 }
+                ],
+                fine: [] 
+            }
+        };
+
+        const mainThreadSelector = document.getElementById('thread-type-selector');
+        const calculatorArea = document.getElementById('calculator-area');
+        const calculatorTitle = document.getElementById('calculator-title');
+        const itemTypeSelector = document.getElementById('item-type-selector');
+        const threadSizeSelector = document.getElementById('thread-size-selector');
+        const pitchTypeGroup = document.getElementById('pitch-type-group');
+        const pitchTypeSelector = document.getElementById('pitch-type-selector');
+        const resultsContainer = document.getElementById('results-container');
+        const nptSpecificRow = document.getElementById('npt-specific-row');
+
+        mainThreadSelector.addEventListener('change', function() {
+            const selectedType = this.value;
+            resultsContainer.classList.add('hidden'); 
+            nptSpecificRow.classList.add('hidden');
+
+            if (selectedType) {
+                calculatorArea.classList.remove('hidden');
+                calculatorTitle.textContent = `Calculadora de Rosca ${this.options[this.selectedIndex].text}`;
+                
+                if (selectedType === 'npt') {
+                    pitchTypeGroup.classList.add('hidden');
+                } else {
+                    pitchTypeGroup.classList.remove('hidden');
+                }
+                populateThreadSizes(selectedType, pitchTypeSelector.value);
+            } else {
+                calculatorArea.classList.add('hidden');
+            }
+        });
+
+        pitchTypeSelector.addEventListener('change', function() {
+            const selectedThreadType = mainThreadSelector.value;
+            if (selectedThreadType) {
+                populateThreadSizes(selectedThreadType, this.value);
+            }
+        });
+
+        function populateThreadSizes(threadTypeKey, pitchTypeKey) {
+            threadSizeSelector.innerHTML = '<option value="">-- Seleccione medida --</option>'; 
+            const data = threadDatabase[threadTypeKey];
+            if (!data) return;
+
+            const sizes = data[pitchTypeKey] || data.coarse; 
+            
+            if (sizes && sizes.length > 0) {
+                sizes.forEach((size, index) => {
+                    const option = document.createElement('option');
+                    option.value = index; 
+                    option.textContent = size.name;
+                    threadSizeSelector.appendChild(option);
+                });
+            } else if (pitchTypeKey === 'fine' && data.fine && data.fine.length === 0) {
+                 const option = document.createElement('option');
+                 option.disabled = true;
+                 option.textContent = "No hay pasos finos definidos";
+                 threadSizeSelector.appendChild(option);
+            }
+        }
+
+        function calculateAndDisplay() {
+            const threadTypeKey = mainThreadSelector.value;
+            const itemType = itemTypeSelector.value;
+            const sizeIndex = threadSizeSelector.value;
+            let pitchTypeKey = pitchTypeSelector.value;
+
+            if (!threadTypeKey || sizeIndex === "") {
+                alert("Por favor, seleccione todas las opciones necesarias.");
+                return;
+            }
+
+            if (threadTypeKey === 'npt') {
+                pitchTypeKey = 'coarse'; 
+            }
+
+            const threadSystem = threadDatabase[threadTypeKey];
+            const selectedSizeData = threadSystem[pitchTypeKey][sizeIndex];
+
+            if (!selectedSizeData) {
+                alert("Datos de rosca no encontrados. Verifique las selecciones.");
+                return;
+            }
+
+            let nominalDiameter, pitch, angle, nativeUnit, threadDesignation;
+            let calculated = {};
+
+            angle = threadSystem.angle;
+            nativeUnit = threadSystem.unit; // Unit for calculation (mm or in)
+            threadDesignation = selectedSizeData.name; // Keep original designation
+
+            if (threadTypeKey === 'metric') {
+                nominalDiameter = selectedSizeData.nominal; // mm
+                pitch = selectedSizeData.pitch; // mm
+
+                const H = (Math.sqrt(3) / 2) * pitch;
+                calculated.threadHeight = (5 / 8) * H;
+                calculated.pitchDiameter = nominalDiameter - 2 * (3 / 8) * H;
+
+                if (itemType === 'tornillo') { 
+                    calculated.itemTypeName = "Tornillo";
+                    calculated.maxDiameter = nominalDiameter; 
+                    calculated.minDiameter = nominalDiameter - 2 * (5 / 8) * H;
+                } else { 
+                    calculated.itemTypeName = "Tuerca";
+                    calculated.maxDiameter = nominalDiameter; 
+                    calculated.minDiameter = nominalDiameter - 2 * (5 / 8) * H;
+                }
+            } else if (threadTypeKey === 'whitworth') {
+                nominalDiameter = selectedSizeData.nominalDecimal; // inches
+                pitch = 1 / selectedSizeData.tpi; // inches
+
+                calculated.threadHeight = 0.640327 * pitch;
+                calculated.pitchDiameter = nominalDiameter - calculated.threadHeight;
+
+                if (itemType === 'tornillo') {
+                    calculated.itemTypeName = "Tornillo";
+                    calculated.maxDiameter = nominalDiameter; 
+                    calculated.minDiameter = nominalDiameter - 2 * calculated.threadHeight;
+                } else { 
+                    calculated.itemTypeName = "Tuerca";
+                    calculated.maxDiameter = nominalDiameter; 
+                    calculated.minDiameter = nominalDiameter - 2 * calculated.threadHeight;
+                }
+            } else if (threadTypeKey === 'npt') {
+                nominalDiameter = selectedSizeData.od_in; // inches
+                pitch = 1 / selectedSizeData.tpi; // inches
+
+                calculated.threadHeight = 0.8 * pitch;
+                
+                if (itemType === 'tornillo') { 
+                    calculated.itemTypeName = "Tubo (Rosca Externa NPT)";
+                    calculated.maxDiameter = nominalDiameter; 
+                    calculated.minDiameter = nominalDiameter - 2 * calculated.threadHeight; 
+                    calculated.pitchDiameter = nominalDiameter - calculated.threadHeight; 
+                } else { 
+                    calculated.itemTypeName = "Accesorio (Rosca Interna NPT)";
+                    calculated.maxDiameter = nominalDiameter; 
+                    calculated.minDiameter = nominalDiameter - 2 * calculated.threadHeight; 
+                    calculated.pitchDiameter = nominalDiameter - calculated.threadHeight; 
+                }
+                nptSpecificRow.classList.remove('hidden');
+            }
+
+            // Conversion to millimeters for display if native unit is inches
+            const displayUnit = "mm";
+            const inchToMmFactor = 25.4;
+            
+            let nominalDiameter_display = (nativeUnit === "in") ? nominalDiameter * inchToMmFactor : nominalDiameter;
+            let pitch_display = (nativeUnit === "in") ? pitch * inchToMmFactor : pitch;
+            let threadHeight_display = (nativeUnit === "in") ? calculated.threadHeight * inchToMmFactor : calculated.threadHeight;
+            let maxDiameter_display = (nativeUnit === "in") ? calculated.maxDiameter * inchToMmFactor : calculated.maxDiameter;
+            let minDiameter_display = (nativeUnit === "in") ? calculated.minDiameter * inchToMmFactor : calculated.minDiameter;
+            let pitchDiameter_display = (nativeUnit === "in") ? calculated.pitchDiameter * inchToMmFactor : calculated.pitchDiameter;
+
+            // Display results
+            document.getElementById('res-item-type').textContent = calculated.itemTypeName || itemType;
+            document.getElementById('res-thread-designation').textContent = threadDesignation; // Original designation
+            document.getElementById('res-nominal-dia').textContent = `${nominalDiameter_display.toFixed(2)} ${displayUnit}`;
+            document.getElementById('res-pitch').textContent = `${pitch_display.toFixed(3)} ${displayUnit}` + (selectedSizeData.tpi ? ` (${selectedSizeData.tpi} TPI)` : "");
+            document.getElementById('res-angle').textContent = `${angle}°`;
+            document.getElementById('res-thread-height').textContent = `${threadHeight_display.toFixed(3)} ${displayUnit}`;
+            document.getElementById('res-max-dia').textContent = `${maxDiameter_display.toFixed(3)} ${displayUnit}`;
+            document.getElementById('res-min-dia').textContent = `${minDiameter_display.toFixed(3)} ${displayUnit}`;
+            document.getElementById('res-pitch-dia').textContent = `${pitchDiameter_display.toFixed(3)} ${displayUnit}`;
+            
+            resultsContainer.classList.remove('hidden');
+        }
+
+        if (mainThreadSelector.value) {
+             mainThreadSelector.dispatchEvent(new Event('change'));
+        }
+
+    </script>
+</body>
+</html>
