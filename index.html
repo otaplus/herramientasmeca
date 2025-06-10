@@ -6,47 +6,103 @@
     <title>Mecanizado Fácil</title>
     <style>
         body {
-            font-family: sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #ffffff;
             margin: 0;
-            padding: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
         }
         .container {
-            max-width: 600px;
+            max-width: 800px;
+            width: 100%;
             margin: 40px auto;
-            background-color: #fff;
-            padding: 32px 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.08);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         h1 {
             text-align: center;
-            color: #333;
-            margin-bottom: 32px;
+            color: #ffffff;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
         ul {
-            list-style: disc;
-            padding-left: 24px;
+            list-style: none;
+            padding-left: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
         }
         li {
-            margin-bottom: 16px;
+            margin-bottom: 0; /* Reset margin as gap is used */
         }
         a {
-            color: #007bff;
+            display: block;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #f0f0f0;
             text-decoration: none;
-            font-size: 1.1em;
+            font-size: 1em;
+            padding: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-align: center;
         }
         a:hover {
-            text-decoration: underline;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+
+        #cacheButton {
+            display: block;
+            margin: 0 auto 20px auto;
+            padding: 12px 25px;
+            background-color: #ff9800; /* Orange color for contrast */
+            color: white;
+            border: none;
+            border-radius: 25px; /* Pill shape */
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        #cacheButton:hover {
+            background-color: #f57c00; /* Darker orange */
+            transform: scale(1.05);
+        }
+        #cacheButton:disabled {
+            background-color: #bdbdbd;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #cacheStatus {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            color: #fff; /* Default text color */
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Mecanizado Fácil</h1>
-        <button id="cacheButton" onclick="cacheSiteOffline()" style="display: block; margin: 0 auto 20px auto; padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Guardar para uso sin conexión</button>
-        <div id="cacheStatus" style="text-align: center; margin-bottom: 20px; font-weight: bold;"></div>
+        <button id="cacheButton" onclick="cacheSiteOffline()">Guardar para uso sin conexión</button>
+        <div id="cacheStatus"></div>
         <ul>
             <li><a href="metalesindustriales.html">Guía de Referencia para Metales en la Industria</a></li>
             <li><a href="conversiones.html">Herramienta completa de conversión de unidades técnicas</a></li>
@@ -77,13 +133,14 @@
 
             if ('serviceWorker' in navigator) {
                 cacheStatus.textContent = 'Guardando sitio en caché... Por favor, espera.';
-                cacheStatus.style.color = 'orange';
+                cacheStatus.style.backgroundColor = 'rgba(255, 152, 0, 0.8)'; /* Orange background for status */
+                cacheStatus.style.color = '#000'; /* Dark text for orange background */
                 cacheButton.disabled = true;
 
                 navigator.serviceWorker.register('./sw.js') // Asegúrate que la ruta a sw.js sea correcta
                     .then(registration => {
                         console.log('ServiceWorker registrado con éxito, scope:', registration.scope);
-                        
+
                         if (registration.installing) {
                             registration.installing.addEventListener('statechange', () => {
                                 if (registration.active) {
@@ -92,27 +149,31 @@
                                     cacheButton.textContent = 'Sitio guardado';
                                 }
                             });
-                        } else if (registration.active) { 
+                        } else if (registration.active) {
                              cacheStatus.textContent = 'El sitio ya está guardado en caché y listo para uso sin conexión.';
-                             cacheStatus.style.color = 'green';
+                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
                              cacheButton.textContent = 'Sitio guardado';
                         } else { // Si no está instalando ni activo, pero el registro fue exitoso, esperamos el cambio de estado
                             registration.addEventListener('updatefound', () => {
                                 const newWorker = registration.installing;
                                 newWorker.addEventListener('statechange', () => {
                                      if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';
-                                        cacheStatus.style.color = 'green';
+                                        cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';                                        
+                                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
                                         cacheButton.textContent = 'Sitio guardado';
                                      }
                                 });
                             });
                         }
+                        // Common success styling after registration logic
+                        if (cacheStatus.textContent.startsWith('¡Sitio guardado') || cacheStatus.textContent.startsWith('El sitio ya está')) {
+                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                        }
                     })
                     .catch(error => {
                         console.log('Fallo en el registro del ServiceWorker:', error);
                         cacheStatus.textContent = 'Error al guardar el sitio en caché. Inténtalo de nuevo.';
-                        cacheStatus.style.color = 'red';
+                        cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; /* Red background */
                         cacheButton.disabled = false;
                     });
             } else {
