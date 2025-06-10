@@ -110,7 +110,7 @@
             background-color: #e9ecef; /* Un fondo sutil para las secciones de resultados */
             border-radius: 4px;
         }
-        #distanciaEntreAgujeros {
+        #distanciaEntreAgujeros, #anguloEntreAgujeros { /* Aplicar estilo a ambos párrafos */
             font-size: 1.2rem;
             font-weight: bold;
             color: #007bff;
@@ -218,6 +218,7 @@
 
                 <div class="resultados" id="resultadosDiv" style="display:none;">
                     <h2>Resultados</h2>
+                    <p id="anguloEntreAgujeros"></p>
                     <p id="distanciaEntreAgujeros"></p>
                 </div>
 
@@ -256,6 +257,7 @@
 
                 <h3>Interpretación de los Resultados</h3>
                 <ul>
+                    <li><strong>Ángulo entre agujeros adyacentes:</strong> Es el ángulo que se forma entre los centros de dos agujeros consecutivos, medido desde el centro del PCD.</li>
                     <li><strong>Distancia entre centros de agujeros:</strong> Es la longitud de la cuerda que une los centros de dos agujeros adyacentes.</li>
                     <li><strong>Coordenadas de los Agujeros:</strong> La tabla muestra las coordenadas (X, Y) para el centro de cada agujero, asumiendo que el centro del PCD (pieza) está en el origen (0,0).
                         <ul>
@@ -273,6 +275,7 @@
                         <span class="formula">R = D / 2</span>
                     </li>
                     <li><strong>Ángulo entre agujeros adyacentes (α):</strong> (Convertido a radianes para cálculos trigonométricos)
+                        <span class="formula">α_grados = 360 / N</span>
                         <span class="formula">α_radianes = (360 / N) * (π / 180)  o  α_radianes = (2 * π) / N</span>
                     </li>
                     <li><strong>Distancia entre centros de agujeros (C - Longitud de la cuerda):</strong>
@@ -356,11 +359,13 @@
             // Cálculos
             const radio = diametro / 2;
             const anguloEntreAgujerosRad = (2 * Math.PI) / numAgujeros; // Ángulo en radianes
+            const anguloEntreAgujerosDeg = 360 / numAgujeros; // Ángulo en grados
 
             // Calcular la distancia entre centros de agujeros (longitud de la cuerda)
             // Fórmula: C = 2 * R * sin(α / 2), donde α es el ángulo central entre dos agujeros.
             const distancia = 2 * radio * Math.sin(anguloEntreAgujerosRad / 2);
 
+            document.getElementById('anguloEntreAgujeros').innerText = `Ángulo entre agujeros adyacentes: ${anguloEntreAgujerosDeg.toFixed(4)} grados`;
             document.getElementById('distanciaEntreAgujeros').innerText = `Distancia entre centros de agujeros: ${distancia.toFixed(4)}`;
             document.getElementById('resultadosDiv').style.display = 'block';
 
