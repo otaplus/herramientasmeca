@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mecanizado Fácil</title>
+    <link rel="manifest" href="/manifest.json"> <!-- Asegúrate que esta ruta sea correcta en GitHub Pages, usualmente es /nombre-repositorio/manifest.json o solo manifest.json si está en la raíz -->
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -95,6 +96,26 @@
             padding: 10px;
             border-radius: 4px;
             color: #fff; /* Default text color */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for status colors */
+        }
+
+        #installButton {
+            display: none; /* Hidden by default */
+            margin: 10px auto 20px auto; /* Space above/below, center horizontally */
+            padding: 12px 25px;
+            background-color: #28a745; /* Green color for install */
+            color: white;
+            border: none;
+            border-radius: 25px; /* Pill shape */
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        #installButton:hover {
+            background-color: #218838; /* Darker green */
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -102,6 +123,7 @@
     <div class="container">
         <h1>Mecanizado Fácil</h1>
         <button id="cacheButton" onclick="cacheSiteOffline()">Guardar para uso sin conexión</button>
+        <button id="installButton">Instalar como App</button>
         <div id="cacheStatus"></div>
         <ul>
             <li><a href="metalesindustriales.html">Guía de Referencia para Metales en la Industria</a></li>
@@ -127,6 +149,50 @@
         </ul>
     </div>
     <script>
+        let deferredPrompt; // Variable para almacenar el evento de instalación
+
+        // Escuchar el evento beforeinstallprompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevenir que la mini-barra de información aparezca automáticamente
+            e.preventDefault();
+            // Almacenar el evento para que pueda ser activado más tarde.
+            deferredPrompt = e;
+            // Mostrar el botón de instalación
+            const installButton = document.getElementById('installButton');
+            if (installButton) {
+                installButton.style.display = 'block';
+            }
+            console.log('\'beforeinstallprompt\' event was fired.');
+        });
+
+        // Manejar el clic en el botón de instalación
+        const installButton = document.getElementById('installButton');
+        if (installButton) {
+            installButton.addEventListener('click', async () => {
+                // Ocultar el botón de instalación
+                installButton.style.display = 'none';
+                // Mostrar el prompt de instalación
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    // Esperar a que el usuario responda al prompt
+                    const { outcome } = await deferredPrompt.userChoice;
+                    // Opcionalmente, enviar analíticas para rastrear si el usuario aceptó el prompt
+                    console.log(`User response to the install prompt: ${outcome}`);
+                    // Ya usamos el prompt, no se puede usar de nuevo; lo limpiamos
+                    deferredPrompt = null;
+                }
+            });
+        }
+
+        // Escuchar el evento appinstalled (opcional, para rastrear)
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            const installButtonElement = document.getElementById('installButton'); // Renombrado para evitar conflicto de nombres
+             if (installButtonElement) {
+                installButtonElement.style.display = 'none'; // Ocultar botón después de la instalación exitosa
+             }
+        });
+
         function cacheSiteOffline() {
             const cacheButton = document.getElementById('cacheButton');
             const cacheStatus = document.getElementById('cacheStatus');
@@ -137,7 +203,12 @@
                 cacheStatus.style.color = '#000'; /* Dark text for orange background */
                 cacheButton.disabled = true;
 
-                navigator.serviceWorker.register('./sw.js') // Asegúrate que la ruta a sw.js sea correcta
+                // Asegúrate que la ruta a sw.js sea correcta para GitHub Pages
+                // Si sw.js está en la raíz del repositorio, './sw.js' o 'sw.js' debería funcionar.
+                // Si tu sitio se sirve desde una subcarpeta (ej. https://usuario.github.io/repositorio/),
+                // la ruta podría necesitar ser '/repositorio/sw.js' o simplemente 'sw.js' si el HTML base está bien configurado.
+                // Por simplicidad, './sw.js' es común si index.html y sw.js están en la misma carpeta servida.
+                navigator.serviceWorker.register('./sw.js') 
                     .then(registration => {
                         console.log('ServiceWorker registrado con éxito, scope:', registration.scope);
 
@@ -145,40 +216,41 @@
                             registration.installing.addEventListener('statechange', () => {
                                 if (registration.active) {
                                     cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';
-                                    cacheStatus.style.color = 'green';
+                                    cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
+                                    cacheStatus.style.color = '#fff'; // Texto blanco para fondo verde
                                     cacheButton.textContent = 'Sitio guardado';
                                 }
                             });
                         } else if (registration.active) {
                              cacheStatus.textContent = 'El sitio ya está guardado en caché y listo para uso sin conexión.';
-                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
+                             cacheStatus.style.color = '#fff';
                              cacheButton.textContent = 'Sitio guardado';
-                        } else { // Si no está instalando ni activo, pero el registro fue exitoso, esperamos el cambio de estado
+                        } else { 
                             registration.addEventListener('updatefound', () => {
                                 const newWorker = registration.installing;
                                 newWorker.addEventListener('statechange', () => {
                                      if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                                         cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';                                        
-                                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
+                                        cacheStatus.style.color = '#fff';
                                         cacheButton.textContent = 'Sitio guardado';
                                      }
                                 });
                             });
-                        }
-                        // Common success styling after registration logic
-                        if (cacheStatus.textContent.startsWith('¡Sitio guardado') || cacheStatus.textContent.startsWith('El sitio ya está')) {
-                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
                         }
                     })
                     .catch(error => {
                         console.log('Fallo en el registro del ServiceWorker:', error);
                         cacheStatus.textContent = 'Error al guardar el sitio en caché. Inténtalo de nuevo.';
                         cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; /* Red background */
+                        cacheStatus.style.color = '#fff'; // Texto blanco para fondo rojo
                         cacheButton.disabled = false;
                     });
             } else {
                 cacheStatus.textContent = 'Tu navegador no soporta la funcionalidad para guardar offline.';
-                cacheStatus.style.color = 'red';
+                cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)';
+                cacheStatus.style.color = '#fff';
                 cacheButton.style.display = 'none';
             }
         }
