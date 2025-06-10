@@ -132,12 +132,12 @@
 <body>
     <div class="container">
         <h1>Mecanizado Fácil</h1>
-        <button id="cacheButton" onclick="cacheSiteOffline()">Guardar para uso sin conexión</button>
-        <button id="installButton">Instalar como App</button>
+        <ul>
+            <li><a href="metalesindustriales.html">Guía de Referencia para Metales en la Industria</a></li>
             <li><a href="conversiones.html">Herramienta completa de conversión de unidades técnicas</a></li>
             <li><a href="cilindrosyconos.html">Calculadora de Desarrollo de Cilindros y Conos</a></li>
             <li><a href="avances.html">Calculadora de Avances Para Fresadoras y tornos</a></li>
-            <li><a href="roscas.html">Consultor de Roscas para Taller</a></li>
+            <li><a href="roscas.html">Consultor de Roscas para Taller</a></li> 
             <li><a href="pesos.html">Calculadora de Peso de Materiales</a></li>
             <li><a href="agujerosypcd.html">Herramienta de Disposición de Agujeros en PCD</a></li>
             <li><a href="cabezaldivisor.html">Calculadora para Cabezal Divisor</a></li>
@@ -154,14 +154,16 @@
             <li><a href="perfiles.html">Programador de Perfiles para Torno CNC</a></li>
             <li><a href="editorcnc.html">Editor CNC</a></li>
         </ul>
-        <div id="cacheStatus"></div>
     </div>
 
     <footer>
         <p>Hecho por Rivas Isaac google-sites.overhang127@passinbox.com</p>
     </footer>
 
-    <!-- Moved buttons and status to the bottom -->
+    <!-- Botones y estado del caché movidos al final de la página -->
+    <button id="cacheButton" onclick="cacheSiteOffline()">Guardar para uso sin conexión</button>
+    <button id="installButton">Instalar como App</button>
+    <div id="cacheStatus"></div>
     <script>
         let deferredPrompt; // Variable para almacenar el evento de instalación
 
