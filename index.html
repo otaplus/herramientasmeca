@@ -65,24 +65,8 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
         }
 
-        /* Style for the Clear Cache Button */
-        #clearCacheButton {
-            display: none; /* Hidden by default */
-            margin: 0 auto 20px auto;
-            padding: 12px 25px;
-            background-color: #e74c3c; /* Red color for delete/clear */
-            color: white;
-            border: none;
-            border-radius: 25px; /* Pill shape */
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
         #cacheButton {
-            display: block; /* Shown by default */
+            display: block;
             margin: 0 auto 20px auto;
             padding: 12px 25px;
             background-color: #ff9800; /* Orange color for contrast */
@@ -99,16 +83,12 @@
             background-color: #f57c00; /* Darker orange */
             transform: scale(1.05);
         }
-        #cacheButton:disabled, #clearCacheButton:disabled {
+        #cacheButton:disabled {
             background-color: #bdbdbd;
             cursor: not-allowed;
             transform: none;
         }
 
-        #clearCacheButton:hover:not(:disabled) {
-             background-color: #c0392b; /* Darker red */
-             transform: scale(1.05);
-        }
         #cacheStatus {
             text-align: center;
             margin-bottom: 25px;
@@ -137,17 +117,23 @@
             background-color: #218838; /* Darker green */
             transform: scale(1.05);
         }
+
+        footer {
+            margin-top: auto; /* Push footer to the bottom */
+            padding-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: rgba(255, 255, 255, 0.7); /* Lighter white */
+        }
+        
+
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Mecanizado Fácil</h1>
-        <button id="cacheButton">Guardar para uso sin conexión</button>
-        <button id="clearCacheButton">Borrar caché</button>
+        <button id="cacheButton" onclick="cacheSiteOffline()">Guardar para uso sin conexión</button>
         <button id="installButton">Instalar como App</button>
-        <div id="cacheStatus"></div>
-        <ul>
-            <li><a href="metalesindustriales.html">Guía de Referencia para Metales en la Industria</a></li>
             <li><a href="conversiones.html">Herramienta completa de conversión de unidades técnicas</a></li>
             <li><a href="cilindrosyconos.html">Calculadora de Desarrollo de Cilindros y Conos</a></li>
             <li><a href="avances.html">Calculadora de Avances Para Fresadoras y tornos</a></li>
@@ -168,14 +154,24 @@
             <li><a href="perfiles.html">Programador de Perfiles para Torno CNC</a></li>
             <li><a href="editorcnc.html">Editor CNC</a></li>
         </ul>
+        <div id="cacheStatus"></div>
     </div>
+
+    <footer>
+        <p>Hecho por Rivas Isaac google-sites.overhang127@passinbox.com</p>
+    </footer>
+
+    <!-- Moved buttons and status to the bottom -->
     <script>
         let deferredPrompt; // Variable para almacenar el evento de instalación
 
-        // --- PWA Installation Logic ---
+        // Escuchar el evento beforeinstallprompt
         window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevenir que la mini-barra de información aparezca automáticamente
             e.preventDefault();
+            // Almacenar el evento para que pueda ser activado más tarde.
             deferredPrompt = e;
+            // Mostrar el botón de instalación
             const installButton = document.getElementById('installButton');
             if (installButton) {
                 installButton.style.display = 'block';
@@ -183,91 +179,87 @@
             console.log('\'beforeinstallprompt\' event was fired.');
         });
 
-        const installAppButton = document.getElementById('installButton'); // Renamed to avoid conflict
-        if (installAppButton) {
-            installAppButton.addEventListener('click', async () => {
-                installAppButton.style.display = 'none';
+        // Manejar el clic en el botón de instalación
+        const installButton = document.getElementById('installButton');
+        if (installButton) {
+            installButton.addEventListener('click', async () => {
+                // Ocultar el botón de instalación
+                installButton.style.display = 'none';
+                // Mostrar el prompt de instalación
                 if (deferredPrompt) {
                     deferredPrompt.prompt();
+                    // Esperar a que el usuario responda al prompt
                     const { outcome } = await deferredPrompt.userChoice;
+                    // Opcionalmente, enviar analíticas para rastrear si el usuario aceptó el prompt
                     console.log(`User response to the install prompt: ${outcome}`);
+                    // Ya usamos el prompt, no se puede usar de nuevo; lo limpiamos
                     deferredPrompt = null;
                 }
             });
         }
 
+        // Escuchar el evento appinstalled (opcional, para rastrear)
         window.addEventListener('appinstalled', () => {
             console.log('PWA was installed');
-            if (installAppButton) {
-                installAppButton.style.display = 'none';
-            }
+            const installButton = document.getElementById('installButton');
+             if (installButton) {
+                installButton.style.display = 'none'; // Ocultar botón después de la instalación exitosa
+             }
         });
 
-        // --- Service Worker and Cache Logic ---
-        const cacheButton = document.getElementById('cacheButton');
-        const clearCacheButton = document.getElementById('clearCacheButton');
-        const cacheStatus = document.getElementById('cacheStatus');
-
-        function updateUICached() {
-            cacheStatus.textContent = 'El sitio ya está guardado en caché y listo para uso sin conexión.';
-            cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; // Green background
-            cacheStatus.style.color = '#fff';
-            cacheButton.style.display = 'none';
-            clearCacheButton.style.display = 'block';
-            clearCacheButton.disabled = false;
-        }
-
-        function updateUINotCached() {
-            cacheStatus.textContent = 'Guardar el sitio para usarlo sin conexión.';
-            cacheStatus.style.backgroundColor = 'transparent';
-            cacheButton.style.display = 'block';
-            cacheButton.disabled = false;
-            clearCacheButton.style.display = 'none';
-        }
-
+        // Check if a service worker is already controlling the page on load
         document.addEventListener('DOMContentLoaded', () => {
-            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                updateUICached();
-            } else {
-                updateUINotCached();
-            }
+            const cacheButton = document.getElementById('cacheButton');
+            const cacheStatus = document.getElementById('cacheStatus');
 
-            if (cacheButton) {
-                cacheButton.addEventListener('click', cacheSiteOffline);
-            }
-            if (clearCacheButton) {
-                clearCacheButton.addEventListener('click', clearSiteCache);
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                // Service worker is already active, likely cached
+                cacheStatus.textContent = 'El sitio ya está guardado en caché y listo para uso sin conexión.';
+                cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                cacheButton.textContent = 'Sitio guardado';
+                cacheButton.disabled = true; // Disable the button
             }
         });
+        // --- Existing cacheSiteOffline function ---
+        // (Keep the existing cacheSiteOffline function here)
+        // Make sure it's inside the same script block or accessible.
+        // The diff below will show the function as it was, just adding the PWA logic around it.
 
+        // Existing cacheSiteOffline function:
         function cacheSiteOffline() {
+            const cacheButton = document.getElementById('cacheButton');
+            const cacheStatus = document.getElementById('cacheStatus');
+
             if ('serviceWorker' in navigator) {
                 cacheStatus.textContent = 'Guardando sitio en caché... Por favor, espera.';
-                cacheStatus.style.backgroundColor = 'rgba(255, 152, 0, 0.8)'; // Orange background
-                cacheStatus.style.color = '#000';
+                cacheStatus.style.backgroundColor = 'rgba(255, 152, 0, 0.8)'; /* Orange background for status */
+                cacheStatus.style.color = '#000'; /* Dark text for orange background */
                 cacheButton.disabled = true;
 
-                navigator.serviceWorker.register('./sw.js')
+                navigator.serviceWorker.register('./sw.js') // Asegúrate que la ruta a sw.js sea correcta
                     .then(registration => {
                         console.log('ServiceWorker registrado con éxito, scope:', registration.scope);
 
-                        // Wait for the new service worker to become active
                         if (registration.installing) {
                             registration.installing.addEventListener('statechange', () => {
                                 if (registration.active) {
-                                    updateUICached();
-                                    // Optional: Send a message to SW to confirm caching if needed
+                                    cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.'; // Keep original success message
+                                    cacheStatus.style.color = 'green';
+                                    cacheButton.textContent = 'Sitio guardado';
                                 }
                             });
                         } else if (registration.active) {
-                            // If already active (e.g., re-registering an existing SW)
-                            updateUICached();
-                        } else { // Fallback for other scenarios, listen for update
-                             registration.addEventListener('updatefound', () => {
+                             cacheStatus.textContent = 'El sitio ya está guardado en caché y listo para uso sin conexión.';
+                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                             cacheButton.textContent = 'Sitio guardado'; // Keep original success text
+                        } else { // Si no está instalando ni activo, pero el registro fue exitoso, esperamos el cambio de estado
+                            registration.addEventListener('updatefound', () => {
                                 const newWorker = registration.installing;
                                 newWorker.addEventListener('statechange', () => {
                                      if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        updateUICached();
+                                        cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';                                        
+                                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                                        cacheButton.textContent = 'Sitio guardado';
                                      }
                                 });
                             });
@@ -276,92 +268,13 @@
                     .catch(error => {
                         console.log('Fallo en el registro del ServiceWorker:', error);
                         cacheStatus.textContent = 'Error al guardar el sitio en caché. Inténtalo de nuevo.';
-                        cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; // Red background
-                        cacheStatus.style.color = '#fff';
+                        cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; /* Red background */
                         cacheButton.disabled = false;
                     });
             } else {
                 cacheStatus.textContent = 'Tu navegador no soporta la funcionalidad para guardar offline.';
-                cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; // Red background
-                cacheStatus.style.color = '#fff';
+                cacheStatus.style.color = 'red';
                 cacheButton.style.display = 'none';
-            }
-        }
-
-        function clearSiteCache() {
-            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                cacheStatus.textContent = 'Borrando caché... Por favor, espera.';
-                cacheStatus.style.backgroundColor = 'rgba(255, 152, 0, 0.8)'; // Orange background
-                cacheStatus.style.color = '#000';
-                clearCacheButton.disabled = true;
-
-                // Send a message to the active service worker to clear the cache
-                navigator.serviceWorker.controller.postMessage({ action: 'clearCache' });
-
-                // Listen for a confirmation message from the service worker
-                navigator.serviceWorker.addEventListener('message', event => {
-                    if (event.data && event.data.action === 'cacheCleared') {
-                        cacheStatus.textContent = 'Caché borrado. Recarga la página para aplicar los cambios.';
-                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; // Green background
-                        cacheStatus.style.color = '#fff';
-                        // Update UI to reflect no cache
-                        updateUINotCached();
-                        // Important: Unregister the service worker to fully clear its control
-                        navigator.serviceWorker.getRegistrations().then(registrations => {
-                            for(let registration of registrations) {
-                                registration.unregister().then(unregistered => {
-                                    if (unregistered) {
-                                        console.log('Service Worker unregistrado.');
-                                        // Suggest reload after unregistration
-                                        // alert("Caché y Service Worker eliminados. Por favor, recarga la página.");
-                                        // window.location.reload(); // Or let user do it
-                                    }
-                                });
-                            }
-                        });
-                    } else if (event.data && event.data.action === 'clearCacheFailed') {
-                        cacheStatus.textContent = 'Error al borrar el caché desde el Service Worker.';
-                        cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; // Red background
-                        clearCacheButton.disabled = false;
-                    }
-                });
-
-                // Fallback timeout in case SW doesn't respond (e.g. if SW was already unregistered)
-                setTimeout(() => {
-                    if (clearCacheButton.disabled) { // If still disabled, means SW didn't respond
-                         // Attempt to unregister SWs anyway as a cleanup
-                        navigator.serviceWorker.getRegistrations().then(registrations => {
-                            let unregisteredCount = 0;
-                            if (registrations.length === 0) {
-                                updateUINotCached();
-                                cacheStatus.textContent = 'No hay Service Worker activo. El caché podría estar ya limpio o gestionado por el navegador.';
-                                cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
-                                return;
-                            }
-                            registrations.forEach(registration => {
-                                registration.unregister().then(unregistered => {
-                                    if (unregistered) unregisteredCount++;
-                                    if (unregisteredCount === registrations.length) {
-                                        console.log('Todos los Service Workers han sido desregistrados.');
-                                        updateUINotCached();
-                                        cacheStatus.textContent = 'Caché y Service Worker eliminados. Por favor, recarga la página.';
-                                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
-                                    }
-                                });
-                            });
-                        }).catch(err => {
-                            console.error("Error al desregistrar SWs:", err);
-                            updateUINotCached(); // Assume it's cleared or no longer controlled
-                            cacheStatus.textContent = 'Proceso de limpieza finalizado. Recarga la página.';
-                            cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
-                        });
-                    }
-                }, 3000); // Wait 3 seconds for SW response
-
-            } else {
-                cacheStatus.textContent = 'No hay Service Worker activo para borrar caché. El caché podría estar ya limpio o gestionado por el navegador.';
-                cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)';
-                updateUINotCached();
             }
         }
     </script>
