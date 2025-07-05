@@ -209,6 +209,19 @@
              }
         });
 
+        // Register the service worker as soon as the page loads
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registrado con éxito, scope:', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Fallo en el registro del ServiceWorker:', error);
+                    });
+            });
+        }
+
         // Check if a service worker is already controlling the page on load
         document.addEventListener('DOMContentLoaded', () => {
             const cacheButton = document.getElementById('cacheButton');
@@ -238,41 +251,20 @@
                 cacheStatus.style.color = '#000'; /* Dark text for orange background */
                 cacheButton.disabled = true;
 
-                navigator.serviceWorker.register('./sw.js') // Asegúrate que la ruta a sw.js sea correcta
-                    .then(registration => {
-                        console.log('ServiceWorker registrado con éxito, scope:', registration.scope);
-
-                        if (registration.installing) {
-                            registration.installing.addEventListener('statechange', () => {
-                                if (registration.active) {
-                                    cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.'; // Keep original success message
-                                    cacheStatus.style.color = 'green';
-                                    cacheButton.textContent = 'Sitio guardado';
-                                }
-                            });
-                        } else if (registration.active) {
-                             cacheStatus.textContent = 'El sitio ya está guardado en caché y listo para uso sin conexión.';
-                             cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
-                             cacheButton.textContent = 'Sitio guardado'; // Keep original success text
-                        } else { // Si no está instalando ni activo, pero el registro fue exitoso, esperamos el cambio de estado
-                            registration.addEventListener('updatefound', () => {
-                                const newWorker = registration.installing;
-                                newWorker.addEventListener('statechange', () => {
-                                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';                                        
-                                        cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
-                                        cacheButton.textContent = 'Sitio guardado';
-                                     }
-                                });
-                            });
-                        }
-                    })
-                    .catch(error => {
-                        console.log('Fallo en el registro del ServiceWorker:', error);
-                        cacheStatus.textContent = 'Error al guardar el sitio en caché. Inténtalo de nuevo.';
-                        cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; /* Red background */
-                        cacheButton.disabled = false;
-                    });
+                // No need to register here again, it's already registered on load
+                // Just update the status based on the existing service worker
+                if (navigator.serviceWorker.controller) {
+                    cacheStatus.textContent = '¡Sitio guardado en caché! Ahora puedes usarlo sin conexión.';
+                    cacheStatus.style.backgroundColor = 'rgba(76, 175, 80, 0.8)'; /* Green background */
+                    cacheButton.textContent = 'Sitio guardado';
+                } else {
+                    // This case should ideally not be reached if SW is registered on load
+                    // But as a fallback, if for some reason it's not controlling,
+                    // we can still try to register or inform the user.
+                    cacheStatus.textContent = 'El Service Worker no está activo. Intenta recargar la página.';
+                    cacheStatus.style.backgroundColor = 'rgba(244, 67, 54, 0.8)'; /* Red background */
+                    cacheButton.disabled = false;
+                }
             } else {
                 cacheStatus.textContent = 'Tu navegador no soporta la funcionalidad para guardar offline.';
                 cacheStatus.style.color = 'red';
