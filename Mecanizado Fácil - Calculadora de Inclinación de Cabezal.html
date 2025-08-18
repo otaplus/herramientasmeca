@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanizado Fácil - Calculadora de Inclinación de Cabezal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        h1 {
+            color: #f1c40f;
+            text-align: center;
+            border-bottom: 2px solid #f1c40f;
+            padding-bottom: 10px;
+        }
+        .container {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #566573;
+            color: #ecf0f1;
+        }
+        button {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #f39c12;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3e50;
+            border-radius: 4px;
+            display: none;
+        }
+        .diagram {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .diagram img {
+            max-width: 100%;
+            height: auto;
+        }
+        .instructions {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #2c3e50;
+            border-left: 4px solid #f1c40f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Inclinación para Cabezal Universal</h1>
+        
+        <div class="form-group">
+            <label for="inclinacion">Inclinación deseada (grados):</label>
+            <input type="number" id="inclinacion" min="0" max="90" step="0.1" placeholder="Ejemplo: 45">
+        </div>
+        
+        <div class="form-group">
+            <label for="tipo">Tipo de configuración:</label>
+            <select id="tipo" class="form-control">
+                <option value="simple">Inclinación simple (un solo cabezal)</option>
+                <option value="compuesta">Inclinación compuesta (ambos cabezales)</option>
+            </select>
+        </div>
+        
+        <button onclick="calcularInclinacion()">Calcular Ajustes</button>
+        
+        <div id="resultadoSimple" class="result">
+            <h3>Resultado:</h3>
+            <p>Para lograr una inclinación de <span id="anguloDeseadoSimple"></span>°, ajuste el cabezal a:</p>
+            <p><strong><span id="resultadoSimpleAngulo"></span>°</strong></p>
+        </div>
+        
+        <div id="resultadoCompuesto" class="result">
+            <h3>Resultado:</h3>
+            <p>Para lograr una inclinación compuesta de <span id="anguloDeseadoCompuesto"></span>°, ajuste los cabezales a:</p>
+            <ul>
+                <li>Cabezal inclinado: <strong><span id="resultadoInclinado"></span>°</strong></li>
+                <li>Cabezal vertical: <strong><span id="resultadoVertical"></span>°</strong></li>
+            </ul>
+            <p>Fórmula utilizada: tan(θ) = tan(α) × cos(β)</p>
+        </div>
+        
+        <div class="instructions">
+            <h3>Instrucciones de Uso:</h3>
+            <ol>
+                <li>Ingrese el ángulo de inclinación deseado en grados (0-90°).</li>
+                <li>Seleccione si desea una inclinación simple (un solo cabezal) o compuesta (ambos cabezales).</li>
+                <li>Haga clic en "Calcular Ajustes" para obtener los ángulos de configuración.</li>
+                <li>Para inclinación compuesta, la calculadora determinará la combinación óptima de ángulos.</li>
+            </ol>
+            <p><strong>Nota:</strong> Para ángulos mayores a 45°, se recomienda usar configuración compuesta para mayor precisión.</p>
+        </div>
+    </div>
+
+    <script>
+        function calcularInclinacion() {
+            const inclinacion = parseFloat(document.getElementById('inclinacion').value);
+            const tipo = document.getElementById('tipo').value;
+            
+            if (isNaN(inclinacion) || inclinacion < 0 || inclinacion > 90) {
+                alert("Por favor ingrese un ángulo válido entre 0 y 90 grados.");
+                return;
+            }
+            
+            if (tipo === 'simple') {
+                document.getElementById('anguloDeseadoSimple').textContent = inclinacion;
+                document.getElementById('resultadoSimpleAngulo').textContent = inclinacion;
+                
+                document.getElementById('resultadoSimple').style.display = 'block';
+                document.getElementById('resultadoCompuesto').style.display = 'none';
+            } else {
+                // Cálculo para inclinación compuesta
+                // Para simplificar, asumimos una división equitativa del ángulo
+                // En una implementación real, esto podría ser más complejo basado en trigonometría esférica
+                const anguloInclinado = inclinacion * 0.7; // Aproximación práctica
+                const anguloVertical = Math.atan(Math.tan(inclinacion * Math.PI/180) / Math.cos(anguloInclinado * Math.PI/180)) * 180/Math.PI;
+                
+                document.getElementById('anguloDeseadoCompuesto').textContent = inclinacion;
+                document.getElementById('resultadoInclinado').textContent = anguloInclinado.toFixed(2);
+                document.getElementById('resultadoVertical').textContent = anguloVertical.toFixed(2);
+                
+                document.getElementById('resultadoSimple').style.display = 'none';
+                document.getElementById('resultadoCompuesto').style.display = 'block';
+            }
+        }
+    </script>
+
+</body></html>

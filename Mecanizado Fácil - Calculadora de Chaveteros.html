@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mecanizado Fácil - Calculadora de Chaveteros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        h1 {
+            color: #f1c40f;
+            text-align: center;
+        }
+        .container {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ecf0f1;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #566573;
+            color: #ecf0f1;
+        }
+        button {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #f39c12;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3e50;
+            border-radius: 4px;
+            display: none;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th, td {
+            border: 1px solid #7f8c8d;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #566573;
+        }
+        td {
+            background-color: #34495e;
+        }
+        .error {
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora de Chaveteros</h1>
+        <p>Esta herramienta calcula las medidas estándar de chaveteros según normas ISO/DIN basadas en el diámetro del eje o agujero.</p>
+        
+        <div class="form-group">
+            <label for="diameter">Diámetro del eje/agujero (mm):</label>
+            <input type="number" id="diameter" step="0.01" min="6" max="500">
+        </div>
+        
+        <div class="form-group">
+            <label for="type">Tipo:</label>
+            <select id="type">
+                <option value="shaft">Eje</option>
+                <option value="hole">Agujero</option>
+            </select>
+        </div>
+        
+        <button onclick="calculateKeyway()">Calcular Medidas</button>
+        
+        <div id="error" class="error"></div>
+        
+        <div id="result" class="result">
+            <h3>Resultados:</h3>
+            <div id="resultContent"></div>
+        </div>
+    </div>
+
+    <script>
+        // Tabla de chaveteros según norma ISO/R773 (similar a DIN 6885)
+        const keywayStandards = [
+            { minDia: 6, maxDia: 8, b: 2, h: 2, t1: 1.2, t2: 1.0 },
+            { minDia: 8, maxDia: 10, b: 3, h: 3, t1: 1.8, t2: 1.4 },
+            { minDia: 10, maxDia: 12, b: 4, h: 4, t1: 2.5, t2: 1.8 },
+            { minDia: 12, maxDia: 17, b: 5, h: 5, t1: 3.0, t2: 2.3 },
+            { minDia: 17, maxDia: 22, b: 6, h: 6, t1: 3.5, t2: 2.8 },
+            { minDia: 22, maxDia: 30, b: 8, h: 7, t1: 4.0, t2: 3.3 },
+            { minDia: 30, maxDia: 38, b: 10, h: 8, t1: 5.0, t2: 3.3 },
+            { minDia: 38, maxDia: 44, b: 12, h: 8, t1: 5.0, t2: 3.3 },
+            { minDia: 44, maxDia: 50, b: 14, h: 9, t1: 5.5, t2: 3.8 },
+            { minDia: 50, maxDia: 58, b: 16, h: 10, t1: 6.0, t2: 4.3 },
+            { minDia: 58, maxDia: 65, b: 18, h: 11, t1: 7.0, t2: 4.4 },
+            { minDia: 65, maxDia: 75, b: 20, h: 12, t1: 7.5, t2: 4.9 },
+            { minDia: 75, maxDia: 85, b: 22, h: 14, t1: 9.0, t2: 5.4 },
+            { minDia: 85, maxDia: 95, b: 25, h: 14, t1: 9.0, t2: 5.4 },
+            { minDia: 95, maxDia: 110, b: 28, h: 16, t1: 10.0, t2: 6.4 },
+            { minDia: 110, maxDia: 130, b: 32, h: 18, t1: 11.0, t2: 7.4 },
+            { minDia: 130, maxDia: 150, b: 36, h: 20, t1: 12.0, t2: 8.4 },
+            { minDia: 150, maxDia: 170, b: 40, h: 22, t1: 13.0, t2: 9.4 },
+            { minDia: 170, maxDia: 200, b: 45, h: 25, t1: 15.0, t2: 10.4 },
+            { minDia: 200, maxDia: 230, b: 50, h: 28, t1: 17.0, t2: 11.4 },
+            { minDia: 230, maxDia: 260, b: 56, h: 32, t1: 20.0, t2: 12.4 },
+            { minDia: 260, maxDia: 290, b: 63, h: 32, t1: 20.0, t2: 12.4 },
+            { minDia: 290, maxDia: 330, b: 70, h: 36, t1: 22.0, t2: 14.4 },
+            { minDia: 330, maxDia: 380, b: 80, h: 40, t1: 25.0, t2: 15.4 },
+            { minDia: 380, maxDia: 440, b: 90, h: 45, t1: 28.0, t2: 17.4 },
+            { minDia: 440, maxDia: 500, b: 100, h: 50, t1: 31.0, t2: 19.5 }
+        ];
+
+        function calculateKeyway() {
+            const diameter = parseFloat(document.getElementById('diameter').value);
+            const type = document.getElementById('type').value;
+            const errorElement = document.getElementById('error');
+            const resultElement = document.getElementById('result');
+            const resultContent = document.getElementById('resultContent');
+            
+            // Validar entrada
+            if (isNaN(diameter) || diameter < 6 || diameter > 500) {
+                errorElement.textContent = "Por favor ingrese un diámetro válido entre 6mm y 500mm";
+                resultElement.style.display = 'none';
+                return;
+            }
+            
+            errorElement.textContent = "";
+            
+            // Encontrar el chavetero correspondiente
+            let keyway = null;
+            for (const standard of keywayStandards) {
+                if (diameter >= standard.minDia && diameter < standard.maxDia) {
+                    keyway = standard;
+                    break;
+                }
+            }
+            
+            if (!keyway) {
+                errorElement.textContent = "No se encontró un chavetero estándar para el diámetro ingresado";
+                resultElement.style.display = 'none';
+                return;
+            }
+            
+            // Mostrar resultados
+            let html = `
+                <p><strong>Diámetro del eje/agujero:</strong> ${diameter} mm</p>
+                <p><strong>Tipo:</strong> ${type === 'shaft' ? 'Eje' : 'Agujero'}</p>
+                
+                <table>
+                    <tr>
+                        <th>Medida</th>
+                        <th>Valor (mm)</th>
+                    </tr>
+                    <tr>
+                        <td>Ancho del chavetero (b)</td>
+                        <td>${keyway.b}</td>
+                    </tr>
+                    <tr>
+                        <td>Altura del chavetero (h)</td>
+                        <td>${keyway.h}</td>
+                    </tr>
+            `;
+            
+            if (type === 'shaft') {
+                html += `
+                    <tr>
+                        <td>Profundidad en el eje (t1)</td>
+                        <td>${keyway.t1}</td>
+                    </tr>
+                `;
+            } else {
+                html += `
+                    <tr>
+                        <td>Profundidad en el agujero (t2)</td>
+                        <td>${keyway.t2}</td>
+                    </tr>
+                `;
+            }
+            
+            html += `</table>`;
+            
+            resultContent.innerHTML = html;
+            resultElement.style.display = 'block';
+        }
+    </script>
+
+</body></html>

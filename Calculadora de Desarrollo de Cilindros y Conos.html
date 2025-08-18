@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Desarrollo de Cilindros y Conos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #2c3e50;
+            margin: 0;
+            padding: 20px;
+            color: #ecf0f1;
+        }
+        .container {
+            background: #34495e;
+            max-width: 480px;
+            margin: 30px auto;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 24px;
+        }
+        h1 {
+            text-align: center;
+            color: #f1c40f;
+            margin-bottom: 18px;
+        }
+        label {
+            font-weight: 500;
+            margin-top: 12px;
+            display: block;
+            color: #ecf0f1;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 14px;
+            border-radius: 6px;
+            border: 1px solid #7f8c8d;
+            font-size: 1em;
+            box-sizing: border-box;
+            background-color: #566573;
+            color: #ecf0f1;
+        }
+        button {
+            background: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 12px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1.1em;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        button:hover {
+            background: #f39c12;
+        }
+        .result {
+            background: #2c3e50;
+            border-radius: 8px;
+            padding: 14px;
+            margin-top: 18px;
+            font-size: 1em;
+            border: 1px solid #f1c40f;
+        }
+        .hidden {
+            display: none;
+        }
+        canvas {
+            display: block;
+            margin: 20px auto 0 auto;
+            background: #ecf0f1;
+            border: 1px solid #7f8c8d;
+            border-radius: 8px;
+        }
+        .explanation {
+            background: #2c3e50;
+            border: 1px solid #7f8c8d;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.95em;
+            line-height: 1.7;
+        }
+        .explanation h3 {
+            color: #f1c40f;
+            margin-top: 0;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #7f8c8d;
+            padding-bottom: 8px;
+        }
+        .explanation p {
+            margin-bottom: 10px;
+        }
+        .explanation code {
+            background-color: #566573;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .explanation ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        @media (max-width: 500px) {
+            .container {
+                max-width: 98vw;
+                margin: 0 1vw;
+                padding: 10px;
+            }
+            canvas {
+                width: 98vw !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Desarrollo de Cilindros y Conos</h1>
+        <label for="tipo">¿Qué desea calcular?</label>
+        <select id="tipo" onchange="mostrarCampos()">
+            <option value="cilindro">Cilindro</option>
+            <option value="cono">Cono truncado</option>
+        </select>
+
+        <div id="campos-cilindro" style="display: block;">
+            <label for="diametro-cilindro">Diámetro del cilindro (mm):</label>
+            <input type="number" id="diametro-cilindro" min="0.01" step="any" placeholder="Ej: 120">
+        </div>
+
+        <div id="campos-cono" class="hidden" style="display: none;">
+            <label for="diametro-mayor">Diámetro mayor (mm):</label>
+            <input type="number" id="diametro-mayor" min="0.01" step="any" placeholder="Ej: 200">
+            <label for="diametro-menor">Diámetro menor (mm):</label>
+            <input type="number" id="diametro-menor" min="0.01" step="any" placeholder="Ej: 80">
+            <label for="altura-cono">Altura del cono (mm):</label>
+            <input type="number" id="altura-cono" min="0.01" step="any" placeholder="Ej: 150">
+        </div>
+
+        <button onclick="calcular()">Calcular</button>
+
+        <div id="resultado" class="result" style="display:none"></div>
+        <canvas id="grafico" width="400" height="320" style="display:none"></canvas>
+
+        <div id="explicacion-formulas" class="explanation hidden" style="display: none;">
+            <h3>Explicación de las Fórmulas (Cono Truncado)</h3>
+            <p>Donde:</p>
+            <ul>
+                <li><strong>D:</strong> Diámetro mayor de la base del cono.</li>
+                <li><strong>d:</strong> Diámetro menor de la base del cono.</li>
+                <li><strong>h:</strong> Altura perpendicular del cono truncado.</li>
+                <li><strong>r1:</strong> Radio de la base mayor (D/2).</li>
+                <li><strong>r2:</strong> Radio de la base menor (d/2).</li>
+            </ul>
+            <p><strong>1. Generatriz del cono truncado (l):</strong></p>
+            <p>Es la longitud de la línea inclinada en la superficie del cono truncado. Se calcula usando el teorema de Pitágoras sobre el triángulo rectángulo formado por la altura (h) y la diferencia de los radios (r1 - r2).</p>
+            <p><code>l = √((r1 - r2)² + h²)</code></p>
+        
+            <p><strong>2. Radio mayor del desarrollo (G<sub>mayor</sub>):</strong></p>
+            <p>Es el radio del sector circular más grande que se traza para formar el desarrollo plano. Se obtiene por semejanza de triángulos, imaginando el cono completo (no truncado) extendido hasta su vértice.</p>
+            <p><code>G<sub>mayor</sub> = (l * r1) / (r1 - r2)</code></p>
+        
+            <p><strong>3. Radio menor del desarrollo (G<sub>menor</sub>):</strong></p>
+            <p>Es el radio del sector circular interior que se recorta del desarrollo. Corresponde al desarrollo de la parte superior del cono que se "elimina" para truncarlo.</p>
+            <p><code>G<sub>menor</sub> = G<sub>mayor</sub> - l</code></p>
+            <p>Alternativamente: <code>G<sub>menor</sub> = (l * r2) / (r1 - r2)</code> (esta fórmula es útil si se calcula G<sub>menor</sub> independientemente).</p>
+        
+            <p><strong>4. Ángulo del sector circular (α):</strong></p>
+            <p>Es el ángulo del "gajo" o sector de corona circular que forma el desarrollo plano del cono truncado. Se calcula relacionando la circunferencia de la base mayor del cono con la circunferencia del círculo completo del desarrollo mayor.</p>
+            <p><code>α (grados) = (Circunferencia de la base mayor del cono / Circunferencia del círculo de desarrollo mayor) * 360</code></p>
+            <p><code>α (grados) = (2 * π * r1) / (2 * π * G<sub>mayor</sub>) * 360</code></p>
+            <p>Simplificando:</p>
+            <p><code>α (grados) = (r1 / G<sub>mayor</sub>) * 360</code></p>
+        </div>
+    </div>
+
+    <script>
+        function mostrarCampos() {
+            const tipo = document.getElementById('tipo').value;
+            document.getElementById('campos-cilindro').style.display = (tipo === 'cilindro') ? 'block' : 'none';
+            document.getElementById('campos-cono').style.display = (tipo === 'cono') ? 'block' : 'none';
+            document.getElementById('resultado').style.display = 'none';
+            document.getElementById('grafico').style.display = 'none';
+            document.getElementById('explicacion-formulas').style.display = 'none';
+        }
+
+        function calcular() {
+            const tipo = document.getElementById('tipo').value;
+            let html = "";
+            const resultadoDiv = document.getElementById('resultado');
+            const graficoCanvas = document.getElementById('grafico');
+            const explicacionDiv = document.getElementById('explicacion-formulas');
+
+            if (tipo === 'cilindro') {
+                const d = parseFloat(document.getElementById('diametro-cilindro').value);
+                if (isNaN(d) || d <= 0) {
+                    alert("Ingrese un diámetro válido para el cilindro.");
+                    graficoCanvas.style.display = 'none';
+                    explicacionDiv.style.display = 'none';
+                    return;
+                }
+                const desarrollo = Math.PI * d;
+                html += `<strong>Desarrollo de la circunferencia:</strong> ${desarrollo.toFixed(2)} mm`;
+                graficoCanvas.style.display = 'none'; // Ocultar gráfico para cilindro
+                explicacionDiv.style.display = 'none';
+            } else { // Cono truncado
+                const D = parseFloat(document.getElementById('diametro-mayor').value);
+                const d_menor = parseFloat(document.getElementById('diametro-menor').value);
+                const h = parseFloat(document.getElementById('altura-cono').value);
+                if (isNaN(D) || D <= 0 || isNaN(d_menor) || d_menor <= 0 || isNaN(h) || h <= 0 || d_menor >= D) {
+                    alert("Ingrese valores válidos para el cono (D > d, todos positivos).");
+                    graficoCanvas.style.display = 'none';
+                    explicacionDiv.style.display = 'none';
+                    return;
+                }
+                // Radios de las bases del cono truncado
+                const r1 = D / 2;
+                const r2 = d_menor / 2;
+
+                // 1. Generatriz del cono truncado (l)
+                const l = Math.sqrt(Math.pow(r1 - r2, 2) + Math.pow(h, 2));
+
+                // 2. Radio mayor del desarrollo (G_mayor)
+                const radioMayorDesarrollo = (l * r1) / (r1 - r2);
+
+                // 3. Radio menor del desarrollo (G_menor)
+                const radioMenorDesarrollo = radioMayorDesarrollo - l;
+
+                // 4. Ángulo del sector circular (alpha) en grados
+                const anguloSectorGrados = (r1 / radioMayorDesarrollo) * 360;
+
+
+                html += `<strong>1. Generatriz del cono truncado (l):</strong> ${l.toFixed(2)} mm<br>`;
+                html += `<strong>2. Radio mayor del desarrollo (G<sub>mayor</sub>):</strong> ${radioMayorDesarrollo.toFixed(2)} mm<br>`;
+                html += `<strong>3. Radio menor del desarrollo (G<sub>menor</sub>):</strong> ${radioMenorDesarrollo.toFixed(2)} mm<br>`;
+                html += `<strong>4. Ángulo del sector circular (&alpha;):</strong> ${anguloSectorGrados.toFixed(2)}°`;
+
+                dibujarConoTruncado(r1, r2, h);
+                explicacionDiv.style.display = 'block';
+            }
+
+            resultadoDiv.innerHTML = html;
+            resultadoDiv.style.display = 'block';
+        }
+
+        function dibujarConoTruncado(r1, r2, h) {
+            const canvas = document.getElementById('grafico');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const margen = 40;
+            const maxRadio = Math.max(r1, r2);
+            const escalaRadio = (maxRadio > 0) ? (canvas.width/2 - margen) / maxRadio : 1;
+            const escalaAltura = (h > 0) ? (canvas.height - 2 * margen) / h : 1;
+            const escalaFinal = Math.min(escalaRadio, escalaAltura);
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height - margen;
+
+            const x1_izq = cx - r1 * escalaFinal;
+            const x1_der = cx + r1 * escalaFinal;
+            const y1_base = cy;
+
+            const x2_izq = cx - r2 * escalaFinal;
+            const x2_der = cx + r2 * escalaFinal;
+            const y2_base = cy - h * escalaFinal;
+
+            ctx.beginPath();
+            ctx.moveTo(x1_izq, y1_base);
+            ctx.lineTo(x1_der, y1_base);
+            ctx.strokeStyle = "#3498db";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x2_izq, y2_base);
+            ctx.lineTo(x2_der, y2_base);
+            ctx.strokeStyle = "#e67e22";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x1_izq, y1_base);
+            ctx.lineTo(x2_izq, y2_base);
+            ctx.strokeStyle = "#2ecc71";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x1_der, y1_base);
+            ctx.lineTo(x2_der, y2_base);
+            ctx.strokeStyle = "#2ecc71";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.font = "13px Arial";
+            ctx.fillStyle = "#3498db";
+            ctx.fillText("D. mayor", x1_der + 5, y1_base - 5);
+            ctx.fillStyle = "#e67e22";
+            ctx.fillText("D. menor", x2_der + 5, y2_base - 5);
+            ctx.fillStyle = "#2ecc71";
+            ctx.fillText("h", cx + 5, (y1_base + y2_base) / 2);
+
+            ctx.save(); 
+            ctx.strokeStyle = "#444";
+            ctx.fillStyle = "#222";
+            ctx.lineWidth = 1;
+            
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(x1_izq, y1_base + 18);
+            ctx.lineTo(x1_der, y1_base + 18);
+            ctx.moveTo(x1_izq, y1_base + 10); 
+            ctx.lineTo(x1_izq, y1_base + 26);
+            ctx.moveTo(x1_der, y1_base + 10); 
+            ctx.lineTo(x1_der, y1_base + 26);
+            ctx.stroke();
+            ctx.setLineDash([]); 
+            ctx.font = "12px Arial";
+            ctx.textAlign = "center";
+            ctx.fillText(`${(r1*2).toFixed(2)} mm`, cx, y1_base + 32);
+
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(x2_izq, y2_base - 18);
+            ctx.lineTo(x2_der, y2_base - 18);
+            ctx.moveTo(x2_izq, y2_base - 10); 
+            ctx.lineTo(x2_izq, y2_base - 26);
+            ctx.moveTo(x2_der, y2_base - 10); 
+            ctx.lineTo(x2_der, y2_base - 26);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.textAlign = "center";
+            ctx.fillText(`${(r2*2).toFixed(2)} mm`, cx, y2_base - 30);
+
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(x1_der + 30, y1_base); 
+            ctx.lineTo(x1_der + 30, y2_base); 
+            ctx.moveTo(x1_der + 24, y1_base); 
+            ctx.lineTo(x1_der + 36, y1_base);
+            ctx.moveTo(x1_der + 24, y2_base); 
+            ctx.lineTo(x1_der + 36, y2_base);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.save(); 
+            ctx.translate(x1_der + 38, (y1_base + y2_base) / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = "center";
+            ctx.fillText(`${h.toFixed(2)} mm`, 0, 0);
+            ctx.restore(); 
+
+            const l_generatriz = Math.sqrt(Math.pow(r1 - r2, 2) + Math.pow(h, 2)); 
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            const offsetX = 18 * Math.cos(Math.atan2(y1_base - y2_base, x1_izq - x2_izq) + Math.PI/2);
+            const offsetY = 18 * Math.sin(Math.atan2(y1_base - y2_base, x1_izq - x2_izq) + Math.PI/2);
+            ctx.moveTo(x1_izq - offsetX, y1_base - offsetY);
+            ctx.lineTo(x2_izq - offsetX, y2_base - offsetY);
+            ctx.moveTo(x1_izq, y1_base);
+            ctx.lineTo(x1_izq - offsetX, y1_base - offsetY);
+            ctx.moveTo(x2_izq, y2_base);
+            ctx.lineTo(x2_izq - offsetX, y2_base - offsetY);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.save();
+            ctx.translate((x1_izq + x2_izq) / 2 - offsetX - 8, (y1_base + y2_base) / 2 - offsetY); 
+            ctx.rotate(Math.atan2(y2_base - y1_base, x2_izq - x1_izq)); 
+            ctx.textAlign = "center";
+            ctx.fillText(`${l_generatriz.toFixed(2)} mm`, 0, -6);
+            ctx.restore();
+
+            ctx.restore(); 
+
+            canvas.style.display = 'block';
+        }
+
+        mostrarCampos();
+    </script>
+
+
+</body></html>

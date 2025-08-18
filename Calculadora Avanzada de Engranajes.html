@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Avanzada de Engranajes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #ecf0f1;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #2c3e50;
+        }
+        header {
+            background-color: #34495e;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 3px solid #f1c40f;
+        }
+        h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #7f8c8d;
+        }
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #34495e;
+            border: 1px solid #7f8c8d;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            color: #ecf0f1;
+        }
+        .tab.active {
+            background-color: #566573;
+            border-bottom: 1px solid #566573;
+            margin-bottom: -1px;
+        }
+        .tab-content {
+            display: none;
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 0 8px 8px 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #f1c40f;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #7f8c8d;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        button {
+            background-color: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #f39c12;
+        }
+        .results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2c3e50;
+            border-radius: 4px;
+            border-left: 4px solid #f1c40f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            border: 1px solid #7f8c8d;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #566573;
+            color: #ecf0f1;
+        }
+        .button-group {
+            margin-top: 20px;
+        }
+        .example-btn {
+            background-color: #27ae60;
+        }
+        .example-btn:hover {
+            background-color: #219955;
+        }
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            .tab {
+                margin-right: 0;
+                margin-bottom: 5px;
+                border-radius: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Calculadora Avanzada de Engranajes</h1>
+        <p>Diseño y cálculo según normas DIN e ISO</p>
+    </header>
+    
+    <div class="tabs">
+        <div class="tab" onclick="openTab(&#39;straight&#39;)">Rectos</div>
+        <div class="tab" onclick="openTab(&#39;helical&#39;)">Helicoidales</div>
+        <div class="tab" onclick="openTab(&#39;straight-dp&#39;)">Rectos (DP)</div>
+        <div class="tab" onclick="openTab(&#39;bevel&#39;)">Cónicos</div>
+        <div class="tab" onclick="openTab(&#39;profile-shift&#39;)">Desplazamiento de Perfil</div>
+        <div class="tab active" onclick="openTab(&#39;spline&#39;)">Estriados</div>
+    </div>
+    
+    <!-- Engranajes Rectos -->
+    <div id="straight" class="tab-content">
+        <h2>Engranajes Rectos (Norma DIN 867 / ISO 53)</h2>
+        <div class="form-group">
+            <label for="straight-module">Módulo (m):</label>
+            <label for="straight-module">Módulo (m):</label>
+            <input type="number" id="straight-module" step="0.1" min="0.5" placeholder="Ej: 2 (según norma ISO)">
+        </div>
+        <div class="form-group">
+            <label for="straight-teeth">Número de dientes (Z):</label>
+            <input type="number" id="straight-teeth" min="12" placeholder="Ej: 24">
+        </div>
+        <div class="form-group">
+            <label for="straight-pressure-angle">Ángulo de presión (α):</label>
+            <select id="straight-pressure-angle">
+                <option value="20">20° (Estándar ISO)</option>
+                <option value="14.5">14.5° (Antiguo estándar)</option>
+            </select>
+        </div>
+        <button onclick="calculateStraightGear()">Calcular</button>
+        <button class="example-btn" onclick="loadStraightExample()">Ejemplo: Engranaje DIN 867 m=3, Z=25</button>
+        <div class="results" id="straight-results" style="display: none;">
+            <h3>Resultados según DIN 867 / ISO 53</h3>
+            <table>
+                <tbody><tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                    <th>Norma</th>
+                </tr>
+                <tr>
+                    <td>Diámetro primitivo (Dp)</td>
+                    <td id="straight-pitch-diameter">--</td>
+                    <td>DIN 867</td>
+                </tr>
+                <tr>
+                    <td>Diámetro exterior (De)</td>
+                    <td id="straight-external-diameter">--</td>
+                    <td>ISO 53</td>
+                </tr>
+                <tr>
+                    <td>Diámetro interior (Di)</td>
+                    <td id="straight-internal-diameter">--</td>
+                    <td>ISO 53</td>
+                </tr>
+                <tr>
+                    <td>Paso circular (P)</td>
+                    <td id="straight-circular-pitch">--</td>
+                    <td>DIN 867</td>
+                </tr>
+                <tr>
+                    <td>Altura del diente (h)</td>
+                    <td id="straight-tooth-height">--</td>
+                    <td>ISO 53</td>
+                </tr>
+                <tr>
+                    <td>Espesor del diente (s)</td>
+                    <td id="straight-tooth-thickness">--</td>
+                    <td>DIN 867</td>
+                </tr>
+                <tr>
+                    <td>Distancia entre dientes (cuerda)</td>
+                    <td id="straight-chord">--</td>
+                    <td>ISO 53</td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+    
+    <!-- Engranajes Helicoidales -->
+    <div id="helical" class="tab-content">
+        <h2>Engranajes Helicoidales (Norma DIN 3960 / ISO 6336)</h2>
+        <div class="form-group">
+            <label for="helical-module">Módulo normal (mn):</label>
+            <input type="number" id="helical-module" step="0.1" min="0.5" placeholder="Módulo en plano normal">
+        </div>
+        <div class="form-group">
+            <label for="helical-teeth">Número de dientes (Z):</label>
+            <input type="number" id="helical-teeth" min="12" placeholder="Ej: 24">
+        </div>
+        <div class="form-group">
+            <label for="helical-angle">Ángulo de hélice (β):</label>
+            <input type="number" id="helical-angle" step="1" min="5" max="45" placeholder="Ej: 20°">
+        </div>
+        <div class="form-group">
+            <label for="helical-pressure-angle">Ángulo de presión normal (αn):</label>
+            <select id="helical-pressure-angle">
+                <option value="20">20° (Estándar ISO)</option>
+                <option value="14.5">14.5°</option>
+            </select>
+        </div>
+        <button onclick="calculateHelicalGear()">Calcular</button>
+        <button class="example-btn" onclick="loadHelicalExample()">Ejemplo: Engranaje ISO 6336 mn=2, Z=30, β=20°</button>
+        <div class="results" id="helical-results" style="display: none;">
+            <h3>Resultados según DIN 3960 / ISO 6336</h3>
+            <table>
+                <tbody><tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                    <th>Norma</th>
+                </tr>
+                <tr>
+                    <td>Módulo transversal (mt)</td>
+                    <td id="helical-transverse-module">--</td>
+                    <td>ISO 6336</td>
+                </tr>
+                <tr>
+                    <td>Diámetro primitivo (Dp)</td>
+                    <td id="helical-pitch-diameter">--</td>
+                    <td>DIN 3960</td>
+                </tr>
+                <tr>
+                    <td>Diámetro exterior (De)</td>
+                    <td id="helical-external-diameter">--</td>
+                    <td>ISO 6336</td>
+                </tr>
+                <tr>
+                    <td>Paso axial (Px)</td>
+                    <td id="helical-axial-pitch">--</td>
+                    <td>DIN 3960</td>
+                </tr>
+                <tr>
+                    <td>Paso normal (Pn)</td>
+                    <td id="helical-normal-pitch">--</td>
+                    <td>ISO 6336</td>
+                </tr>
+                <tr>
+                    <td>Distancia entre dientes (cuerda)</td>
+                    <td id="helical-chord">--</td>
+                    <td>ISO 6336</td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+
+    <!-- Engranajes Rectos (Diametral Pitch) -->
+    <div id="straight-dp" class="tab-content">
+        <h2>Engranajes Rectos (Sistema Diametral Pitch - AGMA)</h2>
+        <div class="form-group">
+            <label for="straight-dp-dp">Diametral Pitch (DP):</label>
+            <input type="number" id="straight-dp-dp" step="0.1" min="1" placeholder="Ej: 10 (dientes por pulgada)">
+        </div>
+        <div class="form-group">
+            <label for="straight-dp-teeth">Número de dientes (Z):</label>
+            <input type="number" id="straight-dp-teeth" min="12" placeholder="Ej: 20">
+        </div>
+        <div class="form-group">
+            <label for="straight-dp-pressure-angle">Ángulo de presión (α):</label>
+            <select id="straight-dp-pressure-angle">
+                <option value="20">20° (Común AGMA)</option>
+                <option value="14.5">14.5° (Antiguo estándar)</option>
+                <option value="25">25°</option>
+            </select>
+        </div>
+        <button onclick="calculateStraightGearDP()">Calcular (DP)</button>
+        <button class="example-btn" onclick="loadStraightDPExample()">Ejemplo: Engranaje AGMA DP=8, Z=32</button>
+        <div class="results" id="straight-dp-results" style="display: none;">
+            <h3>Resultados (Unidades en mm, calculadas desde DP)</h3>
+            <table>
+                <tbody><tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                    <th>Referencia</th>
+                </tr>
+                <tr>
+                    <td>Módulo Equivalente (m)</td>
+                    <td id="straight-dp-module">--</td>
+                    <td>m = 25.4 / DP</td>
+                </tr>
+                <tr>
+                    <td>Diámetro primitivo (Dp)</td>
+                    <td id="straight-dp-pitch-diameter">--</td>
+                    <td>Dp = Z / DP * 25.4</td>
+                </tr>
+                <tr>
+                    <td>Diámetro exterior (De)</td>
+                    <td id="straight-dp-external-diameter">--</td>
+                    <td>De = (Z+2) / DP * 25.4</td>
+                </tr>
+                <tr>
+                    <td>Diámetro interior (Di)</td>
+                    <td id="straight-dp-internal-diameter">--</td>
+                    <td>Di = (Z-2.5) / DP * 25.4</td>
+                </tr>
+                <!-- Se pueden añadir más parámetros si es necesario -->
+            </tbody></table>
+        </div>
+    </div>
+    
+    <!-- Engranajes Cónicos -->
+    <div id="bevel" class="tab-content">
+        <h2>Engranajes Cónicos (Norma DIN 3971 / ISO 23509)</h2>
+        <div class="form-group">
+            <label for="bevel-module">Módulo (m):</label>
+            <input type="number" id="bevel-module" step="0.1" min="0.5" placeholder="Módulo en extremo mayor">
+        </div>
+        <div class="form-group">
+            <label for="bevel-teeth">Número de dientes (Z):</label>
+            <input type="number" id="bevel-teeth" min="12" placeholder="Ej: 24">
+        </div>
+        <div class="form-group">
+            <label for="bevel-angle">Ángulo del cono (δ):</label>
+            <input type="number" id="bevel-angle" step="1" min="5" max="85" placeholder="Ej: 45°">
+        </div>
+        <div class="form-group">
+            <label for="bevel-pressure-angle">Ángulo de presión (α):</label>
+            <select id="bevel-pressure-angle">
+                <option value="20">20° (Estándar ISO)</option>
+                <option value="14.5">14.5°</option>
+            </select>
+        </div>
+        <button onclick="calculateBevelGear()">Calcular</button>
+        <button class="example-btn" onclick="loadBevelExample()">Ejemplo: Engranaje ISO 23509 m=4, Z=20, δ=30°</button>
+        <div class="results" id="bevel-results" style="display: none;">
+            <h3>Resultados según DIN 3971 / ISO 23509</h3>
+            <table>
+                <tbody><tr>
+                    <th>Parámetro</th>
+                    <th>Valor</th>
+                    <th>Norma</th>
+                </tr>
+                <tr>
+                    <td>Diámetro primitivo (Dp)</td>
+                    <td id="bevel-pitch-diameter">--</td>
+                    <td>ISO 23509</td>
+                </tr>
+                <tr>
+                    <td>Ángulo de inclinación</td>
+                    <td id="bevel-inclination">--</td>
+                    <td>DIN 3971</td>
+                </tr>
+                <tr>
+                    <td>Longitud del cono</td>
+                    <td id="bevel-cone-length">--</td>
+                    <td>ISO 23509</td>
+                </tr>
+                <tr>
+                    <td>Módulo en extremo menor</td>
+                    <td id="bevel-minor-module">--</td>
+                    <td>DIN 3971</td>
+                </tr>
+                <tr>
+                    <td>Distancia entre dientes (cuerda)</td>
+                    <td id="bevel-chord">--</td>
+                    <td>ISO 23509</td>
+                </tr>
+            </tbody></table>
+        </div>
+    </div>
+
+    <!-- Engranajes con Desplazamiento de Perfil -->
+    <div id="profile-shift" class="tab-content">
+        <h2>Cálculo de Engranajes con Desplazamiento de Perfil</h2>
+        <div class="form-group">
+            <label for="ps-module">Módulo (m):</label>
+            <input type="number" id="ps-module" step="0.1" min="0.5" placeholder="Ej: 2">
+        </div>
+        <div class="form-group">
+            <label for="ps-teeth">Número de dientes (Z):</label>
+            <input type="number" id="ps-teeth" min="12" placeholder="Ej: 24">
+        </div>
+        <div class="form-group">
+            <label for="ps-pressure-angle">Ángulo de presión (α):</label>
+            <select id="ps-pressure-angle">
+                <option value="20">20° (Estándar)</option>
+                <option value="14.5">14.5°</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="ps-profile-shift">Coeficiente de Desplazamiento de Perfil (x):</label>
+            <input type="number" id="ps-profile-shift" step="0.01" placeholder="Ej: 0.5 (positivo para desplazamiento exterior)">
+        </div>
+        <button onclick="calculateProfileShiftGear()">Calcular</button>
+        <button class="example-btn" onclick="loadProfileShiftExample()">Ejemplo: m=2, Z=24, x=0.5</button>
+        <div class="results" id="ps-results" style="display: none;">
+            <h3>Resultados del Engranaje con Desplazamiento de Perfil</h3>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Parámetro</th>
+                        <th>Valor</th>
+                        <th>Unidad</th>
+                    </tr>
+                    <tr>
+                        <td>Diámetro Primitivo (d)</td>
+                        <td id="ps-pitch-diameter">--</td>
+                        <td>mm</td>
+                    </tr>
+                    <tr>
+                        <td>Diámetro Base (db)</td>
+                        <td id="ps-base-diameter">--</td>
+                        <td>mm</td>
+                    </tr>
+                    <tr>
+                        <td>Diámetro Exterior (da)</td>
+                        <td id="ps-outside-diameter">--</td>
+                        <td>mm</td>
+                    </tr>
+                    <tr>
+                        <td>Diámetro de Raíz (df)</td>
+                        <td id="ps-root-diameter">--</td>
+                        <td>mm</td>
+                    </tr>
+                    <tr>
+                        <td>Adendum (ha)</td>
+                        <td id="ps-addendum">--</td>
+                        <td>mm</td>
+                    </tr>
+                    <tr>
+                        <td>Dedendum (hf)</td>
+                        <td id="ps-dedendum">--</td>
+                        <td>mm</td>
+                    </tr>
+                    <tr>
+                        <td>Espesor de Diente (s)</td>
+                        <td id="ps-tooth-thickness">--</td>
+                        <td>mm</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        // Cambiar entre pestañas
+        function openTab(tabName) {
+            const tabContents = document.getElementsByClassName('tab-content');
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].classList.remove('active');
+            }
+            const tabs = document.getElementsByClassName('tab');
+            for (let i = 0; i < tabs.length; i++) {
+                tabs[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Ejemplos de engranajes reales
+        function loadStraightExample() {
+            document.getElementById('straight-module').value = 3;
+            document.getElementById('straight-teeth').value = 25;
+            document.getElementById('straight-pressure-angle').value = 20;
+            calculateStraightGear();
+        }
+        function loadHelicalExample() {
+            document.getElementById('helical-module').value = 2;
+            document.getElementById('helical-teeth').value = 30;
+            document.getElementById('helical-angle').value = 20;
+            document.getElementById('helical-pressure-angle').value = 20;
+            calculateHelicalGear();
+        }
+        function loadBevelExample() {
+            document.getElementById('bevel-module').value = 4;
+            document.getElementById('bevel-teeth').value = 20;
+            document.getElementById('bevel-angle').value = 30;
+            document.getElementById('bevel-pressure-angle').value = 20;
+            calculateBevelGear();
+        }
+
+        // Engranajes rectos
+        function calculateStraightGear() {
+            const module = parseFloat(document.getElementById('straight-module').value);
+            const teeth = parseInt(document.getElementById('straight-teeth').value);
+            const pressureAngle = parseFloat(document.getElementById('straight-pressure-angle').value);
+
+            if (!module || !teeth) {
+                alert("Ingrese el módulo y número de dientes");
+                return;
+            }
+
+            const pitchDiameter = module * teeth;
+            const externalDiameter = pitchDiameter + (2 * module);
+            const internalDiameter = pitchDiameter - (2.5 * module);
+            const circularPitch = Math.PI * module;
+            const toothHeight = 2.25 * module;
+            const toothThickness = (Math.PI * module) / 2;
+
+            // Distancia entre dientes (cuerda): cuerda = 2 * R * sin(π / Z)
+            const radius = pitchDiameter / 2;
+            const chord = 2 * radius * Math.sin(Math.PI / teeth);
+
+            document.getElementById('straight-pitch-diameter').textContent = pitchDiameter.toFixed(2) + " mm";
+            document.getElementById('straight-external-diameter').textContent = externalDiameter.toFixed(2) + " mm";
+            document.getElementById('straight-internal-diameter').textContent = internalDiameter.toFixed(2) + " mm";
+            document.getElementById('straight-circular-pitch').textContent = circularPitch.toFixed(2) + " mm";
+            document.getElementById('straight-tooth-height').textContent = toothHeight.toFixed(2) + " mm";
+            document.getElementById('straight-tooth-thickness').textContent = toothThickness.toFixed(2) + " mm";
+            document.getElementById('straight-chord').textContent = chord.toFixed(3) + " mm";
+
+            document.getElementById('straight-results').style.display = 'block';
+        }
+
+        function loadStraightDPExample() {
+            document.getElementById('straight-dp-dp').value = 8;
+            document.getElementById('straight-dp-teeth').value = 32;
+            document.getElementById('straight-dp-pressure-angle').value = 20;
+            calculateStraightGearDP();
+        }
+
+        // Engranajes helicoidales
+        function calculateHelicalGear() {
+            const module = parseFloat(document.getElementById('helical-module').value);
+            const teeth = parseInt(document.getElementById('helical-teeth').value);
+            const angle = parseFloat(document.getElementById('helical-angle').value);
+            const pressureAngle = parseFloat(document.getElementById('helical-pressure-angle').value);
+
+            if (!module || !teeth || !angle) {
+                alert("Complete todos los campos");
+                return;
+            }
+
+            const angleRad = angle * Math.PI / 180;
+            const transverseModule = module / Math.cos(angleRad);
+            const pitchDiameter = transverseModule * teeth;
+            const externalDiameter = pitchDiameter + 2 * module;
+            const axialPitch = (Math.PI * module) / Math.sin(angleRad);
+            const normalPitch = Math.PI * module;
+
+            // Distancia entre dientes (cuerda) en el círculo primitivo
+            const radius = pitchDiameter / 2;
+            const chord = 2 * radius * Math.sin(Math.PI / teeth);
+
+            document.getElementById('helical-transverse-module').textContent = transverseModule.toFixed(4) + " mm";
+            document.getElementById('helical-pitch-diameter').textContent = pitchDiameter.toFixed(2) + " mm";
+            document.getElementById('helical-external-diameter').textContent = externalDiameter.toFixed(2) + " mm";
+            document.getElementById('helical-axial-pitch').textContent = axialPitch.toFixed(2) + " mm";
+            document.getElementById('helical-normal-pitch').textContent = normalPitch.toFixed(2) + " mm";
+            document.getElementById('helical-chord').textContent = chord.toFixed(3) + " mm";
+
+            document.getElementById('helical-results').style.display = 'block';
+        }
+
+        // Engranajes cónicos
+        function calculateBevelGear() {
+            const module = parseFloat(document.getElementById('bevel-module').value);
+            const teeth = parseInt(document.getElementById('bevel-teeth').value);
+            const angle = parseFloat(document.getElementById('bevel-angle').value);
+            const pressureAngle = parseFloat(document.getElementById('bevel-pressure-angle').value);
+
+            if (!module || !teeth || !angle) {
+                alert("Complete todos los campos");
+                return;
+            }
+
+            const angleRad = angle * Math.PI / 180;
+            const pitchDiameter = module * teeth;
+            const coneLength = pitchDiameter / (2 * Math.sin(angleRad));
+            const minorModule = module * (coneLength - module) / coneLength;
+
+            // Distancia entre dientes (cuerda) en el círculo primitivo mayor
+            const radius = pitchDiameter / 2;
+            const chord = 2 * radius * Math.sin(Math.PI / teeth);
+
+            document.getElementById('bevel-pitch-diameter').textContent = pitchDiameter.toFixed(2) + " mm";
+            document.getElementById('bevel-inclination').textContent = angle.toFixed(2) + "°";
+            document.getElementById('bevel-cone-length').textContent = coneLength.toFixed(2) + " mm";
+            document.getElementById('bevel-minor-module').textContent = minorModule.toFixed(2) + " mm";
+            document.getElementById('bevel-chord').textContent = chord.toFixed(3) + " mm";
+
+            document.getElementById('bevel-results').style.display = 'block';
+        }
+
+        // Engranajes rectos con Diametral Pitch
+        function calculateStraightGearDP() {
+            const dp = parseFloat(document.getElementById('straight-dp-dp').value);
+            const teeth = parseInt(document.getElementById('straight-dp-teeth').value);
+            // const pressureAngle = parseFloat(document.getElementById('straight-dp-pressure-angle').value); // No se usa directamente en estos cálculos básicos, pero se mantiene por consistencia.
+
+            if (isNaN(dp) || isNaN(teeth) || dp <= 0 || teeth < 12) {
+                alert("Ingrese un Diametral Pitch válido (DP > 0) y un número de dientes (Z >= 12).");
+                return;
+            }
+
+            const inchToMm = 25.4;
+
+            // Cálculos basados en DP, convertidos a mm
+            const module_equivalent = inchToMm / dp;
+            const pitchDiameter_mm = (teeth / dp) * inchToMm;
+            const externalDiameter_mm = ((teeth + 2) / dp) * inchToMm; // Addendum = 1/DP
+            const internalDiameter_mm = ((teeth - 2.5) / dp) * inchToMm; // Dedendum = 1.25/DP (estándar común)
+            // const circularPitch_mm = (Math.PI / dp) * inchToMm;
+            // const toothHeight_mm = (2.25 / dp) * inchToMm; // Total depth
+            // const toothThickness_mm = (Math.PI / (2 * dp)) * inchToMm; // En el círculo primitivo
+
+            document.getElementById('straight-dp-module').textContent = module_equivalent.toFixed(4) + " mm";
+            document.getElementById('straight-dp-pitch-diameter').textContent = pitchDiameter_mm.toFixed(3) + " mm";
+            document.getElementById('straight-dp-external-diameter').textContent = externalDiameter_mm.toFixed(3) + " mm";
+            document.getElementById('straight-dp-internal-diameter').textContent = internalDiameter_mm.toFixed(3) + " mm";
+            // Aquí puedes añadir más resultados a la tabla si lo deseas, como Paso Circular, Altura de Diente, etc.
+
+            document.getElementById('straight-dp-results').style.display = 'block';
+        }
+
+        // Engranajes con Desplazamiento de Perfil
+        function calculateProfileShiftGear() {
+            const module = parseFloat(document.getElementById('ps-module').value);
+            const teeth = parseInt(document.getElementById('ps-teeth').value);
+            const pressureAngleDeg = parseFloat(document.getElementById('ps-pressure-angle').value);
+            const x = parseFloat(document.getElementById('ps-profile-shift').value);
+
+            if (isNaN(module) || isNaN(teeth) || isNaN(pressureAngleDeg) || isNaN(x)) {
+                alert("Por favor, ingrese todos los valores numéricos para el cálculo de desplazamiento de perfil.");
+                return;
+            }
+            if (module <= 0 || teeth < 1) {
+                alert("Módulo y número de dientes deben ser valores positivos.");
+                return;
+            }
+
+            // Parámetros estándar
+            const ha_star = 1.0;   // Coeficiente de adendo
+            const hf_star = 1.25;  // Coeficiente de dedendo
+            const c_star = 0.25;   // Coeficiente de juego radial
+
+            // Ángulos
+            const alpha = pressureAngleDeg * Math.PI / 180;
+            const inv = (a) => Math.tan(a) - a;
+
+            // Diámetro primitivo
+            const d = module * teeth;
+
+            // Diámetro base
+            const db = d * Math.cos(alpha);
+
+            // Adendo y dedendo reales
+            const ha = ha_star * module + x * module;
+            const hf = hf_star * module - x * module;
+
+            // Diámetro exterior (da)
+            const da = d + 2 * ha;
+
+            // Diámetro de raíz (df)
+            const df = d - 2 * hf;
+
+            // Espesor teórico en el círculo primitivo (s)
+            // Espesor real considerando desplazamiento de perfil:
+            // s = m * [π/2 + 2x * tan(α)]
+            const s = module * (Math.PI / 2 + 2 * x * Math.tan(alpha));
+
+            // Ángulo de presión en la cabeza (αa)
+            const ra = da / 2;
+            const rp = d / 2;
+            const cos_alpha_a = db / ra;
+            let alpha_a = Math.acos(Math.min(1, cos_alpha_a)); // Evita NaN si cos_alpha_a > 1
+
+            // Espesor real en el círculo exterior (sa)
+            // sa = s - 2 * m * [inv(αa) - inv(α)]
+            const sa = s - 2 * module * (inv(alpha_a) - inv(alpha));
+
+            // Mostrar resultados
+            document.getElementById('ps-pitch-diameter').textContent = d.toFixed(3);
+            document.getElementById('ps-base-diameter').textContent = db.toFixed(3);
+            document.getElementById('ps-outside-diameter').textContent = da.toFixed(3);
+            document.getElementById('ps-root-diameter').textContent = df.toFixed(3);
+            document.getElementById('ps-addendum').textContent = ha.toFixed(3);
+            document.getElementById('ps-dedendum').textContent = hf.toFixed(3);
+            document.getElementById('ps-tooth-thickness').textContent = s.toFixed(3) + " (en círculo primitivo)";
+
+            document.getElementById('ps-results').style.display = 'block';
+        }
+
+        function loadProfileShiftExample() {
+            document.getElementById('ps-module').value = 2;
+            document.getElementById('ps-teeth').value = 24;
+            document.getElementById('ps-pressure-angle').value = 20;
+            document.getElementById('ps-profile-shift').value = 0.5;
+            calculateProfileShiftGear();
+        }
+
+    </script>
+
+    <!-- Estriados -->
+    <div id="spline" class="tab-content active">
+        <h2>Calculadora de Estriados Involutales (Ref. DIN 5480 / ISO 4156)</h2>
+        <div class="form-group">
+            <label for="spline-type">Tipo de Estriado:</label>
+            <select id="spline-type" onchange="updateSplineInputs()">
+                <option value="shaft">Eje (Externo)</option>
+                <option value="hole">Agujero (Interno)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="spline-module">Módulo (m):</label>
+            <input type="number" id="spline-module" step="0.01" min="0.5" placeholder="Ej: 2">
+        </div>
+        <div class="form-group">
+            <label for="spline-teeth">Número de Dientes/Estrías (Z):</label>
+            <input type="number" id="spline-teeth" min="6" placeholder="Ej: 20">
+        </div>
+        <div class="form-group">
+            <label for="spline-pressure-angle">Ángulo de Presión Normal (αn):</label>
+            <select id="spline-pressure-angle">
+                <option value="30">30° (Común DIN 5480)</option>
+                <option value="20">20°</option>
+                <option value="37.5">37.5°</option>
+                <option value="45">45°</option>
+            </select>
+        </div>
+        <div class="form-group" id="spline-profile-shift-group">
+            <label for="spline-profile-shift">Coeficiente de Modificación de Perfil (xₑⱼₑ):</label>
+            <input type="number" id="spline-profile-shift" step="0.01" placeholder="Ej: 0.5">
+        </div>
+        <div class="form-group">
+            <label for="spline-pin-diameter">Diámetro del Rodillo de Medición (Dm):</label>
+            <input type="number" id="spline-pin-diameter" step="0.001" placeholder="Ej: 3.5 mm (opcional)">
+        </div>
+        
+        <p class="note" style="font-size:12px;">Nota: Se asumen coeficientes de altura de cabeza (ha*) = 1.0 y de pie (hf*) = 1.25 según DIN 5480 para perfil base. La medición con rodillos es aproximada y asume contacto en flancos.</p>
+
+        <button onclick="calculateSpline()">Calcular Estriado</button>
+        <button class="example-btn" onclick="loadSplineExample()">Ejemplo: Eje DIN 5480 m=2, Z=20, α=30°, x=0.2, Dm=3.5</button>
+        
+        <div class="results" id="spline-results" style="display: none;">
+            <h3>Resultados del Cálculo del Estriado</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Parámetro</th>
+                        <th>Valor</th>
+                        <th>Unidad</th>
+                        <th>Referencia</th>
+                    </tr>
+                </thead>
+                <tbody id="spline-results-body">
+                    <!-- Rows will be added by JS -->
+                </tbody>
+            </table>
+            <div id="spline-measurement-note" class="note" style="margin-top:10px; font-size:12px;"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Funciones existentes de la calculadora de engranajes (openTab, calculateStraightGear, etc.)
+        // ... (se mantienen las funciones anteriores) ...
+
+        // --- INICIO CÓDIGO CALCULADORA DE ESTRIADOS ---
+
+        // Helper function for involute: tan(angle) - angle
+        function inv(angleRad) {
+            return Math.tan(angleRad) - angleRad;
+        }
+
+        // Helper function for inverse involute (Newton-Raphson)
+        // Finds angleRad such that inv(angleRad) = targetInvAngle
+        function invTan(targetInvAngle, initialGuessRad, tolerance = 1e-7, maxIterations = 100) {
+            let angleRad = initialGuessRad;
+
+            // Handle edge case where targetInvAngle and initialGuessRad are both very close to 0
+            if (Math.abs(targetInvAngle) < tolerance && Math.abs(initialGuessRad) < tolerance) {
+                 // If inv(initialGuessRad) is already close to targetInvAngle, return initialGuessRad
+                if (Math.abs( (Math.tan(initialGuessRad) - initialGuessRad) - targetInvAngle) < tolerance) {
+                    return initialGuessRad;
+                }
+            }
+
+            for (let i = 0; i < maxIterations; i++) {
+                const tanAngle = Math.tan(angleRad);
+                const currentInv = tanAngle - angleRad;
+                const error = currentInv - targetInvAngle;
+
+                if (Math.abs(error) < tolerance) {
+                    return angleRad;
+                }
+
+                const derivative = tanAngle * tanAngle; // tan^2(angle)
+
+                if (Math.abs(derivative) < 1e-12) { // Derivative is very small or zero
+                    console.warn(`Inverse involute: derivative near zero at angle ${angleRad} rad. Error: ${error}. Target: ${targetInvAngle}. Iteration: ${i}`);
+                    return NaN; // Indicate failure to converge reliably
+                }
+                angleRad -= error / derivative;
+            }
+            console.warn(`Inverse involute function did not converge after ${maxIterations} iterations. Last angle: ${angleRad}, Error: ${error}, Target: ${targetInvAngle}`);
+            return NaN; // Return NaN if not converged
+        }
+
+        function updateSplineInputs() {
+            const type = document.getElementById('spline-type').value;
+            const profileShiftLabel = document.querySelector('#spline-profile-shift-group label');
+            const profileShiftInput = document.getElementById('spline-profile-shift');
+
+            if (type === 'shaft') {
+                profileShiftLabel.textContent = 'Coeficiente de Modificación de Perfil (x\u2091\u2c7c\u2091):'; // x_eje
+                profileShiftInput.placeholder = 'Ej: 0.5';
+            } else { // hole
+                profileShiftLabel.textContent = 'Coeficiente de Modificación de Perfil (x\u2095\u2091\u1d63):'; // x_agujero
+                profileShiftInput.placeholder = 'Ej: 0 (para agujero base)';
+            }
+        }
+
+        function calculateSpline() {
+            const type = document.getElementById('spline-type').value;
+            const m = parseFloat(document.getElementById('spline-module').value);
+            const Z = parseInt(document.getElementById('spline-teeth').value);
+            const alphaDeg = parseFloat(document.getElementById('spline-pressure-angle').value);
+            const x = parseFloat(document.getElementById('spline-profile-shift').value); // x_eje or x_agujero
+            const Dm_input = document.getElementById('spline-pin-diameter').value;
+            const Dm = Dm_input.trim() === "" ? NaN : parseFloat(Dm_input);
+
+            if (isNaN(m) || isNaN(Z) || isNaN(alphaDeg) || isNaN(x)) {
+                alert("Por favor, ingrese todos los valores numéricos requeridos (Módulo, Dientes, Ángulo de Presión, Coef. Modificación).");
+                return;
+            }
+            if (m <= 0 || Z < 6 ) {
+                alert("Valores de módulo o número de dientes inválidos (Z >= 6).");
+                return;
+            }
+            if (!isNaN(Dm) && Dm <= 0) {
+                alert("El diámetro del rodillo de medición (Dm) debe ser positivo.");
+                return;
+            }
+
+            const alphaRad = alphaDeg * Math.PI / 180;
+            const ha_star = 1.0; // Addendum coefficient (DIN 5480 P0, P1, P2)
+            const hf_star = 1.25; // Dedendum coefficient (DIN 5480 P0, P1, P2)
+
+            const dp = m * Z;
+            const db = dp * Math.cos(alphaRad);
+
+            let resultsData = [];
+            resultsData.push({ param: "Módulo (m)", value: m.toFixed(3), unit: "mm", norm: "DIN 5480" });
+            resultsData.push({ param: "Número de Dientes (Z)", value: Z, unit: "", norm: "DIN 5480" });
+            resultsData.push({ param: "Ángulo de Presión Normal (αn)", value: alphaDeg.toFixed(1) + "°", unit: "", norm: "DIN 5480" });
+            resultsData.push({ param: "Coeficiente de Modificación (x)", value: x.toFixed(3), unit: "", norm: "DIN 5480" });
+            resultsData.push({ param: "Diámetro Primitivo (dp)", value: dp.toFixed(3), unit: "mm", norm: "DIN 5480" });
+            resultsData.push({ param: "Diámetro Base (db)", value: db.toFixed(3), unit: "mm", norm: "DIN 5480" });
+
+            let measurementNote = "";
+
+            if (type === 'shaft') {
+                const da = m * (Z + 2 * x + 2 * ha_star);
+                const df = m * (Z + 2 * x - 2 * hf_star);
+                const sn = m * (Math.PI / 2 + 2 * x * Math.tan(alphaRad)); 
+
+                resultsData.push({ param: "Diámetro de Cabeza (da)", value: da.toFixed(3), unit: "mm", norm: "DIN 5480" });
+                resultsData.push({ param: "Diámetro de Pie (df)", value: df.toFixed(3), unit: "mm", norm: "DIN 5480" });
+                resultsData.push({ param: "Espesor de Diente Normal Teórico (sn)", value: sn.toFixed(4), unit: "mm", norm: "Cálculo" });
+
+                if (!isNaN(Dm)) {
+                    const inv_alpha_n = inv(alphaRad);
+                    const term_Dm_calc = Dm / (m * Z * Math.cos(alphaRad));
+                    const term_x_calc = (2 * x * Math.tan(alphaRad)) / Z;
+                    
+                    const target_inv_alpha_wk = inv_alpha_n + term_Dm_calc + term_x_calc;
+                    const alpha_wk_rad = invTan(target_inv_alpha_wk, alphaRad);
+
+                    if (!isNaN(alpha_wk_rad)) {
+                        const Mdk = (m * Z * Math.cos(alphaRad) / Math.cos(alpha_wk_rad)) + Dm;
+                        resultsData.push({ param: "Medición Sobre Rodillos (Mdk)", value: Mdk.toFixed(4), unit: "mm", norm: "DIN 5480 E.3.1" });
+                        resultsData.push({ param: "con Rodillo Dm", value: Dm.toFixed(3), unit: "mm", norm: "" });
+                        measurementNote = "Mdk calculado según DIN 5480-1 E.3.1. Asume contacto en flancos. Verificar rango de Dm y tolerancias del estriado.";
+                    } else {
+                        resultsData.push({ param: "Medición Sobre Rodillos (Mdk)", value: "Error cálculo", unit: "mm", norm: "" });
+                        measurementNote = "No se pudo calcular Mdk (convergencia invTan). Verifique los datos o el Dm.";
+                    }
+                } else {
+                     resultsData.push({ param: "Medición Sobre Rodillos (Mdk)", value: "--", unit: "mm", norm: "Ingrese Dm" });
+                }
+
+            } else { // hole (Internal Spline)
+                const Dif = m * (Z - 2 * x - 2 * ha_star); 
+                const DaG = m * (Z - 2 * x + 2 * hf_star); 
+                const en = m * (Math.PI / 2 - 2 * x * Math.tan(alphaRad)); 
+
+                resultsData.push({ param: "Diámetro Menor (Forma) (D_if)", value: Dif.toFixed(3), unit: "mm", norm: "DIN 5480" });
+                resultsData.push({ param: "Diámetro Mayor (Raíz) (D_aG)", value: DaG.toFixed(3), unit: "mm", norm: "DIN 5480" });
+                resultsData.push({ param: "Ancho de Hueco Normal Teórico (en)", value: en.toFixed(4), unit: "mm", norm: "Cálculo" });
+
+                if (!isNaN(Dm)) {
+                    const inv_alpha_n = inv(alphaRad);
+                    const term_Dm_calc = Dm / (m * Z * Math.cos(alphaRad));
+                    const term_x_calc = (2 * x * Math.tan(alphaRad)) / Z; // x here is x_H for hole
+
+                    const target_inv_alpha_wki = inv_alpha_n - term_Dm_calc - term_x_calc;
+                    const alpha_wki_rad = invTan(target_inv_alpha_wki, alphaRad);
+
+                    if (!isNaN(alpha_wki_rad)) {
+                        const Mdi = (m * Z * Math.cos(alphaRad) / Math.cos(alpha_wki_rad)) - Dm;
+                        resultsData.push({ param: "Medición Entre Rodillos (Mdi)", value: Mdi.toFixed(4), unit: "mm", norm: "DIN 5480 E.3.2" });
+                        resultsData.push({ param: "con Rodillo Dm", value: Dm.toFixed(3), unit: "mm", norm: "" });
+                        measurementNote = "Mdi calculado según DIN 5480-1 E.3.2. Asume contacto en flancos. Verificar rango de Dm y tolerancias del estriado.";
+                    } else {
+                        resultsData.push({ param: "Medición Entre Rodillos (Mdi)", value: "Error cálculo", unit: "mm", norm: "" });
+                        measurementNote = "No se pudo calcular Mdi (convergencia invTan). Verifique los datos o el Dm.";
+                    }
+                } else {
+                    resultsData.push({ param: "Medición Entre Rodillos (Mdi)", value: "--", unit: "mm", norm: "Ingrese Dm" });
+                }
+            }
+
+            const resultsBody = document.getElementById('spline-results-body');
+            resultsBody.innerHTML = ""; 
+            resultsData.forEach(res => {
+                const row = resultsBody.insertRow();
+                row.insertCell().textContent = res.param;
+                row.insertCell().textContent = res.value;
+                row.insertCell().textContent = res.unit;
+                row.insertCell().textContent = res.norm;
+            });
+
+            document.getElementById('spline-measurement-note').textContent = measurementNote;
+            document.getElementById('spline-results').style.display = 'block';
+        }
+
+        function loadSplineExample() {
+            document.getElementById('spline-type').value = 'shaft';
+            updateSplineInputs(); 
+            document.getElementById('spline-module').value = 2;
+            document.getElementById('spline-teeth').value = 20;
+            document.getElementById('spline-pressure-angle').value = 30;
+            document.getElementById('spline-profile-shift').value = 0.2;
+            document.getElementById('spline-pin-diameter').value = 3.5; 
+            calculateSpline();
+        }
+        // --- FIN CÓDIGO CALCULADORA DE ESTRIADOS ---
+
+        // Asegúrate que la función openTab esté definida (debería estarlo por el código existente)
+        // function openTab(tabName) { ... } 
+
+        // Llamada inicial para configurar etiquetas de inputs de estriados si es necesario
+        document.addEventListener('DOMContentLoaded', function() {
+            if (document.getElementById('spline-type')) { // Verifica que el elemento exista
+                 updateSplineInputs();
+            }
+        });
+    </script>
+
+</body></html>

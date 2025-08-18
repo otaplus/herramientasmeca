@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Triángulos</title>
+    <script src="./Calculadora de Triángulos_files/saved_resource"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Apply Roboto font globally */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+        /* Style for number input arrows (optional) */
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
+        input[type=number] {
+          -moz-appearance: textfield; /* Firefox */
+        }
+        /* Canvas styling */
+        canvas {
+            border: 1px solid #7f8c8d;
+            background-color: #ecf0f1;
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+            height: auto;
+        }
+        /* Custom class for message area */
+        .message-area {
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            text-align: center;
+            font-weight: 500;
+            margin-top: 1rem;
+            min-height: 40px;
+        }
+        .message-area.error {
+            background-color: #c0392b;
+            border: 1px solid #e74c3c;
+            color: #ecf0f1;
+        }
+        .message-area.success {
+            background-color: #27ae60;
+            border: 1px solid #2ecc71;
+            color: #ecf0f1;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.16 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.container{width:100%}@media (min-width: 640px){.container{max-width:640px}}@media (min-width: 768px){.container{max-width:768px}}@media (min-width: 1024px){.container{max-width:1024px}}@media (min-width: 1280px){.container{max-width:1280px}}@media (min-width: 1536px){.container{max-width:1536px}}.col-span-2{grid-column:span 2 / span 2}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-2{margin-bottom:0.5rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-2{margin-top:0.5rem}.mt-6{margin-top:1.5rem}.mt-8{margin-top:2rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.w-full{width:100%}.max-w-5xl{max-width:64rem}.flex-grow{flex-grow:1}.list-inside{list-style-position:inside}.list-disc{list-style-type:disc}.grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr))}.flex-col{flex-direction:column}.items-center{align-items:center}.justify-center{justify-content:center}.gap-4{gap:1rem}.gap-8{gap:2rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-l-md{border-top-left-radius:0.375rem;border-bottom-left-radius:0.375rem}.rounded-r-md{border-top-right-radius:0.375rem;border-bottom-right-radius:0.375rem}.border{border-width:1px}.border-l-0{border-left-width:0px}.border-gray-600{--tw-border-opacity:1;border-color:rgb(191 219 254 / var(--tw-border-opacity, 1))}.border-gray-700{--tw-border-opacity:1;border-color:rgb(229 231 235 / var(--tw-border-opacity, 1))}.border-gray-600{--tw-border-opacity:1;border-color:rgb(209 213 219 / var(--tw-border-opacity, 1))}.bg-gray-800{--tw-bg-opacity:1;background-color:rgb(239 246 255 / var(--tw-bg-opacity, 1))}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-600{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-yellow-500{--tw-bg-opacity:1;background-color:rgb(22 163 74 / var(--tw-bg-opacity, 1))}.bg-red-500{--tw-bg-opacity:1;background-color:rgb(220 38 38 / var(--tw-bg-opacity, 1))}.bg-gray-700{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-2{padding:0.5rem}.p-4{padding:1rem}.p-6{padding:1.5rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.text-center{text-align:center}.text-right{text-align:right}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-medium{font-weight:500}.font-semibold{font-weight:600}.text-yellow-300{--tw-text-opacity:1;color:rgb(29 78 216 / var(--tw-text-opacity, 1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(30 64 175 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-300{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity, 1))}.text-gray-200{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-gray-900{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-150{transition-duration:150ms}.ease-in-out{transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1)}.hover\:bg-green-700:hover{--tw-bg-opacity:1;background-color:rgb(21 128 61 / var(--tw-bg-opacity, 1))}.hover\:bg-red-700:hover{--tw-bg-opacity:1;background-color:rgb(185 28 28 / var(--tw-bg-opacity, 1))}.focus\:border-blue-500:focus{--tw-border-opacity:1;border-color:rgb(59 130 246 / var(--tw-border-opacity, 1))}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.focus\:ring-2:focus{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.focus\:ring-blue-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(59 130 246 / var(--tw-ring-opacity, 1))}.focus\:ring-green-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(34 197 94 / var(--tw-ring-opacity, 1))}.focus\:ring-red-500:focus{--tw-ring-opacity:1;--tw-ring-color:rgb(239 68 68 / var(--tw-ring-opacity, 1))}.focus\:ring-offset-2:focus{--tw-ring-offset-width:2px}@media (min-width: 768px){.md\:mt-0{margin-top:0px}.md\:w-1\/2{width:50%}.md\:flex-row{flex-direction:row}.md\:p-8{padding:2rem}.md\:text-3xl{font-size:1.875rem;line-height:2.25rem}}</style></head>
+<body class="bg-gray-800 p-4 md:p-8">
+
+    <div class="container mx-auto max-w-5xl bg-gray-700 p-6 md:p-8 rounded-lg shadow-md">
+        <h1 class="text-2xl md:text-3xl font-bold text-center text-gray-200 mb-6">Calculadora de Triángulos</h1>
+
+        <div class="flex flex-col md:flex-row gap-8">
+
+            <div class="w-full md:w-1/2">
+                <h2 class="text-xl font-semibold text-gray-300 mb-4">Introduce los datos conocidos:</h2>
+                <p class="text-sm text-gray-400 mb-4">(Necesitas al menos 3 datos, incluyendo al menos un lado)</p>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <label for="sideA" class="text-sm font-medium text-gray-300 text-right">Lado a:</label>
+                        <input type="number" id="sideA" step="any" placeholder="Ej: 5" class="col-span-2 p-2 border border-gray-600 rounded-md focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <label for="sideB" class="text-sm font-medium text-gray-300 text-right">Lado b:</label>
+                        <input type="number" id="sideB" step="any" placeholder="Ej: 6" class="col-span-2 p-2 border border-gray-600 rounded-md focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <label for="sideC" class="text-sm font-medium text-gray-300 text-right">Lado c:</label>
+                        <input type="number" id="sideC" step="any" placeholder="Ej: 7" class="col-span-2 p-2 border border-gray-600 rounded-md focus:ring-yellow-500 focus:border-yellow-500">
+                    </div>
+
+                    <hr class="my-4 border-gray-700">
+
+                    <div class="grid grid-cols-3 gap-4 items-center">
+                        <label for="angleAlpha" class="text-sm font-medium text-gray-300 text-right">Ángulo α:</label>
+                        <div class="col-span-2 flex items-center">
+                           <input type="number" id="angleAlpha" step="any" placeholder="Grados" class="flex-grow p-2 border border-gray-600 rounded-l-md focus:ring-yellow-500 focus:border-yellow-500">
+                           <span class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-600 bg-gray-600 text-gray-400 rounded-r-md">°</span>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-3 gap-4 items-center">
+                        <label for="angleBeta" class="text-sm font-medium text-gray-300 text-right">Ángulo β:</label>
+                        <div class="col-span-2 flex items-center">
+                           <input type="number" id="angleBeta" step="any" placeholder="Grados" class="flex-grow p-2 border border-gray-600 rounded-l-md focus:ring-yellow-500 focus:border-yellow-500">
+                           <span class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-600 bg-gray-600 text-gray-400 rounded-r-md">°</span>
+                        </div>
+                    </div>
+                     <div class="grid grid-cols-3 gap-4 items-center">
+                        <label for="angleGamma" class="text-sm font-medium text-gray-300 text-right">Ángulo γ:</label>
+                        <div class="col-span-2 flex items-center">
+                           <input type="number" id="angleGamma" step="any" placeholder="Grados" class="flex-grow p-2 border border-gray-600 rounded-l-md focus:ring-yellow-500 focus:border-yellow-500">
+                           <span class="inline-flex items-center px-3 py-2 border border-l-0 border-gray-600 bg-gray-600 text-gray-400 rounded-r-md">°</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center gap-4 mt-6">
+                    <button id="calculateBtn" class="px-6 py-2 bg-yellow-500 text-gray-900 font-semibold rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition duration-150 ease-in-out">
+                        Calcular
+                    </button>
+                    <button id="resetBtn" class="px-6 py-2 bg-red-500 text-gray-900 font-semibold rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out">
+                        Reset
+                    </button>
+                </div>
+
+                <div id="message" class="message-area"></div>
+
+                <div id="formulaOutput" class="mt-6 p-4 bg-gray-800 border border-gray-600 rounded-md hidden">
+                    <h3 class="text-md font-semibold text-yellow-400 mb-2">Fórmulas Utilizadas:</h3>
+                    <ul id="formulasList" class="list-disc list-inside text-sm text-yellow-300 space-y-1 font-mono"></ul>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 mt-8 md:mt-0">
+                <h2 class="text-xl font-semibold text-gray-300 mb-4 text-center">Representación Gráfica</h2>
+                <canvas id="triangleCanvas" width="400" height="300" class="rounded-md"></canvas>
+                <p class="text-xs text-gray-400 mt-2 text-center">Nota: La gráfica es una representación esquemática.</p>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DOM Elements ---
+            const sideAInput = document.getElementById('sideA');
+            const sideBInput = document.getElementById('sideB');
+            const sideCInput = document.getElementById('sideC');
+            const angleAlphaInput = document.getElementById('angleAlpha');
+            const angleBetaInput = document.getElementById('angleBeta');
+            const angleGammaInput = document.getElementById('angleGamma');
+            const calculateBtn = document.getElementById('calculateBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const messageDiv = document.getElementById('message');
+            const formulaOutputDiv = document.getElementById('formulaOutput');
+            const formulasList = document.getElementById('formulasList');
+            const canvas = document.getElementById('triangleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // --- Constants ---
+            const PI = Math.PI;
+            const TOLERANCE = 1e-10; // Tolerance for floating point comparisons
+
+            // --- Helper Functions ---
+            const degToRad = (degrees) => degrees * PI / 180;
+            const radToDeg = (radians) => radians * 180 / PI;
+
+            // Function to display messages
+            const showMessage = (text, type = 'error') => {
+                messageDiv.textContent = text;
+                messageDiv.className = `message-area ${type}`; // Apply type class
+                // Auto-clear success messages after a delay
+                if (type === 'success') {
+                    setTimeout(() => {
+                        if (messageDiv.classList.contains('success')) { // Check if it's still the same message
+                           clearOutput(); // Clear message and formulas
+                        }
+                    }, 6000); // Clear after 6 seconds
+                }
+            };
+
+            // Function to clear messages and formula output
+            const clearOutput = () => {
+                messageDiv.textContent = '';
+                messageDiv.className = 'message-area'; // Reset class
+                formulasList.innerHTML = ''; // Clear formula list
+                formulaOutputDiv.classList.add('hidden'); // Hide formula section
+            };
+
+            // Function to add used formula to the list
+            let usedFormulasSet = new Set(); // Use a Set to avoid duplicate formula entries
+            const addFormula = (description, formula) => {
+                 const formulaEntry = `<strong>${description}:</strong> ${formula}`;
+                 if (!usedFormulasSet.has(formulaEntry)) {
+                    usedFormulasSet.add(formulaEntry);
+                    const li = document.createElement('li');
+                    li.innerHTML = formulaEntry;
+                    formulasList.appendChild(li);
+                    formulaOutputDiv.classList.remove('hidden'); // Show formula section
+                 }
+            };
+
+            // Function to format numbers for display (e.g., 4 decimal places)
+            const formatNumber = (num) => {
+                if (num === null || isNaN(num)) return '';
+                if (Math.abs(num) < TOLERANCE) return '0'; // Avoid -0
+                // Round to a reasonable number of decimal places
+                const rounded = parseFloat(num.toFixed(4));
+                return rounded.toString();
+            }
+
+            // --- Drawing Functions ---
+            const drawTriangle = (a, b, c, alpha, beta, gamma) => {
+                const canvasWidth = canvas.width;
+                const canvasHeight = canvas.height;
+                ctx.clearRect(0, 0, canvasWidth, canvasHeight); // Clear previous drawing
+                ctx.strokeStyle = '#4b5563'; // gray-600
+                ctx.fillStyle = '#1f2937'; // gray-800
+                ctx.lineWidth = 1.5;
+                ctx.font = '12px Inter, sans-serif'; // Use Inter font
+
+                // --- Schematic Drawing ---
+                // This is a simplified representation, not perfectly to scale.
+                // It prioritizes showing labels clearly.
+
+                const padding = 40; // Padding around the triangle
+                const availableWidth = canvasWidth - 2 * padding;
+                const availableHeight = canvasHeight - 2 * padding;
+
+                // Define schematic vertices (A bottom-left, B bottom-right, C top-ish)
+                let Ax = padding;
+                let Ay = canvasHeight - padding;
+                let Bx = canvasWidth - padding;
+                let By = canvasHeight - padding;
+                let Cx = canvasWidth / 2; // Default C x-coordinate to center
+                let Cy = padding; // Default C y-coordinate near top
+
+                // Basic attempt to adjust base width 'c' and C position if possible
+                // This is approximate and won't create a perfectly scaled triangle
+                if (c !== null && a !== null && b !== null && alpha !== null && beta !== null && gamma !== null) {
+                    // Try to make base roughly proportional to side c
+                    const baseLength = availableWidth * 0.8; // Use 80% of available width for base 'c'
+                    const scale = baseLength / c;
+
+                    Bx = Ax + baseLength;
+                    // Calculate Cx, Cy using scaled lengths and angle alpha (at vertex A)
+                    Cx = Ax + (b * scale) * Math.cos(degToRad(alpha));
+                    Cy = Ay - (b * scale) * Math.sin(degToRad(alpha));
+
+                    // Clamp coordinates to stay roughly within bounds
+                    Cx = Math.max(padding / 2, Math.min(canvasWidth - padding / 2, Cx));
+                    Cy = Math.max(padding, Math.min(canvasHeight - padding / 2, Cy));
+
+                } else {
+                    // If not all values known, use default schematic positions
+                    Bx = Ax + availableWidth;
+                    Cx = Ax + availableWidth / 2;
+                    Cy = padding;
+                }
+
+
+                // Draw triangle lines
+                ctx.beginPath();
+                ctx.moveTo(Ax, Ay);
+                ctx.lineTo(Bx, By);
+                ctx.lineTo(Cx, Cy);
+                ctx.closePath();
+                ctx.stroke();
+
+                // --- Add Labels ---
+                const labelOffset = 15; // Distance from line/vertex
+                const angleOffset = 20; // Distance from vertex for angle label
+
+                // Side Labels (placed near midpoint, offset outwards)
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                // Side 'a' (opposite A, connects B and C)
+                const midBCx = (Bx + Cx) / 2;
+                const midBCy = (By + Cy) / 2;
+                const angleBC = Math.atan2(Cy - By, Cx - Bx); // Angle of line BC
+                ctx.fillText(
+                    `a${a !== null ? ` = ${formatNumber(a)}` : ''}`,
+                    midBCx + labelOffset * Math.sin(angleBC),
+                    midBCy - labelOffset * Math.cos(angleBC)
+                );
+
+                // Side 'b' (opposite B, connects A and C)
+                const midACx = (Ax + Cx) / 2;
+                const midACy = (Ay + Cy) / 2;
+                const angleAC = Math.atan2(Cy - Ay, Cx - Ax); // Angle of line AC
+                 ctx.fillText(
+                    `b${b !== null ? ` = ${formatNumber(b)}` : ''}`,
+                    midACx - labelOffset * Math.sin(angleAC),
+                    midACy + labelOffset * Math.cos(angleAC)
+                );
+
+                // Side 'c' (opposite C, connects A and B)
+                const midABx = (Ax + Bx) / 2;
+                const midABAy = Ay; // Horizontal base
+                ctx.fillText(
+                    `c${c !== null ? ` = ${formatNumber(c)}` : ''}`,
+                    midABx,
+                    midABAy + labelOffset // Place below the base
+                );
+
+
+                // Angle Labels (placed near vertices)
+                // Angle α at vertex A
+                 ctx.fillText(
+                    `α${alpha !== null ? ` = ${formatNumber(alpha)}°` : ''}`,
+                    Ax + angleOffset * Math.cos(degToRad(alpha || 0) / 2), // Position slightly inside angle
+                    Ay - angleOffset * Math.sin(degToRad(alpha || 0) / 2)
+                 );
+
+                // Angle β at vertex B
+                 ctx.fillText(
+                    `β${beta !== null ? ` = ${formatNumber(beta)}°` : ''}`,
+                    Bx - angleOffset * Math.cos(degToRad(beta || 0) / 2), // Position slightly inside angle
+                    By - angleOffset * Math.sin(degToRad(beta || 0) / 2)
+                 );
+
+                // Angle γ at vertex C
+                 ctx.fillText(
+                    `γ${gamma !== null ? ` = ${formatNumber(gamma)}°` : ''}`,
+                    Cx, // Position slightly below vertex C
+                    Cy + angleOffset
+                 );
+            };
+
+            // Function to draw the initial placeholder triangle
+            const drawInitialTriangle = () => {
+                drawTriangle(null, null, null, null, null, null); // Pass nulls for placeholders
+            };
+
+            // --- Calculation Logic ---
+            const calculateTriangle = () => {
+                clearOutput();
+                usedFormulasSet.clear(); // Reset formulas for this calculation
+
+                // --- Read and Validate Inputs ---
+                let a = parseFloat(sideAInput.value) || null;
+                let b = parseFloat(sideBInput.value) || null;
+                let c = parseFloat(sideCInput.value) || null;
+                let alpha = parseFloat(angleAlphaInput.value) || null;
+                let beta = parseFloat(angleBetaInput.value) || null;
+                let gamma = parseFloat(angleGammaInput.value) || null;
+
+                let knownSides = [a, b, c].filter(s => s !== null && s > 0).length;
+                let knownAngles = [alpha, beta, gamma].filter(ang => ang !== null && ang > 0 && ang < 180).length;
+                let knownValues = knownSides + knownAngles;
+
+                // Basic validation
+                if (knownValues < 3) {
+                    showMessage("Se necesitan al menos 3 valores conocidos.");
+                    return;
+                }
+                if (knownSides === 0) {
+                    showMessage("Se necesita conocer al menos un lado.");
+                    return;
+                }
+                 if (knownAngles === 3 && knownSides === 0) {
+                     showMessage("Conocer solo los tres ángulos no define un triángulo único (solo su forma). Se necesita al menos un lado.");
+                    return;
+                 }
+                 // Validate individual values
+                 if ((alpha !== null && (alpha <= 0 || alpha >= 180)) ||
+                     (beta !== null && (beta <= 0 || beta >= 180)) ||
+                     (gamma !== null && (gamma <= 0 || gamma >= 180))) {
+                      showMessage("Los ángulos deben ser mayores que 0 y menores que 180 grados.");
+                      return;
+                 }
+                 if ((a !== null && a <= 0) || (b !== null && b <= 0) || (c !== null && c <= 0)) {
+                      showMessage("Los lados deben ser positivos.");
+                      return;
+                 }
+                 // Validate initial angle sum if all three are provided
+                 if (alpha !== null && beta !== null && gamma !== null && Math.abs((alpha + beta + gamma) - 180) > TOLERANCE * 10) { // Wider tolerance for input
+                     showMessage("La suma de los ángulos iniciales proporcionados no es 180 grados.");
+                     return;
+                 }
+
+                // Convert known angles to radians for calculations
+                let alphaRad = alpha ? degToRad(alpha) : null;
+                let betaRad = beta ? degToRad(beta) : null;
+                let gammaRad = gamma ? degToRad(gamma) : null;
+
+                // --- Calculation Strategy (Iterative Approach) ---
+                let changed = true;
+                let iterations = 0;
+                const maxIterations = 10; // Safety break to prevent infinite loops
+
+                while (changed && iterations < maxIterations && knownValues < 6) {
+                    changed = false;
+                    iterations++;
+                    let valuesBeforeIteration = knownValues;
+
+                    // 1. Calculate third angle if two are known
+                    if (alphaRad !== null && betaRad !== null && gammaRad === null) {
+                        gammaRad = PI - alphaRad - betaRad;
+                        if (gammaRad <= TOLERANCE) { showMessage("Triángulo inválido (ángulo γ resultante no positivo)."); return; }
+                        gamma = radToDeg(gammaRad);
+                        addFormula("Suma de ángulos", "γ = 180° - α - β");
+                        knownAngles++;
+                    } else if (alphaRad !== null && gammaRad !== null && betaRad === null) {
+                        betaRad = PI - alphaRad - gammaRad;
+                         if (betaRad <= TOLERANCE) { showMessage("Triángulo inválido (ángulo β resultante no positivo)."); return; }
+                        beta = radToDeg(betaRad);
+                        addFormula("Suma de ángulos", "β = 180° - α - γ");
+                        knownAngles++;
+                    } else if (betaRad !== null && gammaRad !== null && alphaRad === null) {
+                        alphaRad = PI - betaRad - gammaRad;
+                         if (alphaRad <= TOLERANCE) { showMessage("Triángulo inválido (ángulo α resultante no positivo)."); return; }
+                        alpha = radToDeg(alphaRad);
+                        addFormula("Suma de ángulos", "α = 180° - β - γ");
+                         knownAngles++;
+                    }
+
+                    // 2. Law of Sines (Use if a side/opposite angle pair is known)
+                    // a / sin(α) = b / sin(β) = c / sin(γ) = k
+                     let k = null; // The ratio for Law of Sines
+                     if (a !== null && alphaRad !== null && Math.sin(alphaRad) > TOLERANCE) k = a / Math.sin(alphaRad);
+                     else if (b !== null && betaRad !== null && Math.sin(betaRad) > TOLERANCE) k = b / Math.sin(betaRad);
+                     else if (c !== null && gammaRad !== null && Math.sin(gammaRad) > TOLERANCE) k = c / Math.sin(gammaRad);
+
+                    if (k !== null) {
+                        // Find missing sides using known angles
+                        if (a === null && alphaRad !== null && Math.sin(alphaRad) > TOLERANCE) {
+                            a = k * Math.sin(alphaRad);
+                            if (a <= TOLERANCE) { showMessage("Triángulo inválido (lado 'a' resultante no positivo)."); return; }
+                            addFormula("Ley de Senos (lado)", "a = k * sin(α)"); // Simplified notation
+                            knownSides++;
+                        }
+                        if (b === null && betaRad !== null && Math.sin(betaRad) > TOLERANCE) {
+                            b = k * Math.sin(betaRad);
+                             if (b <= TOLERANCE) { showMessage("Triángulo inválido (lado 'b' resultante no positivo)."); return; }
+                             addFormula("Ley de Senos (lado)", "b = k * sin(β)");
+                            knownSides++;
+                        }
+                        if (c === null && gammaRad !== null && Math.sin(gammaRad) > TOLERANCE) {
+                            c = k * Math.sin(gammaRad);
+                             if (c <= TOLERANCE) { showMessage("Triángulo inválido (lado 'c' resultante no positivo)."); return; }
+                             addFormula("Ley de Senos (lado)", "c = k * sin(γ)");
+                            knownSides++;
+                        }
+
+                         // Find missing angles using known sides (handle arcsin carefully)
+                         // Note: Ambiguous case (SSA) needs consideration, but we'll provide the primary solution.
+                         if (alphaRad === null && a !== null) {
+                             const sinAlpha = a / k;
+                             if (sinAlpha >= -1 && sinAlpha <= 1) {
+                                 alphaRad = Math.asin(sinAlpha);
+                                 // Check for obtuse angle possibility in SSA case if relevant angle wasn't the largest
+                                 // Basic check: if calculated angle + known angle > 180, it's impossible
+                                 if (betaRad && alphaRad + betaRad >= PI - TOLERANCE) { /* Potentially ambiguous, but stick to primary solution */ }
+                                 if (gammaRad && alphaRad + gammaRad >= PI - TOLERANCE) { /* Potentially ambiguous */ }
+
+                                 alpha = radToDeg(alphaRad);
+                                 addFormula("Ley de Senos (ángulo)", "sin(α) = a / k");
+                                 knownAngles++;
+                             } else if(Math.abs(sinAlpha) > 1 + TOLERANCE) { // Check if value is significantly out of bounds
+                                showMessage("Cálculo imposible con Ley de Senos (sin(α) fuera de [-1, 1]). Datos inconsistentes?"); return;
+                             }
+                         }
+                         if (betaRad === null && b !== null) {
+                             const sinBeta = b / k;
+                             if (sinBeta >= -1 && sinBeta <= 1) {
+                                 betaRad = Math.asin(sinBeta);
+                                 beta = radToDeg(betaRad);
+                                 addFormula("Ley de Senos (ángulo)", "sin(β) = b / k");
+                                 knownAngles++;
+                             } else if (Math.abs(sinBeta) > 1 + TOLERANCE) {
+                                showMessage("Cálculo imposible con Ley de Senos (sin(β) fuera de [-1, 1]). Datos inconsistentes?"); return;
+                             }
+                         }
+                         if (gammaRad === null && c !== null) {
+                            const sinGamma = c / k;
+                             if (sinGamma >= -1 && sinGamma <= 1) {
+                                 gammaRad = Math.asin(sinGamma);
+                                 gamma = radToDeg(gammaRad);
+                                 addFormula("Ley de Senos (ángulo)", "sin(γ) = c / k");
+                                 knownAngles++;
+                             } else if (Math.abs(sinGamma) > 1 + TOLERANCE) {
+                                showMessage("Cálculo imposible con Ley de Senos (sin(γ) fuera de [-1, 1]). Datos inconsistentes?"); return;
+                             }
+                         }
+                    }
+
+
+                    // 3. Law of Cosines
+                    // Calculate side if SAS (Side-Angle-Side)
+                    if (a === null && b !== null && c !== null && alphaRad !== null) {
+                        const aSquared = b*b + c*c - 2*b*c*Math.cos(alphaRad);
+                        if (aSquared < TOLERANCE) { showMessage("Triángulo inválido (lado 'a' resultante no positivo por Ley Cosenos)."); return; }
+                        a = Math.sqrt(aSquared);
+                        addFormula("Ley de Cosenos (lado)", "a² = b² + c² - 2bc⋅cos(α)");
+                        knownSides++;
+                    } else if (b === null && a !== null && c !== null && betaRad !== null) {
+                        const bSquared = a*a + c*c - 2*a*c*Math.cos(betaRad);
+                         if (bSquared < TOLERANCE) { showMessage("Triángulo inválido (lado 'b' resultante no positivo por Ley Cosenos)."); return; }
+                        b = Math.sqrt(bSquared);
+                        addFormula("Ley de Cosenos (lado)", "b² = a² + c² - 2ac⋅cos(β)");
+                        knownSides++;
+                    } else if (c === null && a !== null && b !== null && gammaRad !== null) {
+                        const cSquared = a*a + b*b - 2*a*b*Math.cos(gammaRad);
+                         if (cSquared < TOLERANCE) { showMessage("Triángulo inválido (lado 'c' resultante no positivo por Ley Cosenos)."); return; }
+                        c = Math.sqrt(cSquared);
+                        addFormula("Ley de Cosenos (lado)", "c² = a² + b² - 2ab⋅cos(γ)");
+                        knownSides++;
+                    }
+
+                     // Calculate angle if SSS (Side-Side-Side)
+                     if (alphaRad === null && a !== null && b !== null && c !== null) {
+                         const cosAlpha = (b*b + c*c - a*a) / (2*b*c);
+                         if (cosAlpha >= -1 && cosAlpha <= 1) {
+                             alphaRad = Math.acos(cosAlpha);
+                             alpha = radToDeg(alphaRad);
+                             addFormula("Ley de Cosenos (ángulo)", "cos(α) = (b²+c²-a²)/2bc");
+                             knownAngles++;
+                         } else { showMessage("Triángulo inválido (Lados no forman triángulo - Ley Cosenos para α)."); return; }
+                     } else if (betaRad === null && a !== null && b !== null && c !== null) {
+                          const cosBeta = (a*a + c*c - b*b) / (2*a*c);
+                         if (cosBeta >= -1 && cosBeta <= 1) {
+                             betaRad = Math.acos(cosBeta);
+                             beta = radToDeg(betaRad);
+                             addFormula("Ley de Cosenos (ángulo)", "cos(β) = (a²+c²-b²)/2ac");
+                             knownAngles++;
+                         } else { showMessage("Triángulo inválido (Lados no forman triángulo - Ley Cosenos para β)."); return; }
+                     } else if (gammaRad === null && a !== null && b !== null && c !== null) {
+                          const cosGamma = (a*a + b*b - c*c) / (2*a*b);
+                         if (cosGamma >= -1 && cosGamma <= 1) {
+                             gammaRad = Math.acos(cosGamma);
+                             gamma = radToDeg(gammaRad);
+                             addFormula("Ley de Cosenos (ángulo)", "cos(γ) = (a²+b²-c²)/2ab");
+                             knownAngles++;
+                         } else { showMessage("Triángulo inválido (Lados no forman triángulo - Ley Cosenos para γ)."); return; }
+                     }
+
+                    // Update known values count and check if progress was made
+                    knownValues = knownSides + knownAngles;
+                    if (knownValues > valuesBeforeIteration) {
+                        changed = true;
+                    }
+
+                } // End while loop
+
+                // --- Final Validation and Output ---
+                if (knownValues < 6) {
+                     if (iterations >= maxIterations) {
+                        showMessage("No se pudo resolver completamente el triángulo (posiblemente datos insuficientes o inconsistentes tras iteraciones).");
+                     } else {
+                         // This case might occur if input is valid but doesn't lead to a unique solution immediately (e.g., AAA)
+                         // or if there was an earlier validation exit. The earlier messages should cover it.
+                         // If no specific error message shown yet, provide a generic one.
+                         if (!messageDiv.textContent) {
+                            showMessage("No se pudo resolver el triángulo con los datos proporcionados.");
+                         }
+                     }
+                    return; // Stop if not fully solved
+                }
+
+                // Final check: Triangle Inequality (a+b > c, etc.)
+                if (a + b <= c + TOLERANCE || a + c <= b + TOLERANCE || b + c <= a + TOLERANCE) {
+                    showMessage("Error: Los lados calculados no cumplen la desigualdad triangular.");
+                    // Optionally clear results if invalid
+                    // sideAInput.value = ''; sideBInput.value = ''; sideCInput.value = ''; // etc.
+                    return;
+                }
+                 // Final check: Angle sum accuracy
+                 const finalAngleSum = alpha + beta + gamma;
+                 if (Math.abs(finalAngleSum - 180) > TOLERANCE * 100) { // Use a larger tolerance for final check after calculations
+                     showMessage(`Advertencia: La suma final de los ángulos (${formatNumber(finalAngleSum)}°) no es exactamente 180°. Puede deberse a redondeo o datos iniciales.`, "success"); // Show as warning/success
+                     // Don't necessarily stop, but inform the user.
+                 }
+
+                // Update input fields with calculated values, applying formatting
+                sideAInput.value = formatNumber(a);
+                sideBInput.value = formatNumber(b);
+                sideCInput.value = formatNumber(c);
+                angleAlphaInput.value = formatNumber(alpha);
+                angleBetaInput.value = formatNumber(beta);
+                angleGammaInput.value = formatNumber(gamma);
+
+                if (!messageDiv.textContent || messageDiv.classList.contains('success')) { // Show success only if no error occurred
+                   showMessage("Cálculo completado.", "success");
+                }
+
+                // Draw the resulting triangle with calculated values
+                drawTriangle(a, b, c, alpha, beta, gamma);
+            };
+
+            // --- Reset Function ---
+            const resetCalculator = () => {
+                sideAInput.value = '';
+                sideBInput.value = '';
+                sideCInput.value = '';
+                angleAlphaInput.value = '';
+                angleBetaInput.value = '';
+                angleGammaInput.value = '';
+                clearOutput(); // Clear messages and formulas
+                drawInitialTriangle(); // Redraw the placeholder triangle
+            };
+
+            // --- Event Listeners ---
+            calculateBtn.addEventListener('click', calculateTriangle);
+            resetBtn.addEventListener('click', resetCalculator);
+
+            // --- Initial Draw ---
+            drawInitialTriangle(); // Draw the schematic triangle on page load
+        });
+    </script>
+
+
+
+</body></html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Ventas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; margin: 0; padding: 0; background-color: #2c3e50; color: #ecf0f1; }
+        .tab-container { overflow: hidden; border-bottom: 1px solid #7f8c8d; background-color: #34495e; }
+        .tab-container button { background-color: inherit; float: left; border: none; outline: none; cursor: pointer; padding: 14px 16px; transition: 0.3s; font-size: 17px; color: #ecf0f1; }
+        .tab-container button:hover { background-color: #566573; }
+        .tab-container button.active { background-color: #ecf0f1; color: #2c3e50; font-weight: bold; }
+        .tab-content { display: none; padding: 20px; border-top: none; background-color: #34495e; }
+        #Ventas { display: block; } /* Pestaña por defecto abierta */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #7f8c8d; padding: 10px; text-align: left; }
+        th { background-color: #566573; }
+        input[type="text"], input[type="number"], input[type="email"], textarea, select { width: calc(90% - 18px); padding: 8px; margin-bottom: 10px; border: 1px solid #7f8c8d; border-radius: 4px; background-color: #566573; color: #ecf0f1; }
+        button { padding: 10px 15px; background-color: #f1c40f; color: #2c3e50; border: none; border-radius: 4px; cursor: pointer; margin-top: 10px; font-size: 16px; font-weight: bold; }
+        button:hover { background-color: #f39c12; }
+        button.danger { background-color: #c0392b; }
+        button.danger:hover { background-color: #e74c3c; }
+        .section { margin-bottom: 25px; padding: 20px; border: 1px solid #7f8c8d; border-radius: 5px; background-color: #2c3e50; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        h2 { color: #f1c40f; border-bottom: 2px solid #f1c40f; padding-bottom: 10px; }
+        h3 { color: #f1c40f; margin-top: 0; }
+        pre { background-color: #2c3e50; border: 1px dashed #7f8c8d; padding: 10px; white-space: pre-wrap; word-wrap: break-word; font-size: 13px; color: #ecf0f1; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="tab-container">
+    <button class="tab-link active" onclick="openTab(event, 'Ventas')">Ventas</button>
+    <button class="tab-link" onclick="openTab(event, 'Inventario')">Inventario</button>
+    <button class="tab-link" onclick="openTab(event, 'Personal')">Personal</button>
+    <button class="tab-link" onclick="openTab(event, 'Empresa')">Datos de la Empresa</button>
+</div>
+
+<div id="Ventas" class="tab-content">
+    <h2>Módulo de Ventas</h2>
+    <div class="section">
+        <h3>Registrar Nueva Venta</h3>
+        <div>
+            <label for="ventaProductoBusqueda">Buscar Producto:</label>
+            <input type="text" id="ventaProductoBusqueda" onkeyup="filtrarProductosVenta()" placeholder="Escriba para buscar...">
+            <select id="ventaProductoSelect" size="5" style="width: 90%; margin-bottom:10px;"></select>
+        </div>
+        <div>
+            <label for="ventaCantidad">Cantidad:</label>
+            <input type="number" id="ventaCantidad" value="1" min="1">
+        </div>
+        <button onclick="agregarAlCarrito()">Agregar al Carrito</button>
+    </div>
+
+    <div class="section">
+        <h3>Carrito de Compra</h3>
+        <table id="tablaCarrito">
+            <thead><tr><th>Producto</th><th>Cantidad</th><th>Precio Unit. (Simulado)</th><th>Subtotal (Simulado)</th><th>Acciones</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <h4>Total Venta (Simulado): <span id="totalVenta">0.00</span></h4>
+        <button onclick="emitirFactura()">Emitir Factura (Simulado)</button>
+        <button onclick="guardarVenta()" style="margin-left: 10px;">Guardar Venta en TXT (Simulado)</button>
+        <pre id="facturaOutput"></pre>
+        <pre id="ventaTxtOutput"></pre>
+    </div>
+</div>
+
+<div id="Inventario" class="tab-content">
+    <h2>Módulo de Inventario</h2>
+    <div class="section">
+        <h3>Agregar Nuevo Producto</h3>
+        <label for="prodNombre">Nombre del producto:</label>
+        <input type="text" id="prodNombre" placeholder="Nombre del producto">
+        <label for="prodKeywords">Palabras clave (separadas por coma):</label>
+        <input type="text" id="prodKeywords" placeholder="Ej: electronica, audio, portatil">
+        <label for="prodCantidad">Cantidad en existencia:</label>
+        <input type="number" id="prodCantidad" placeholder="Cantidad">
+        <button onclick="agregarProducto()">Agregar Producto</button>
+    </div>
+    <div class="section">
+        <h3>Lista de Productos</h3>
+        <table id="tablaInventario">
+            <thead><tr><th>Nombre</th><th>Palabras Clave</th><th>Cantidad</th><th>Acciones</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="guardarInventario()">Guardar Inventario en TXT (Simulado)</button>
+        <pre id="inventarioTxtOutput"></pre>
+    </div>
+</div>
+
+<div id="Personal" class="tab-content">
+    <h2>Módulo de Personal</h2>
+    <div class="section">
+        <h3>Agregar Personal</h3>
+        <label for="persNombre">Nombre:</label>
+        <input type="text" id="persNombre" placeholder="Nombre">
+        <label for="persApellido">Apellido:</label>
+        <input type="text" id="persApellido" placeholder="Apellido">
+        <label for="persCedula">Cédula:</label>
+        <input type="text" id="persCedula" placeholder="Número de Cédula">
+        <label for="persDireccion">Dirección:</label>
+        <input type="text" id="persDireccion" placeholder="Dirección">
+        <label for="persTelefono">Teléfono:</label>
+        <input type="text" id="persTelefono" placeholder="Teléfono">
+        <label for="persCorreo">Correo Electrónico:</label>
+        <input type="email" id="persCorreo" placeholder="Correo Electrónico">
+        <button onclick="agregarPersonal()">Agregar Personal</button>
+    </div>
+    <div class="section">
+        <h3>Lista de Personal</h3>
+        <table id="tablaPersonal">
+            <thead><tr><th>Nombre</th><th>Apellido</th><th>Cédula</th><th>Dirección</th><th>Teléfono</th><th>Correo</th><th>Acciones</th></tr></thead>
+            <tbody></tbody>
+        </table>
+        <button onclick="guardarPersonal()">Guardar Personal en TXT (Simulado)</button>
+        <pre id="personalTxtOutput"></pre>
+    </div>
+</div>
+
+<div id="Empresa" class="tab-content">
+    <h2>Módulo de Datos de la Empresa</h2>
+    <div class="section">
+        <h3>Datos de la Empresa (para Facturas)</h3>
+        <label for="empNombre">Nombre de la Empresa:</label>
+        <input type="text" id="empNombre" placeholder="Nombre de la Empresa">
+        <label for="empIdFiscal">ID Fiscal (RIF, NIT, etc.):</label>
+        <input type="text" id="empIdFiscal" placeholder="ID Fiscal">
+        <label for="empDireccion">Dirección Fiscal:</label>
+        <textarea id="empDireccion" placeholder="Dirección Fiscal"></textarea>
+        <label for="empTelefono">Teléfono de Contacto:</label>
+        <input type="text" id="empTelefono" placeholder="Teléfono de Contacto">
+        <label for="empCorreo">Correo Electrónico de Contacto:</label>
+        <input type="email" id="empCorreo" placeholder="Correo Electrónico de Contacto">
+        <button onclick="guardarDatosEmpresa()">Guardar Datos Empresa</button>
+    </div>
+    <div class="section">
+        <h3>Datos Actuales de la Empresa</h3>
+        <pre id="datosEmpresaActuales">No hay datos de la empresa ingresados.</pre>
+        <button onclick="mostrarDatosEmpresaTxt()">Ver Contenido TXT (Simulado)</button>
+        <pre id="empresaTxtOutput"></pre>
+    </div>
+</div>
+
+<script>
+    // --- Simulación de Bases de Datos en Memoria ---
+    // Nota: Estos datos se pierden al recargar la página.
+    // Para persistencia real, se necesitaría localStorage (limitado y solo en el navegador del usuario) o un backend (servidor).
+    let inventario = []; // Array de objetos: { nombre: '', keywords: [], cantidad: 0 }
+    let personal = [];   // Array de objetos: { nombre: '', apellido: '', cedula: '', direccion: '', telefono: '', correo: '' }
+    let datosEmpresa = null; // Objeto: { nombre: '', idFiscal: '', direccion: '', telefono: '', correo: '' }
+    let carrito = [];    // Array de objetos: { productoNombre: '', cantidad: 0, precioUnitarioSimulado: 0 }
+    let ventasRegistradas = []; // Array de strings, cada string es una venta formateada para TXT.
+
+    function openTab(evt, tabName) {
+        let i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+
+        // Actualizar contenido específico de la pestaña al abrirla
+        if (tabName === 'Ventas') inicializarModuloVentas();
+        if (tabName === 'Inventario') actualizarTablaInventario();
+        if (tabName === 'Personal') actualizarTablaPersonal();
+        if (tabName === 'Empresa') actualizarVistaDatosEmpresa();
+    }
+
+    // --- Módulo Inventario ---
+    function agregarProducto() {
+        const nombre = document.getElementById('prodNombre').value.trim();
+        const keywords = document.getElementById('prodKeywords').value.split(',').map(k => k.trim()).filter(k => k);
+        const cantidad = parseInt(document.getElementById('prodCantidad').value);
+
+        if (nombre && !isNaN(cantidad) && cantidad >= 0) {
+            // Evitar duplicados por nombre
+            if (inventario.find(p => p.nombre.toLowerCase() === nombre.toLowerCase())) {
+                alert('Un producto con este nombre ya existe.');
+                return;
+            }
+            inventario.push({ nombre, keywords, cantidad });
+            actualizarTablaInventario();
+            document.getElementById('prodNombre').value = '';
+            document.getElementById('prodKeywords').value = '';
+            document.getElementById('prodCantidad').value = '';
+        } else {
+            alert('Por favor, ingrese nombre y cantidad válidos (la cantidad no puede ser negativa).');
+        }
+    }
+
+    function actualizarTablaInventario() {
+        const tbody = document.getElementById('tablaInventario').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        inventario.forEach((prod, index) => {
+            let row = tbody.insertRow();
+            row.insertCell().textContent = prod.nombre;
+            row.insertCell().textContent = prod.keywords.join(', ');
+            row.insertCell().textContent = prod.cantidad;
+            let cellAcciones = row.insertCell();
+            let btnEliminar = document.createElement('button');
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.className = 'danger';
+            btnEliminar.onclick = function() { eliminarProducto(index); };
+            cellAcciones.appendChild(btnEliminar);
+        });
+    }
+
+    function eliminarProducto(index) {
+        inventario.splice(index, 1);
+        actualizarTablaInventario();
+        // Si la pestaña de ventas está activa, actualizar su lista de productos
+        if (document.getElementById('Ventas').style.display === 'block') {
+            filtrarProductosVenta();
+        }
+    }
+
+    function guardarInventario() {
+        const outputElement = document.getElementById('inventarioTxtOutput');
+        if (inventario.length === 0) {
+            outputElement.textContent = "El inventario está vacío. Agregue productos antes de intentar guardar.\nNo se creará 'inventario.txt' si no hay datos.";
+            return;
+        }
+        const contenidoTxt = inventario.map(p => `${p.nombre};${p.keywords.join('|')};${p.cantidad}`).join('\n');
+        outputElement.textContent = `// --- INICIO Contenido para inventario.txt ---\n${contenidoTxt}\n// --- FIN Contenido para inventario.txt ---\n\nNOTA: El navegador no puede crear/escribir archivos directamente en su sistema por seguridad. Este es el contenido que se guardaría. Para una funcionalidad real, necesitaría un backend (servidor). Puede copiar este texto manualmente o implementar una función de descarga (ver ejemplo en el código fuente).`;
+        // descargarArchivo('inventario.txt', contenidoTxt); // Descomentar para habilitar descarga
+    }
+
+    // --- Módulo Personal ---
+    function agregarPersonal() {
+        const nuevoPersonal = {
+            nombre: document.getElementById('persNombre').value.trim(),
+            apellido: document.getElementById('persApellido').value.trim(),
+            cedula: document.getElementById('persCedula').value.trim(),
+            direccion: document.getElementById('persDireccion').value.trim(),
+            telefono: document.getElementById('persTelefono').value.trim(),
+            correo: document.getElementById('persCorreo').value.trim(),
+        };
+        if (nuevoPersonal.nombre && nuevoPersonal.cedula) {
+            if (personal.find(p => p.cedula === nuevoPersonal.cedula)) {
+                alert('Ya existe una persona con esa cédula.');
+                return;
+            }
+            personal.push(nuevoPersonal);
+            actualizarTablaPersonal();
+            ['persNombre', 'persApellido', 'persCedula', 'persDireccion', 'persTelefono', 'persCorreo'].forEach(id => document.getElementById(id).value = '');
+        } else {
+            alert('Por favor, ingrese al menos nombre y cédula.');
+        }
+    }
+
+    function actualizarTablaPersonal() {
+        const tbody = document.getElementById('tablaPersonal').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        personal.forEach((p, index) => {
+            let row = tbody.insertRow();
+            row.insertCell().textContent = p.nombre;
+            row.insertCell().textContent = p.apellido;
+            row.insertCell().textContent = p.cedula;
+            row.insertCell().textContent = p.direccion;
+            row.insertCell().textContent = p.telefono;
+            row.insertCell().textContent = p.correo;
+            let cellAcciones = row.insertCell();
+            let btnEliminar = document.createElement('button');
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.className = 'danger';
+            btnEliminar.onclick = function() { eliminarMiembroPersonal(index); };
+            cellAcciones.appendChild(btnEliminar);
+        });
+    }
+
+    function eliminarMiembroPersonal(index) {
+        personal.splice(index, 1);
+        actualizarTablaPersonal();
+    }
+
+    function guardarPersonal() {
+        const outputElement = document.getElementById('personalTxtOutput');
+        if (personal.length === 0) {
+            outputElement.textContent = "No hay datos de personal para guardar.\nNo se creará 'personal.txt' si no hay datos.";
+            return;
+        }
+        const contenidoTxt = personal.map(p => `${p.nombre};${p.apellido};${p.cedula};${p.direccion};${p.telefono};${p.correo}`).join('\n');
+        outputElement.textContent = `// --- INICIO Contenido para personal.txt ---\n${contenidoTxt}\n// --- FIN Contenido para personal.txt ---\n\nNOTA: Simulación de guardado. Verifique la consola o copie el texto.`;
+    }
+
+    // --- Módulo Datos de la Empresa ---
+    function guardarDatosEmpresa() {
+        datosEmpresa = {
+            nombre: document.getElementById('empNombre').value.trim(),
+            idFiscal: document.getElementById('empIdFiscal').value.trim(),
+            direccion: document.getElementById('empDireccion').value.trim(),
+            telefono: document.getElementById('empTelefono').value.trim(),
+            correo: document.getElementById('empCorreo').value.trim(),
+        };
+        if (datosEmpresa.nombre && datosEmpresa.idFiscal) {
+            actualizarVistaDatosEmpresa();
+            alert('Datos de la empresa guardados/actualizados (en memoria).');
+        } else {
+            alert('Por favor, ingrese al menos el nombre y el ID Fiscal de la empresa.');
+            // datosEmpresa = null; // No anular, permitir corrección
+        }
+    }
+
+    function actualizarVistaDatosEmpresa() {
+        const display = document.getElementById('datosEmpresaActuales');
+        if (datosEmpresa && datosEmpresa.nombre) {
+            display.textContent = `Nombre: ${datosEmpresa.nombre}\nID Fiscal: ${datosEmpresa.idFiscal}\nDirección: ${datosEmpresa.direccion}\nTeléfono: ${datosEmpresa.telefono}\nCorreo: ${datosEmpresa.correo}`;
+        } else {
+            display.textContent = "No hay datos de la empresa ingresados.";
+        }
+    }
+
+    function mostrarDatosEmpresaTxt() {
+        const outputElement = document.getElementById('empresaTxtOutput');
+        if (!datosEmpresa || !datosEmpresa.nombre) {
+            outputElement.textContent = "No hay datos de la empresa para generar el TXT.\nIngrese datos primero para poder 'crear' empresa.txt.";
+            return;
+        }
+        const contenidoTxt = `nombre:${datosEmpresa.nombre}\nidFiscal:${datosEmpresa.idFiscal}\ndireccion:${datosEmpresa.direccion.replace(/\n/g, '\n')}\ntelefono:${datosEmpresa.telefono}\ncorreo:${datosEmpresa.correo}`;
+        outputElement.textContent = `// --- INICIO Contenido para empresa.txt ---\n${contenidoTxt}\n// --- FIN Contenido para empresa.txt ---\n\nNOTA: Simulación de guardado. La dirección usa '\n' para saltos de línea.`;
+    }
+
+    // --- Módulo Ventas ---
+    function inicializarModuloVentas() {
+        filtrarProductosVenta(); // Asegura que la lista de productos esté actualizada
+        actualizarTablaCarrito(); // Asegura que el carrito se muestre correctamente
+    }
+
+    function filtrarProductosVenta() {
+        const busqueda = document.getElementById('ventaProductoBusqueda').value.toLowerCase();
+        const select = document.getElementById('ventaProductoSelect');
+        select.innerHTML = '';
+        inventario.filter(p => p.cantidad > 0 && (p.nombre.toLowerCase().includes(busqueda) || p.keywords.some(k => k.toLowerCase().includes(busqueda))))
+            .forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.nombre;
+                option.textContent = `${p.nombre} (Stock: ${p.cantidad})`;
+                select.appendChild(option);
+            });
+    }
+
+    function agregarAlCarrito() {
+        const selectProducto = document.getElementById('ventaProductoSelect');
+        const nombreProductoSeleccionado = selectProducto.value;
+        const cantidadInput = parseInt(document.getElementById('ventaCantidad').value);
+
+        if (!nombreProductoSeleccionado) { alert('Seleccione un producto.'); return; }
+        if (isNaN(cantidadInput) || cantidadInput <= 0) { alert('Ingrese una cantidad válida.'); return; }
+
+        const productoEnInventario = inventario.find(p => p.nombre === nombreProductoSeleccionado);
+        if (!productoEnInventario) { alert('Producto no encontrado.'); return; }
+
+        const itemEnCarrito = carrito.find(item => item.productoNombre === nombreProductoSeleccionado);
+        const cantidadTotalSolicitada = (itemEnCarrito ? itemEnCarrito.cantidad : 0) + cantidadInput;
+
+        if (cantidadTotalSolicitada > productoEnInventario.cantidad) {
+            alert(`No hay suficiente stock. Solicitado: ${cantidadTotalSolicitada}, Disponible: ${productoEnInventario.cantidad}, En carrito ya hay: ${itemEnCarrito ? itemEnCarrito.cantidad : 0}.`);
+            return;
+        }
+
+        if (itemEnCarrito) {
+            itemEnCarrito.cantidad += cantidadInput;
+        } else {
+            const precioUnitarioSimulado = Math.floor(Math.random() * 10000) / 100 + 10; // Precio aleatorio entre 10.00 y 109.99
+            carrito.push({ productoNombre: nombreProductoSeleccionado, cantidad: cantidadInput, precioUnitarioSimulado });
+        }
+        actualizarTablaCarrito();
+        document.getElementById('ventaCantidad').value = "1";
+    }
+
+    function actualizarTablaCarrito() {
+        const tbody = document.getElementById('tablaCarrito').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+        let totalGeneral = 0;
+        carrito.forEach((item, index) => {
+            let row = tbody.insertRow();
+            const subtotal = item.cantidad * item.precioUnitarioSimulado;
+            totalGeneral += subtotal;
+            row.insertCell().textContent = item.productoNombre;
+            row.insertCell().textContent = item.cantidad;
+            row.insertCell().textContent = item.precioUnitarioSimulado.toFixed(2);
+            row.insertCell().textContent = subtotal.toFixed(2);
+            let cellAcciones = row.insertCell();
+            let btnQuitar = document.createElement('button');
+            btnQuitar.textContent = 'Quitar';
+            btnQuitar.className = 'danger';
+            btnQuitar.onclick = function() { quitarDelCarrito(index); };
+            cellAcciones.appendChild(btnQuitar);
+        });
+        document.getElementById('totalVenta').textContent = totalGeneral.toFixed(2);
+    }
+
+    function quitarDelCarrito(index) {
+        carrito.splice(index, 1);
+        actualizarTablaCarrito();
+    }
+
+    function emitirFactura() {
+        const outputElement = document.getElementById('facturaOutput');
+        if (carrito.length === 0) { outputElement.textContent = "El carrito está vacío."; return; }
+        if (!datosEmpresa || !datosEmpresa.nombre) { outputElement.textContent = "Configure los datos de la empresa primero."; return; }
+
+        let facturaTexto = `-------------------- FACTURA --------------------\n`;
+        facturaTexto += `Empresa: ${datosEmpresa.nombre}\nID Fiscal: ${datosEmpresa.idFiscal}\nDirección: ${datosEmpresa.direccion}\nTeléfono: ${datosEmpresa.telefono}\n`;
+        facturaTexto += `-----------------------------------------------\nFecha: ${new Date().toLocaleString()}\n-----------------------------------------------\nProductos:\n`;
+        let totalFactura = 0;
+        carrito.forEach(item => {
+            const subtotal = item.cantidad * item.precioUnitarioSimulado;
+            totalFactura += subtotal;
+            facturaTexto += `- ${item.productoNombre} (Cant: ${item.cantidad} x Precio: ${item.precioUnitarioSimulado.toFixed(2)}) = Subtotal: ${subtotal.toFixed(2)}\n`;
+        });
+        facturaTexto += `-----------------------------------------------\nTOTAL A PAGAR: ${totalFactura.toFixed(2)}\n-----------------------------------------------\n¡Gracias por su compra!`;
+        outputElement.textContent = facturaTexto;
+    }
+
+    function guardarVenta() {
+        const outputVenta = document.getElementById('ventaTxtOutput');
+        const outputFactura = document.getElementById('facturaOutput');
+        if (carrito.length === 0) { outputVenta.textContent = "El carrito está vacío. No hay venta para guardar."; return; }
+
+        // Actualizar inventario
+        carrito.forEach(itemCarrito => {
+            const productoEnInventario = inventario.find(p => p.nombre === itemCarrito.productoNombre);
+            if (productoEnInventario) productoEnInventario.cantidad -= itemCarrito.cantidad;
+        });
+        actualizarTablaInventario(); // Actualiza la tabla en la pestaña de inventario
+        if (document.getElementById('Ventas').style.display === 'block') filtrarProductosVenta(); // Actualiza el select en la pestaña de ventas
+
+        const idVenta = `VTA-${Date.now()}`;
+        const fechaVenta = new Date().toISOString();
+        const itemsVenta = carrito.map(item => `${item.productoNombre}:${item.cantidad}:${item.precioUnitarioSimulado.toFixed(2)}`);
+        const totalVentaCalc = carrito.reduce((sum, item) => sum + (item.cantidad * item.precioUnitarioSimulado), 0);
+        const registroVenta = `${idVenta};${fechaVenta};${itemsVenta.join('|')};${totalVentaCalc.toFixed(2)}`;
+        ventasRegistradas.push(registroVenta);
+
+        const contenidoTxt = ventasRegistradas.join('\n');
+        outputVenta.textContent = `// --- INICIO Contenido para ventas.txt ---\n${contenidoTxt}\n// --- FIN Contenido para ventas.txt ---\n\nNOTA: Simulación de guardado. El inventario ha sido actualizado (en memoria).\nSe 'crearía' o actualizaría 'ventas.txt' con esta información.`;
+        
+        carrito = [];
+        actualizarTablaCarrito();
+        outputFactura.textContent = "Venta guardada (simulado) y carrito limpiado. Puede emitir una nueva factura o ver el contenido TXT de la venta.";
+        // descargarArchivo('ventas.txt', contenidoTxt); // Descomentar para habilitar descarga
+    }
+
+    // Función genérica para descargar archivos (opcional, para demostración)
+    /*
+    function descargarArchivo(nombreArchivo, contenido) {
+        const elemento = document.createElement('a');
+        elemento.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(contenido));
+        elemento.setAttribute('download', nombreArchivo);
+        elemento.style.display = 'none';
+        document.body.appendChild(elemento);
+        elemento.click();
+        document.body.removeChild(elemento);
+    }
+    */
+
+    // Inicializar la primera pestaña activa al cargar la página
+    window.onload = () => {
+        document.querySelector('.tab-link.active').click();
+    };
+</script>
+
+</body>
+</html>
