@@ -4,91 +4,12 @@
     <meta charset="UTF-8">
     <title>Calculadora Científica Avanzada - Mecanizado Facil</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body {
-            background: #222;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-        }
-        .calc-container {
-            background: #f4f7fa;
-            border-radius: 16px;
-            box-shadow: 0 6px 32px rgba(0,0,0,0.18);
-            margin-top: 40px;
-            padding: 30px 18px 18px 18px;
-            width: 370px;
-        }
-        .calc-title {
-            text-align: center;
-            font-size: 1.3em;
-            color: #222;
-            margin-bottom: 16px;
-            font-weight: bold;
-        }
-        .display {
-            width: 100%;
-            height: 60px;
-            background: #222;
-            color: #0f0;
-            font-size: 1.5em;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            text-align: right;
-            padding: 12px 10px;
-            box-sizing: border-box;
-            overflow-x: auto;
-            letter-spacing: 1px;
-        }
-        .buttons {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-        }
-        button {
-            padding: 13px 0;
-            font-size: 1.08em;
-            border: none;
-            border-radius: 6px;
-            background: #e0e0e0;
-            color: #222;
-            cursor: pointer;
-            transition: background 0.2s;
-            font-family: inherit;
-        }
-        button.operator {
-            background: #3498db;
-            color: #fff;
-        }
-        button.equal {
-            background: #27ae60;
-            color: #fff;
-            grid-column: span 2;
-        }
-        button.clear {
-            background: #e74c3c;
-            color: #fff;
-        }
-        button:active {
-            background: #b2bec3;
-        }
-        .footer {
-            text-align: center;
-            color: #888;
-            font-size: 0.95em;
-            margin-top: 18px;
-        }
-        @media (max-width: 430px) {
-            .calc-container { width: 99vw; }
-            .buttons { grid-template-columns: repeat(6, 1fr); }
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="container">
     <div class="calc-container">
         <div class="calc-title">Calculadora Científica Mecanizado Facil</div>
         <div id="display" class="display">0</div>
@@ -239,5 +160,6 @@
             }
         }
     </script>
+    </div>
 </body>
 </html>

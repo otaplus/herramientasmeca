@@ -7,124 +7,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            line-height: 1.6;
-            color: #ecf0f1;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #2c3e50;
-        }
-        header {
-            background-color: #34495e;
-            color: white;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            text-align: center;
-            border-bottom: 3px solid #f1c40f;
-        }
-        h1 {
-            margin: 0;
-            font-size: 1.8em;
-        }
-        .container {
-            background-color: #34495e;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #f1c40f;
-        }
-        select, input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #7f8c8d;
-            border-radius: 4px;
-            box-sizing: border-box;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-        }
-        .radio-group {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            align-items: center;
-        }
-        .radio-option {
-            display: flex;
-            align-items: center;
-        }
-        .radio-option input {
-            width: auto;
-            margin-right: 5px;
-        }
-        .radio-option label {
-            color: #ecf0f1;
-            font-weight: normal;
-        }
-        button {
-            background-color: #f1c40f;
-            color: #2c3e50;
-            border: none;
-            padding: 12px 18px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            font-weight: bold;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #f39c12;
-        }
-        .results {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #2c3e50;
-            border-radius: 4px;
-            border-left: 4px solid #f1c40f;
-        }
-        .tolerance-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .tolerance-table th, .tolerance-table td {
-            border: 1px solid #7f8c8d;
-            padding: 8px;
-            text-align: center;
-        }
-        .tolerance-table th {
-            background-color: #566573;
-        }
-        .tolerance-table td {
-            background-color: #34495e;
-        }
-        .note {
-            font-size: 0.9em;
-            color: #bdc3c7;
-            margin-top: 10px;
-        }
-        @media (max-width: 600px) {
-            .radio-group {
-                flex-direction: column;
-                gap: 5px;
-                align-items: flex-start;
-            }
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="container">
     <header>
         <h1>Calculadora de Tolerancias ISO</h1>
         <p>Determina las medidas máximas y mínimas permitidas para ejes y agujeros</p>
@@ -323,4 +211,5 @@
         }
     </script>
 
+    </div>
 </body></html>

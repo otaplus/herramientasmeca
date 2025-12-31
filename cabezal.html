@@ -4,117 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora para Cabezal Divisor</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            background-color: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 650px;
-            box-sizing: border-box;
-        }
-        h1, h2 {
-            color: #0056b3;
-            text-align: center;
-        }
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-        label {
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #555;
-        }
-        input[type="number"], select {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 1rem;
-            width: 100%;
-        }
-        input[type="number"]:focus, select:focus {
-            border-color: #0056b3;
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 86, 179, 0.25);
-        }
-        button {
-            background-color: #28a745;
-            color: white;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            transition: background-color 0.3s ease;
-            width: 100%;
-            margin-top: 20px;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .error-message {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            text-align: center;
-            display: none;
-        }
-        .resultados-calculo {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e9ecef;
-            border-radius: 4px;
-        }
-        .resultados-calculo h2 {
-            margin-top: 0;
-            font-size: 1.4em;
-        }
-        .resultados-calculo p {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-        }
-        .resultados-calculo ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .resultados-calculo ul li {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-        }
-        .info-discos {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 15px;
-            text-align: center;
-        }
-    </style>
+    
+<link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="container">
     <div class="container">
         <h1>Calculadora para Cabezal Divisor</h1>
 
@@ -259,5 +154,6 @@
             document.getElementById('mensajeError').style.display = 'none';
         });
     </script>
+    </div>
 </body>
 </html>
