@@ -1,9 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Avances Para Freasadoras - Mecanizado Fácil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
 <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -95,7 +98,7 @@
             const fz = parseFloat(document.getElementById('fz').value);
 
             if (isNaN(rpm) || isNaN(teeth) || isNaN(fz)) {
-                alert("Por favor, introduce valores válidos.");
+                alert("Por favor, introduce valores válidos para la fresadora.");
                 return;
             }
 
@@ -103,34 +106,43 @@
             document.getElementById('feedRate').textContent = feedRate.toFixed(2);
             document.getElementById('result').style.display = 'block';
         }
+
+        function calculateLatheFeedRate() {
+            const rpm = parseFloat(document.getElementById('rpm-lathe').value);
+            const fn = parseFloat(document.getElementById('fn-lathe').value);
+
+            if (isNaN(rpm) || isNaN(fn)) {
+                alert("Por favor, introduce valores válidos para el torno.");
+                return;
+            }
+
+            const feedRate = rpm * fn;
+            document.getElementById('feedRate-lathe').textContent = feedRate.toFixed(2);
+            document.getElementById('result-lathe').style.display = 'block';
+        }
     </script>
-    </div>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Avances para Torno - Mecanizado Fácil</title>
+
+
+
+
+
     
-<link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body>
+    
+
+
     <div class="calculator">
         <h1>Calculadora de Avances para Torno</h1>
         <div class="form-group">
-            <label for="rpm">Revoluciones por minuto (RPM):</label>
-            <input type="number" id="rpm" placeholder="Ej: 1000">
+            <label for="rpm-lathe">Revoluciones por minuto (RPM):</label>
+            <input type="number" id="rpm-lathe" placeholder="Ej: 1000">
         </div>
         <div class="form-group">
-            <label for="fn">Avance por revolución (fn) en mm/rev:</label>
-            <input type="number" id="fn" step="0.01" placeholder="Ej: 0.2">
+            <label for="fn-lathe">Avance por revolución (fn) en mm/rev:</label>
+            <input type="number" id="fn-lathe" step="0.01" placeholder="Ej: 0.2">
         </div>
-        <button onclick="calculateFeedRate()">Calcular Avance</button>
-        <div id="result" class="result" style="display: none;">
-            <strong>Avance (F): <span id="feedRate"></span> mm/min</strong>
+        <button onclick="calculateLatheFeedRate()">Calcular Avance</button>
+        <div id="result-lathe" class="result" style="display: none;">
+            <strong>Avance (F): <span id="feedRate-lathe"></span> mm/min</strong>
         </div>
         <div class="note">
             <p><strong>Nota:</strong> El avance por revolución (fn) depende del material y la herramienta. Consulta la tabla de referencia a continuación.</p>
@@ -190,23 +202,9 @@
         </div>
     </div>
 
-    <script>
-        function calculateFeedRate() {
-            const rpm = parseFloat(document.getElementById('rpm').value);
-            const fn = parseFloat(document.getElementById('fn').value);
+    
 
-            if (isNaN(rpm) || isNaN(fn)) {
-                alert("Por favor, introduce valores válidos.");
-                return;
-            }
 
-            const feedRate = rpm * fn;
-            document.getElementById('feedRate').textContent = feedRate.toFixed(2);
-            document.getElementById('result').style.display = 'block';
-        }
-    </script>
     </div>
-</body>
-</html>
-
+</body></html>
 

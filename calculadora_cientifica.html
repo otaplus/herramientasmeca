@@ -1,0 +1,205 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Científica - Mecanizado Fácil</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Back Button -->
+        <div style="margin: 10px 0;">
+            <a href="index.html"
+                style="display: inline-flex; align-items: center; text-decoration: none; color: var(--accent-primary); font-weight: 500; font-family: 'Roboto', sans-serif;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16"
+                    style="margin-right: 8px;">
+                    <path fill-rule="evenodd"
+                        d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+                </svg>
+                Volver al Inicio
+            </a>
+        </div>
+
+        <h1>Calculadora Científica</h1>
+
+        <div class="calc-container">
+            <input type="text" id="display" class="calc-display" readonly value="0">
+
+            <div class="calc-grid">
+                <!-- Row 1: Scientific Functions -->
+                <button class="calc-btn btn-function" onclick="appendFunction('sin(')">sin</button>
+                <button class="calc-btn btn-function" onclick="appendFunction('cos(')">cos</button>
+                <button class="calc-btn btn-function" onclick="appendFunction('tan(')">tan</button>
+                <button class="calc-btn btn-clear" onclick="clearDisplay()">AC</button>
+
+                <!-- Row 2 -->
+                <button class="calc-btn btn-function" onclick="appendFunction('log(')">log</button>
+                <button class="calc-btn btn-function" onclick="appendFunction('ln(')">ln</button>
+                <button class="calc-btn btn-function" onclick="appendFunction('sqrt(')">√</button>
+                <button class="calc-btn btn-operator" onclick="appendOperator('/')">÷</button>
+
+                <!-- Row 3 -->
+                <button class="calc-btn btn-function" onclick="appendOperator('^')">^</button>
+                <button class="calc-btn btn-function" onclick="appendOperator('(')">(</button>
+                <button class="calc-btn btn-function" onclick="appendOperator(')')">)</button>
+                <button class="calc-btn btn-operator" onclick="appendOperator('*')">×</button>
+
+                <!-- Row 4 -->
+                <button class="calc-btn" onclick="appendNumber('7')">7</button>
+                <button class="calc-btn" onclick="appendNumber('8')">8</button>
+                <button class="calc-btn" onclick="appendNumber('9')">9</button>
+                <button class="calc-btn btn-operator" onclick="appendOperator('-')">-</button>
+
+                <!-- Row 5 -->
+                <button class="calc-btn" onclick="appendNumber('4')">4</button>
+                <button class="calc-btn" onclick="appendNumber('5')">5</button>
+                <button class="calc-btn" onclick="appendNumber('6')">6</button>
+                <button class="calc-btn btn-operator" onclick="appendOperator('+')">+</button>
+
+                <!-- Row 6 -->
+                <button class="calc-btn" onclick="appendNumber('1')">1</button>
+                <button class="calc-btn" onclick="appendNumber('2')">2</button>
+                <button class="calc-btn" onclick="appendNumber('3')">3</button>
+                <button class="calc-btn btn-equal" onclick="calculate()">=</button>
+
+                <!-- Row 7 -->
+                <button class="calc-btn btn-zero" onclick="appendNumber('0')">0</button>
+                <button class="calc-btn" onclick="appendNumber('.')">.</button>
+                <button class="calc-btn btn-function" onclick="appendOperator('PI')">π</button>
+            </div>
+            <div style="margin-top: 10px; text-align: right;">
+                <button id="modeBtn" class="calc-btn btn-function"
+                    style="width: auto; padding: 5px 10px; font-size: 0.9rem;" onclick="toggleMode()">MODO: DEG</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById('display');
+        let currentInput = "0";
+        let isResult = false;
+        let angleMode = "DEG"; // DEG or RAD
+
+        function updateDisplay() {
+            display.value = currentInput;
+            display.scrollLeft = display.scrollWidth; // Auto scroll to end
+        }
+
+        function appendNumber(num) {
+            if (isResult) {
+                currentInput = num;
+                isResult = false;
+            } else {
+                if (currentInput === "0" && num !== ".") {
+                    currentInput = num;
+                } else {
+                    currentInput += num;
+                }
+            }
+            updateDisplay();
+        }
+
+        function appendOperator(op) {
+            if (isResult) isResult = false;
+            // Space inputs slightly for readability
+            currentInput += op;
+            updateDisplay();
+        }
+
+        function appendFunction(func) {
+            if (isResult) {
+                // If previous result exists, wrap it or start new?
+                // For now, let's start new if it's a number, or append if operator?
+                // Safer to just append to current if result is showing (e.g. sin(ANS))
+                currentInput = func;
+                isResult = false;
+            } else {
+                if (currentInput === "0") {
+                    currentInput = func;
+                } else {
+                    currentInput += func;
+                }
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentInput = "0";
+            isResult = false;
+            updateDisplay();
+        }
+
+        function toggleMode() {
+            const btn = document.getElementById('modeBtn');
+            if (angleMode === "DEG") {
+                angleMode = "RAD";
+                btn.textContent = "MODO: RAD";
+            } else {
+                angleMode = "DEG";
+                btn.textContent = "MODO: DEG";
+            }
+        }
+
+        function calculate() {
+            try {
+                let expression = currentInput;
+
+                // Replace UI symbols with JS Math functions
+                expression = expression.replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/\^/g, '**')
+                    .replace(/PI/g, 'Math.PI')
+                    .replace(/sqrt\(/g, 'Math.sqrt(')
+                    .replace(/log\(/g, 'Math.log10(')
+                    .replace(/ln\(/g, 'Math.log(');
+
+                // Handle Trigonometry based on mode
+                // We need to intercept sin(x), cos(x), tan(x) finding the number inside.
+                // Simplified approach: Custom functions for sin/cos/tan that check the mode.
+
+                // But `eval` doesn't know context vars easily. 
+                // Let's replace sin(...) with customSin(...) string and define function.
+
+                expression = expression.replace(/sin\(/g, 'customSin(')
+                    .replace(/cos\(/g, 'customCos(')
+                    .replace(/tan\(/g, 'customTan(');
+
+                // Evaluate
+                // NOTE: Using `new Function` is safer than raw eval in some contexts, but still risky with user input if not sanitized.
+                // Given this is a client-side calculator with no backend execution, risk is minimal (self-XSS).
+
+                const result = new Function("customSin", "customCos", "customTan", "return " + expression)(customSin, customCos, customTan);
+
+                if (!isFinite(result) || isNaN(result)) {
+                    currentInput = "Error";
+                } else {
+                    // Round to precision to avoid floating point floating artifacts (e.g. 0.000000000004)
+                    currentInput = parseFloat(result.toFixed(10)).toString();
+                }
+                isResult = true;
+            } catch (e) {
+                currentInput = "Error";
+                isResult = true; // Reset on next click
+            }
+            updateDisplay();
+        }
+
+        // Trig Helpers
+        function toRad(angle) {
+            return angleMode === "DEG" ? angle * (Math.PI / 180) : angle;
+        }
+
+        function customSin(x) { return Math.sin(toRad(x)); }
+        function customCos(x) { return Math.cos(toRad(x)); }
+        function customTan(x) { return Math.tan(toRad(x)); }
+
+    </script>
+</body>
+
+</html>

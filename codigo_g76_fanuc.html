@@ -1,8 +1,11 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0109)file:///C:/Users/isaac/Downloads/Generador%20de%20C%C3%B3digo%20G71%20y%20Gu%C3%ADa%20para%20Torno%20CNC.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <title>Calculadora de Código G G76 (Fanuc) y Guía</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
 <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -18,8 +21,8 @@
 </div>
     <div class="tab-container">
         <div class="tab-buttons">
-            <button class="tab-button active" onclick="openTab(event, 'Calculadora')">Calculadora G76</button>
-            <button class="tab-button" onclick="openTab(event, 'GuiaUsuario')">Guía del Usuario</button>
+            <button class="tab-button active" onclick="openTab(event, &#39;Calculadora&#39;)">Calculadora G76</button>
+            <button class="tab-button" onclick="openTab(event, &#39;GuiaUsuario&#39;)">Guía del Usuario</button>
         </div>
 
         <div id="Calculadora" class="tab-content tab-pane active">
@@ -29,14 +32,14 @@
                     <legend>Parámetros del Ciclo G76 (Primera Línea)</legend>
                     
                     <label for="m_repeticiones">Número de repeticiones del último pase (m) (01-99):</label>
-                    <input type="number" id="m_repeticiones" value="2" min="1" max="99" required>
+                    <input type="number" id="m_repeticiones" value="2" min="1" max="99" required="">
 
                     <label for="r_salida_angular">Longitud de la salida angular de la rosca (r) (00-99, en décimas del paso):</label>
-                    <input type="number" id="r_salida_angular" value="0" min="0" max="99" required>
+                    <input type="number" id="r_salida_angular" value="0" min="0" max="99" required="">
 
                     <label for="a_angulo_herramienta">Ángulo de la herramienta (a):</label>
                     <select id="a_angulo_herramienta">
-                        <option value="60" selected>60°</option>
+                        <option value="60" selected="">60°</option>
                         <option value="55">55°</option>
                         <option value="30">30°</option>
                         <option value="29">29°</option>
@@ -45,43 +48,43 @@
                     </select>
 
                     <label for="q_min_prof_corte">Mínima profundidad de corte (Q) (micrones, ej: 50 para 0.05mm):</label>
-                    <input type="number" id="q_min_prof_corte" value="0" min="0" required placeholder="Ej: 50">
+                    <input type="number" id="q_min_prof_corte" value="0" min="0" required="" placeholder="Ej: 50">
                     
                     <label for="r_sobrematerial_acabado">Sobrematerial para acabado / Incremental al final (R) (micrones, ej: 20 para 0.02mm):</label>
-                    <input type="number" id="r_sobrematerial_acabado" value="0" min="0" required placeholder="Ej: 20">
+                    <input type="number" id="r_sobrematerial_acabado" value="0" min="0" required="" placeholder="Ej: 20">
                 </fieldset>
 
                 <fieldset>
                     <legend>Parámetros del Ciclo G76 (Segunda Línea)</legend>
 
                     <label for="z_longitud_final_rosca">Posición final absoluta del roscado en Z (mm):</label>
-                    <input type="number" id="z_longitud_final_rosca" step="any" required placeholder="Ej: -30.0">
+                    <input type="number" id="z_longitud_final_rosca" step="any" required="" placeholder="Ej: -30.0">
 
                     <label for="r_conicidad">Valor de conicidad incremental en el eje X (R) (radio, mm, ej: -0.5 para conicidad negativa):</label>
-                    <input type="number" id="r_conicidad" step="any" value="0.0" required placeholder="Ej: -0.5 o 0.5">
+                    <input type="number" id="r_conicidad" step="any" value="0.0" required="" placeholder="Ej: -0.5 o 0.5">
 
                     <label for="q_prof_primer_pase">Profundidad del primer pase (Q) (micrones, ej: 250 para 0.25mm):</label>
-                    <input type="number" id="q_prof_primer_pase" min="0" required placeholder="Ej: 250">
+                    <input type="number" id="q_prof_primer_pase" min="0" required="" placeholder="Ej: 250">
 
                     <label for="f_paso_rosca">Paso de la rosca (F) (mm, indispensable):</label>
-                    <input type="number" id="f_paso_rosca" step="any" min="0.0001" required placeholder="Ej: 1.5">
+                    <input type="number" id="f_paso_rosca" step="any" min="0.0001" required="" placeholder="Ej: 1.5">
                 </fieldset>
 
                 <fieldset>
                     <legend>Parámetros para Cálculo de Geometría de Rosca</legend>
 
                     <label for="diametro_inicial">Diámetro inicial de la rosca (mm):</label>
-                    <input type="number" id="diametro_inicial" step="any" required placeholder="Ej: 20.0">
+                    <input type="number" id="diametro_inicial" step="any" required="" placeholder="Ej: 20.0">
 
                     <label for="tipo_rosca">Tipo de rosca:</label>
                     <select id="tipo_rosca">
-                        <option value="externa" selected>Externa</option>
+                        <option value="externa" selected="">Externa</option>
                         <option value="interna">Interna</option>
                     </select>
 
                     <label for="estandar_rosca">Estándar de rosca (para cálculo de altura de filete):</label>
                     <select id="estandar_rosca">
-                        <option value="iso60" selected>Métrica ISO (60°)</option>
+                        <option value="iso60" selected="">Métrica ISO (60°)</option>
                         <option value="npt">NPT</option>
                         <!-- Se pueden añadir más estándares si es necesario -->
                     </select>
@@ -327,8 +330,8 @@
         //    document.querySelector('.tab-button.active').click();
         // });
     </script>
-    </div>
-</body>
-</html>
 
+
+    </div>
+</body></html>
 

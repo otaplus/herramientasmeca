@@ -1,9 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Tolerancias ISO - Mecanizado Fácil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
 <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -26,7 +29,7 @@
             <div class="radio-group">
                 <label>Tipo de elemento:</label>
                 <div class="radio-option">
-                    <input type="radio" id="hole" name="element-type" value="hole" checked>
+                    <input type="radio" id="hole" name="element-type" value="hole" checked="">
                     <label for="hole">Agujero</label>
                 </div>
                 <div class="radio-option">
@@ -36,11 +39,11 @@
             </div>
             <div class="form-group">
                 <label for="nominal-size">Medida nominal (mm):</label>
-                <input type="number" id="nominal-size" step="0.001" min="0" required>
+                <input type="number" id="nominal-size" step="0.001" min="0" required="">
             </div>
             <div class="form-group">
                 <label for="deviation">Desviación fundamental:</label>
-                <select id="deviation" required>
+                <select id="deviation" required="">
                     <option value="">Seleccione una desviación</option>
                     <!-- Desviaciones para agujeros -->
                     <optgroup label="Agujeros (Letras mayúsculas)" class="hole-deviations">
@@ -94,7 +97,7 @@
             </div>
             <div class="form-group">
                 <label for="tolerance-grade">Grado de tolerancia:</label>
-                <select id="tolerance-grade" required>
+                <select id="tolerance-grade" required="">
                     <option value="">Seleccione un grado</option>
                     <option value="6">6</option>
                     <option value="7">7</option>
@@ -107,7 +110,7 @@
         <div class="results" id="results" style="display: none;">
             <h3>Resultados de Tolerancia</h3>
             <table class="tolerance-table">
-                <tr>
+                <tbody><tr>
                     <th>Medida Nominal</th>
                     <th>Tolerancia</th>
                     <th>Medida Máxima</th>
@@ -119,7 +122,7 @@
                     <td id="max-result">--</td>
                     <td id="min-result">--</td>
                 </tr>
-            </table>
+            </tbody></table>
             <p class="note">* Valores calculados según norma ISO 286-1:2010</p>
         </div>
     </div>
@@ -214,7 +217,7 @@
             document.getElementById('results').style.display = 'block';
         }
     </script>
+
     </div>
-</body>
-</html>
+</body></html>
 

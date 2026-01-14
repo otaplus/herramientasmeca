@@ -1,0 +1,493 @@
+﻿<!DOCTYPE html>
+<!-- saved from url=(0109)file:///C:/Users/isaac/Downloads/Generador%20de%20C%C3%B3digo%20G71%20y%20Gu%C3%ADa%20para%20Torno%20CNC.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Seguridad en Mecanizado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
+<link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+    <div style="margin: 10px 0;">
+    <a href="index.html" style="display: inline-flex; align-items: center; text-decoration: none; color: var(--accent-primary); font-weight: 500; font-family: 'Roboto', sans-serif;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16" style="margin-right: 8px;">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        </svg>
+        Volver al Inicio
+    </a>
+</div><h1>Test de Seguridad en Mecanizado</h1>
+
+    <div id="intro-container" class="quiz-container">
+        <p>Demuestra tus conocimientos sobre seguridad en el taller. Responde 10 preguntas seleccionadas al azar de nuestro banco de preguntas.</p>
+        <button id="start-btn">Comenzar Test</button>
+    </div>
+
+    <div id="quiz-container" class="quiz-container hidden">
+        <div class="progress" id="progress">Pregunta 1 de 10</div>
+        <div id="question-container"></div>
+        <button id="next-btn" class="hidden">Siguiente</button>
+        <button id="submit-btn" class="hidden">Ver resultados</button>
+        <!-- El botón de reiniciar se moverá al contenedor de resultados para que solo aparezca al final -->
+    </div>
+    
+    <div id="results-container" class="quiz-container hidden">
+        <h2>Resultados del Test</h2>
+        <div class="score" id="score"></div>
+        <div id="results-message"></div>
+        <button id="toggle-answers-btn" class="hidden">Mostrar Preguntas y Respuestas</button>
+        <div id="answered-questions-container" class="hidden"></div>
+        <button id="restart-btn">Volver a intentar</button>
+    </div>
+
+    <script>
+        // Banco de 30 preguntas con respuestas
+        const questions = [
+            {
+                question: "¿Cuándo es obligatorio usar pantalla facial además de lentes de seguridad?",
+                options: [
+                    "Al medir piezas con micrómetro",
+                    "Al esmerilar o rectificar piezas",
+                    "Al limpiar virutas con las manos"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿En qué situación NO debes usar guantes?",
+                options: [
+                    "Al cargar piezas con bordes filosos",
+                    "Al operar un torno o fresadora",
+                    "Al manejar material abrasivo"
+                ],
+                answer: 1
+            },
+            {
+                question: "Si una máquina se atasca mientras está en marcha, ¿qué haces primero?",
+                options: [
+                    "Intentar liberar la pieza con un destornillador",
+                    "Apagar el interruptor de emergencia",
+                    "Pedir ayuda sin tocar la máquina"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué tipo de extintor usas para aceite de máquinas en llamas?",
+                options: [
+                    "Clase A (agua)",
+                    "Clase B (CO2 o polvo químico)",
+                    "Clase C (para equipos eléctricos)"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué protecciones auditivas son adecuadas para una esmeriladora (105 dB)?",
+                options: [
+                    "Tapones desechables (NRR 25 dB)",
+                    "Orejeras electrónicas (NRR 30 dB)",
+                    "No son necesarias si el trabajo es rápido"
+                ],
+                answer: 1
+            },
+            {
+                question: "Al terminar tu turno, ¿qué acción previene riesgos para el siguiente operador?",
+                options: [
+                    "Dejar herramientas sobre la máquina para ahorrar tiempo",
+                    "Limpiar virutas y lubricar ejes",
+                    "Apagar la máquina pero no bloquearla"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué haces si ves un cable pelado en una máquina?",
+                options: [
+                    "Avisar al supervisor y no tocar",
+                    "Aislarlo con cinta aislante tú mismo",
+                    "Seguir trabajando mientras no dé problemas"
+                ],
+                answer: 0
+            },
+            {
+                question: "Al trabajar con aluminio, ¿qué riesgo respiratorio existe?",
+                options: [
+                    "Polvo que puede causar daño pulmonar",
+                    "Vapores tóxicos como el monóxido de carbono",
+                    "No hay riesgos respiratorios con aluminio"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Cuál es la distancia mínima segura de una pieza que gira en un torno?",
+                options: [
+                    "30 cm",
+                    "1.5 metros",
+                    "50 cm"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué elemento NUNCA debe faltar en tu EPP al esmerilar?",
+                options: [
+                    "Guantes de cuero",
+                    "Pantalla facial + lentes",
+                    "Mascarilla quirúrgica"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Cuándo se debe aplicar el protocolo LOTO (Lock Out - Tag Out)?",
+                options: [
+                    "Solo durante reparaciones mayores",
+                    "Cada vez que se realiza mantenimiento o limpieza en una máquina",
+                    "Cuando el supervisor lo indique específicamente"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué hacer si te salpica fluido de corte en los ojos?",
+                options: [
+                    "Lavar inmediatamente con agua limpia por 15 minutos",
+                    "Frotar los ojos con un paño limpio",
+                    "Esperar a ver si hay irritación antes de actuar"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Por qué no se deben usar relojes o joyas en el taller?",
+                options: [
+                    "Porque pueden dañarse con el trabajo",
+                    "Por riesgo de atrapamiento en partes móviles",
+                    "Por políticas de la empresa"
+                ],
+                answer: 1
+            },
+            {
+                question: "Al manipular piezas pesadas (>20 kg), ¿qué medida es obligatoria?",
+                options: [
+                    "Pedir ayuda a un compañero o usar equipo mecánico",
+                    "Levantar con cuidado usando solo la fuerza de brazos",
+                    "Empujar la pieza rodándola sobre el banco"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Qué indica una etiqueta roja en una máquina?",
+                options: [
+                    "Que está en perfecto estado",
+                    "Que tiene un defecto y no debe usarse",
+                    "Que es de alta precisión"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Cómo se deben almacenar los trapos con aceite usados?",
+                options: [
+                    "En un contenedor metálico auto-cerrable",
+                    "En un cubo de plástico con tapa",
+                    "En una bolsa de papel en el rincón del taller"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Qué verificar antes de encender una máquina CNC?",
+                options: [
+                    "Que las protecciones estén en su lugar y el área esté despejada",
+                    "Que el programa esté cargado correctamente",
+                    "Ambas opciones son correctas"
+                ],
+                answer: 2
+            },
+            {
+                question: "Si una herramienta de corte se rompe durante el trabajo, ¿qué hacer?",
+                options: [
+                    "Continuar hasta terminar la pieza",
+                    "Detener la máquina e informar inmediatamente",
+                    "Reemplazarla rápidamente sin detener la máquina"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Cuál es el riesgo principal de no lubricar adecuadamente una máquina?",
+                options: [
+                    "Solo reducirá su vida útil",
+                    "Puede causar sobrecalentamiento y atascos peligrosos",
+                    "Aumentará el consumo de energía"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué hacer si detectas un olor a quemado en el taller?",
+                options: [
+                    "Buscar la fuente inmediatamente y reportarlo",
+                    "Abrir ventanas para ventilar el área",
+                    "Ignorarlo si no ves humo visible"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Cuándo se deben cambiar los filtros de un respirador?",
+                options: [
+                    "Cada 40 horas de uso o cuando haya resistencia al respirar",
+                    "Solo cuando estén visiblemente sucios",
+                    "Una vez al mes independientemente del uso"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Qué precaución especial se debe tener al mecanizar magnesio?",
+                options: [
+                    "Usar extintor clase D en el área",
+                    "Trabajar solo en horas de la mañana",
+                    "No requiere precauciones especiales"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Qué elemento NO es parte del EPP básico en mecanizado?",
+                options: [
+                    "Zapatos con puntera de acero",
+                    "Lentes de seguridad",
+                    "Guantes de látex desechables"
+                ],
+                answer: 2
+            },
+            {
+                question: "¿Qué hacer si un compañero sufre una descarga eléctrica?",
+                options: [
+                    "Separarlo inmediatamente de la fuente de energía",
+                    "Tocarlo para liberarlo de la corriente",
+                    "Esperar a que se desconecte solo"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Por qué es peligroso usar mangas sueltas cerca de máquinas?",
+                options: [
+                    "Pueden engancharse en partes móviles",
+                    "Pueden mancharse con aceite",
+                    "Ambas opciones son correctas"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Qué verificar antes de hacer un cambio de herramienta?",
+                options: [
+                    "Que la máquina esté completamente detenida",
+                    "Que la herramienta nueva esté afilada",
+                    "Ambas opciones son correctas"
+                ],
+                answer: 2
+            },
+            {
+                question: "¿Cuál es el riesgo de usar aire comprimido para limpiar ropa?",
+                options: [
+                    "Puede introducir aire bajo la piel (embolia)",
+                    "Puede dañar la tela de la ropa",
+                    "No hay riesgos significativos"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Qué hacer si el fluido de corte causa irritación en la piel?",
+                options: [
+                    "Lavar con agua y jabón, reportar al supervisor",
+                    "Aplicar crema hidratante y continuar trabajando",
+                    "Usar guantes más gruesos sin informar"
+                ],
+                answer: 0
+            },
+            {
+                question: "¿Cuándo se debe realizar una inspección de seguridad de máquinas?",
+                options: [
+                    "Solo cuando se compra equipo nuevo",
+                    "Diariamente antes del primer uso",
+                    "Una vez al año"
+                ],
+                answer: 1
+            },
+            {
+                question: "¿Qué indica una señal de seguridad amarilla con negro?",
+                options: [
+                    "Peligro de riesgo químico",
+                    "Advertencia de peligro general",
+                    "Obligación de usar EPP"
+                ],
+                answer: 1
+            }
+        ];
+
+        // Variables del quiz
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedQuestions = [];
+        let userAnswers = [];
+
+        // Elementos del DOM
+        const questionContainer = document.getElementById('question-container');
+        const progressElement = document.getElementById('progress');
+        const nextButton = document.getElementById('next-btn');
+        const submitButton = document.getElementById('submit-btn');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        const scoreElement = document.getElementById('score');
+        const resultsMessage = document.getElementById('results-message');
+        const restartButton = document.getElementById('restart-btn');
+        const startButton = document.getElementById('start-btn');
+        const toggleAnswersButton = document.getElementById('toggle-answers-btn');
+        const answeredQuestionsContainer = document.getElementById('answered-questions-container');
+
+        // Seleccionar 10 preguntas aleatorias
+        function selectRandomQuestions() {
+            const shuffled = [...questions].sort(() => 0.5 - Math.random());
+            selectedQuestions = shuffled.slice(0, 10);
+            userAnswers = new Array(10).fill(null);
+        }
+
+        function startQuiz() {
+            document.getElementById('intro-container').classList.add('hidden');
+            quizContainer.classList.remove('hidden');
+            selectRandomQuestions();
+            showQuestion();
+        }
+
+        // Mostrar la pregunta actual
+        function showQuestion() {
+            const question = selectedQuestions[currentQuestionIndex];
+            progressElement.textContent = `Pregunta ${currentQuestionIndex + 1} de 10`;
+            
+            let optionsHTML = '';
+            question.options.forEach((option, index) => {
+                const isSelected = userAnswers[currentQuestionIndex] === index;
+                optionsHTML += `
+                    <div class="option ${isSelected ? 'selected' : ''}" data-index="${index}">
+                        ${option}
+                    </div>
+                `;
+            });
+            
+            questionContainer.innerHTML = `
+                <div class="question">
+                    <h3>${question.question}</h3>
+                    <div class="options">${optionsHTML}</div>
+                </div>
+            `;
+            
+            // Mostrar botones adecuados
+            nextButton.classList.toggle('hidden', currentQuestionIndex === 9);
+            submitButton.classList.toggle('hidden', currentQuestionIndex !== 9);
+            
+            // Agregar event listeners a las opciones
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', () => {
+                    document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    userAnswers[currentQuestionIndex] = parseInt(option.dataset.index);
+                });
+            });
+        }
+
+        // Mostrar resultados
+        function showResults() {
+            quizContainer.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            toggleAnswersButton.classList.remove('hidden');
+            answeredQuestionsContainer.classList.add('hidden'); // Ensure it's hidden initially
+            
+            // Calcular puntaje
+            score = 0;
+            selectedQuestions.forEach((question, index) => {
+                if (userAnswers[index] === question.answer) {
+                    score++;
+                }
+            });
+            
+            scoreElement.textContent = `Puntuación: ${score}/10`;
+            
+            // Mostrar mensaje según puntaje
+            if (score <= 3) {
+                resultsMessage.innerHTML = `
+                    <p>¡Alto riesgo! Revisa urgentemente la guía de seguridad antes de volver al taller.</p>
+                    <p>Tu conocimiento de seguridad es insuficiente para trabajar de forma segura.</p>
+                `;
+            } else if (score <= 6) {
+                resultsMessage.innerHTML = `
+                    <p>Nivel básico, pero necesitas reforzar conceptos clave.</p>
+                    <p>Considera tomar un curso de seguridad antes de operar máquinas complejas.</p>
+                `;
+            } else if (score <= 9) {
+                resultsMessage.innerHTML = `
+                    <p>Buen nivel de conocimiento sobre seguridad.</p>
+                    <p>Sigue así, pero no te confíes - siempre hay más que aprender.</p>
+                `;
+            } else {
+                resultsMessage.innerHTML = `
+                    <p>¡Excelente! Eres un experto en seguridad en el taller.</p>
+                    <p>Comparte este conocimiento con tus compañeros para crear un entorno más seguro.</p>
+                `;
+            }
+        }
+
+        // Reiniciar el quiz
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            selectRandomQuestions();
+            userAnswers = new Array(10).fill(null);
+            quizContainer.classList.remove('hidden');
+            document.getElementById('intro-container').classList.add('hidden'); // Asegurarse que la intro esté oculta
+            resultsContainer.classList.add('hidden');
+            toggleAnswersButton.classList.add('hidden');
+            answeredQuestionsContainer.classList.add('hidden').innerHTML = ''; // Hide and clear
+            showQuestion();
+        }
+
+        // Event listeners
+        nextButton.addEventListener('click', () => {
+            if (userAnswers[currentQuestionIndex] !== null) {
+                currentQuestionIndex++;
+                showQuestion();
+            } else {
+                alert('Por favor selecciona una respuesta antes de continuar.');
+            }
+        });
+
+        submitButton.addEventListener('click', () => {
+            if (userAnswers[currentQuestionIndex] !== null) {
+                showResults();
+            } else {
+                alert('Por favor selecciona una respuesta antes de ver los resultados.');
+            }
+        });
+
+        restartButton.addEventListener('click', restartQuiz);
+
+        toggleAnswersButton.addEventListener('click', () => {
+            if (answeredQuestionsContainer.classList.contains('hidden')) {
+                answeredQuestionsContainer.innerHTML = ''; // Clear previous content
+                let content = '<h3>Preguntas y Respuestas Correctas:</h3><ul>';
+                selectedQuestions.forEach((q, i) => {
+                    content += `<li>
+                                    <strong>Pregunta ${i + 1}:</strong> ${q.question}<br>
+                                    <em>Respuesta Correcta:</em> ${q.options[q.answer]}
+                                </li><br>`;
+                });
+                content += '</ul>';
+                answeredQuestionsContainer.innerHTML = content;
+                answeredQuestionsContainer.classList.remove('hidden');
+                toggleAnswersButton.textContent = 'Ocultar Preguntas y Respuestas';
+            } else {
+                answeredQuestionsContainer.classList.add('hidden');
+                toggleAnswersButton.textContent = 'Mostrar Preguntas y Respuestas';
+            }
+        });
+
+        // Event listener para el botón de comenzar
+        startButton.addEventListener('click', startQuiz);
+    </script>
+
+    </div>
+</body></html>
+

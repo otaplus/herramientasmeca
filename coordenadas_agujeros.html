@@ -1,9 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Herramienta de Disposición de Agujeros en PCD</title>
+    <title>Calculadora de Cuerdas y Coordenadas de Agujeros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
 <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -18,130 +21,56 @@
         </svg>
         Volver al Inicio
     </a>
-</div><h1>Herramienta de Disposición de Agujeros en PCD</h1>
+</div><h1>Calculadora de Agujeros en Círculo</h1>
 
-        <div class="tab-container">
-            <div class="tab-buttons">
-                <button class="tab-button active" onclick="abrirSolapa(event, 'Calculadora')">Calculadora PCD</button>
-                <button class="tab-button" onclick="abrirSolapa(event, 'GuiaUsuario')">Guía del Usuario</button>
+        <div id="mensajeError" class="error-message" style="display: none;"></div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label for="diametro">Diámetro de la pieza (D):</label>
+                <input type="number" id="diametro" placeholder="Ej: 100" step="any">
             </div>
 
-            <div id="Calculadora" class="tab-content active">
-                <div id="mensajeError" class="error-message"></div>
-
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="diametro">Diámetro del PCD (D):</label>
-                        <input type="number" id="diametro" placeholder="Ej: 100" step="any">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="numAgujeros">Número de agujeros (N):</label>
-                        <input type="number" id="numAgujeros" placeholder="Ej: 6" step="1" min="1">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="anguloInicial">Ángulo agujero inicial (grados decimales):</label>
-                        <input type="number" id="anguloInicial" value="0" placeholder="Ej: 0 o 45" step="any">
-                    </div>
-                </div>
-
-                <button onclick="calcularYDibujar()">Calcular y Dibujar</button>
-
-                <div class="resultados" id="resultadosDiv" style="display:none;">
-                    <h2>Resultados</h2>
-                    <p id="anguloEntreAgujeros"></p>
-                    <p id="distanciaEntreAgujeros"></p>
-                </div>
-
-                <div class="coordenadas-container" id="coordenadasDiv" style="display:none;">
-                    <h2>Coordenadas de los Agujeros (Centro X0, Y0)</h2>
-                    <table id="tablaCoordenadas">
-                        <thead>
-                            <tr>
-                                <th>Agujero #</th>
-                                <th>Coordenada X</th>
-                                <th>Coordenada Y</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cuerpoTablaCoordenadas">
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="grafico-container" id="graficoDiv" style="display:none;">
-                    <h2>Gráfico de la Pieza</h2>
-                    <canvas id="graficoPieza" width="400" height="400"></canvas>
-                </div>
+            <div class="form-group">
+                <label for="numAgujeros">Número de agujeros (N):</label>
+                <input type="number" id="numAgujeros" placeholder="Ej: 6" step="1" min="1">
             </div>
 
-            <div id="GuiaUsuario" class="tab-content">
-                <h2>Guía del Usuario: Herramienta de Disposición de Agujeros en PCD</h2>
-                <p>Esta herramienta está diseñada para ayudarte a calcular la posición de agujeros distribuidos uniformemente en un círculo (PCD - Pitch Circle Diameter o Diámetro del Círculo de Primitiva), así como la distancia entre ellos.</p>
-
-                <h3>Cómo Usar la Herramienta</h3>
-                <ol>
-                    <li><strong>Diámetro del PCD (D):</strong> Ingresa el diámetro del círculo sobre el cual se distribuirán los centros de los agujeros. Asegúrate de que este valor sea positivo. Las unidades de los resultados (distancia, coordenadas X e Y) serán las mismas que las unidades que uses para el diámetro.</li>
-                    <li><strong>Número de agujeros (N):</strong> Especifica cuántos agujeros deseas distribuir en el círculo. Debe ser un número entero y mayor que cero.</li>
-                    <li><strong>Ángulo agujero inicial (grados decimales):</strong> Define el ángulo de partida para el primer agujero, medido en grados decimales desde el eje X positivo en sentido antihorario. Por defecto es 0 grados (el primer agujero estará sobre el eje X positivo). Puedes usar valores como 45, 90, etc.</li>
-                    <li><strong>Calcular y Dibujar:</strong> Haz clic en este botón para procesar los datos.</li>
-                </ol>
-
-                <h3>Interpretación de los Resultados</h3>
-                <ul>
-                    <li><strong>Ángulo entre agujeros adyacentes:</strong> Es el ángulo que se forma entre los centros de dos agujeros consecutivos, medido desde el centro del PCD.</li>
-                    <li><strong>Distancia entre centros de agujeros:</strong> Es la longitud de la cuerda que une los centros de dos agujeros adyacentes.</li>
-                    <li><strong>Coordenadas de los Agujeros:</strong> La tabla muestra las coordenadas (X, Y) para el centro de cada agujero, asumiendo que el centro del PCD (pieza) está en el origen (0,0).
-                        <ul>
-                            <li>El eje X es horizontal (positivo a la derecha).</li>
-                            <li>El eje Y es vertical (positivo hacia arriba).</li>
-                        </ul>
-                    </li>
-                    <li><strong>Gráfico de la Pieza:</strong> Una representación visual del PCD y la ubicación de los agujeros. El primer agujero se posiciona según el ángulo inicial especificado, y los siguientes se distribuyen en sentido antihorario. El centro del gráfico representa el origen (0,0).</li>
-                </ul>
-
-                <h3>Fórmulas Utilizadas</h3>
-                <p>La herramienta utiliza las siguientes fórmulas trigonométricas estándar:</p>
-                <ul>
-                    <li><strong>Radio del PCD (R):</strong>
-                        <span class="formula">R = D / 2</span>
-                    </li>
-                    <li><strong>Ángulo entre agujeros adyacentes (α):</strong> (Convertido a radianes para cálculos trigonométricos)
-                        <span class="formula">α_grados = 360 / N</span>
-                        <span class="formula">α_radianes = (360 / N) * (π / 180)  o  α_radianes = (2 * π) / N</span>
-                    </li>
-                    <li><strong>Distancia entre centros de agujeros (C - Longitud de la cuerda):</strong>
-                        <span class="formula">C = 2 * R * sin(α_radianes / 2)</span>
-                    </li>
-                    <li><strong>Coordenadas (X, Y) para cada agujero <i>i</i>:</strong>
-                        <p>Donde <i>θ<sub>i</sub></i> es el ángulo acumulado para el agujero <i>i</i> en radianes:</p>
-                        <span class="formula">Ángulo_inicial_radianes = Ángulo_inicial_grados * (π / 180)</span>
-                        <span class="formula">θ<sub>i</sub> = Ángulo_inicial_radianes + (i * α_radianes)</span>
-                        <p>(donde <i>i</i> va de 0 a N-1 para los cálculos internos, o de 1 a N en la numeración de la tabla)</p>
-                        <span class="formula">X<sub>i</sub> = R * cos(θ<sub>i</sub>)</span>
-                        <span class="formula">Y<sub>i</sub> = R * sin(θ<sub>i</sub>)</span>
-                    </li>
-                </ul>
-                 <p><strong>Nota sobre el gráfico:</strong> El sistema de coordenadas del canvas HTML tiene el eje Y invertido (positivo hacia abajo). La herramienta ajusta esto internamente para que el gráfico coincida con la convención matemática estándar (Y positivo hacia arriba).</p>
+            <div class="form-group">
+                <label for="anguloInicial">Ángulo agujero inicial (grados decimales):</label>
+                <input type="number" id="anguloInicial" value="0" placeholder="Ej: 0 o 45" step="any">
             </div>
+        </div>
+
+        <button onclick="calcularYDibujar()">Calcular y Dibujar</button>
+
+        <div class="resultados" id="resultadosDiv" style="display:none;">
+            <h2>Resultados</h2>
+            <p id="distanciaEntreAgujeros"></p>
+        </div>
+
+        <div class="coordenadas-container" id="coordenadasDiv" style="display:none;">
+            <h2>Coordenadas de los Agujeros (Centro X0, Y0)</h2>
+            <table id="tablaCoordenadas">
+                <thead>
+                    <tr>
+                        <th>Agujero #</th>
+                        <th>Coordenada X</th>
+                        <th>Coordenada Y</th>
+                    </tr>
+                </thead>
+                <tbody id="cuerpoTablaCoordenadas">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="grafico-container" id="graficoDiv" style="display:none;">
+            <h2>Gráfico de la Pieza</h2>
+            <canvas id="graficoPieza" width="400" height="400"></canvas>
         </div>
     </div>
 
     <script>
-        function abrirSolapa(evt, nombreSolapa) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tab-content");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(nombreSolapa).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-
         // Función para mostrar mensajes de error
         function mostrarError(mensaje) {
             const mensajeErrorDiv = document.getElementById('mensajeError');
@@ -191,13 +120,11 @@
             // Cálculos
             const radio = diametro / 2;
             const anguloEntreAgujerosRad = (2 * Math.PI) / numAgujeros; // Ángulo en radianes
-            const anguloEntreAgujerosDeg = 360 / numAgujeros; // Ángulo en grados
 
             // Calcular la distancia entre centros de agujeros (longitud de la cuerda)
             // Fórmula: C = 2 * R * sin(α / 2), donde α es el ángulo central entre dos agujeros.
             const distancia = 2 * radio * Math.sin(anguloEntreAgujerosRad / 2);
 
-            document.getElementById('anguloEntreAgujeros').innerText = `Ángulo entre agujeros adyacentes: ${anguloEntreAgujerosDeg.toFixed(4)} grados`;
             document.getElementById('distanciaEntreAgujeros').innerText = `Distancia entre centros de agujeros: ${distancia.toFixed(4)}`;
             document.getElementById('resultadosDiv').style.display = 'block';
 
@@ -329,15 +256,17 @@
             });
         }
 
-        // Configuración inicial al cargar la página
+        // Ocultar las secciones de resultados y gráfico al inicio
         document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('resultadosDiv').style.display = 'none';
+            document.getElementById('coordenadasDiv').style.display = 'none';
+            document.getElementById('graficoDiv').style.display = 'none';
             document.getElementById('mensajeError').style.display = 'none';
-            // Por defecto, la primera solapa (Calculadora) ya está activa por el HTML.
         });
 
     </script>
-    </div>
-</body>
-</html>
 
+
+    </div>
+</body></html>
 

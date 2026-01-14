@@ -1,9 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Desarrollo de Cilindros y Conos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
 <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -25,12 +28,12 @@
             <option value="cono">Cono truncado</option>
         </select>
 
-        <div id="campos-cilindro">
+        <div id="campos-cilindro" style="display: block;">
             <label for="diametro-cilindro">Diámetro del cilindro (mm):</label>
             <input type="number" id="diametro-cilindro" min="0.01" step="any" placeholder="Ej: 120">
         </div>
 
-        <div id="campos-cono" class="hidden">
+        <div id="campos-cono" class="hidden" style="display: none;">
             <label for="diametro-mayor">Diámetro mayor (mm):</label>
             <input type="number" id="diametro-mayor" min="0.01" step="any" placeholder="Ej: 200">
             <label for="diametro-menor">Diámetro menor (mm):</label>
@@ -44,7 +47,7 @@
         <div id="resultado" class="result" style="display:none"></div>
         <canvas id="grafico" width="400" height="320" style="display:none"></canvas>
 
-        <div id="explicacion-formulas" class="explanation hidden">
+        <div id="explicacion-formulas" class="explanation hidden" style="display: none;">
             <h3>Explicación de las Fórmulas (Cono Truncado)</h3>
             <p>Donde:</p>
             <ul>
@@ -56,7 +59,7 @@
             </ul>
             <p><strong>1. Generatriz del cono truncado (l):</strong></p>
             <p>Es la longitud de la línea inclinada en la superficie del cono truncado. Se calcula usando el teorema de Pitágoras sobre el triángulo rectángulo formado por la altura (h) y la diferencia de los radios (r1 - r2).</p>
-            <p><code>l = &radic;((r1 - r2)² + h²)</code></p>
+            <p><code>l = √((r1 - r2)² + h²)</code></p>
         
             <p><strong>2. Radio mayor del desarrollo (G<sub>mayor</sub>):</strong></p>
             <p>Es el radio del sector circular más grande que se traza para formar el desarrollo plano. Se obtiene por semejanza de triángulos, imaginando el cono completo (no truncado) extendido hasta su vértice.</p>
@@ -67,12 +70,12 @@
             <p><code>G<sub>menor</sub> = G<sub>mayor</sub> - l</code></p>
             <p>Alternativamente: <code>G<sub>menor</sub> = (l * r2) / (r1 - r2)</code> (esta fórmula es útil si se calcula G<sub>menor</sub> independientemente).</p>
         
-            <p><strong>4. Ángulo del sector circular (&alpha;):</strong></p>
+            <p><strong>4. Ángulo del sector circular (α):</strong></p>
             <p>Es el ángulo del "gajo" o sector de corona circular que forma el desarrollo plano del cono truncado. Se calcula relacionando la circunferencia de la base mayor del cono con la circunferencia del círculo completo del desarrollo mayor.</p>
-            <p><code>&alpha; (grados) = (Circunferencia de la base mayor del cono / Circunferencia del círculo de desarrollo mayor) * 360</code></p>
-            <p><code>&alpha; (grados) = (2 * &pi; * r1) / (2 * &pi; * G<sub>mayor</sub>) * 360</code></p>
+            <p><code>α (grados) = (Circunferencia de la base mayor del cono / Circunferencia del círculo de desarrollo mayor) * 360</code></p>
+            <p><code>α (grados) = (2 * π * r1) / (2 * π * G<sub>mayor</sub>) * 360</code></p>
             <p>Simplificando:</p>
-            <p><code>&alpha; (grados) = (r1 / G<sub>mayor</sub>) * 360</code></p>
+            <p><code>α (grados) = (r1 / G<sub>mayor</sub>) * 360</code></p>
         </div>
     </div>
 
@@ -279,8 +282,8 @@
 
         mostrarCampos();
     </script>
-    </div>
-</body>
-</html>
 
+
+    </div>
+</body></html>
 

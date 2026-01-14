@@ -1,9 +1,12 @@
 ﻿<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
+<!-- saved from url=(0083)file:///C:/Users/isaac/AppData/Local/Programs/Microsoft%20VS%20Code/Untitled-1.html -->
+<html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Conversiones Técnicas para Talleres Mecánicos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     
 <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -37,7 +40,7 @@
     </div>
 
     <div class="container">
-        <div class="conversion-section" id="section-longitud-distancia">
+        <div class="conversion-section" id="section-longitud-distancia" style="display: none;">
             <h2>Longitud y Distancia</h2>
             <div class="converter">
                 <h3>Milímetros ↔ Pulgadas</h3>
@@ -48,7 +51,7 @@
                         <option value="mm">Milímetros (mm)</option>
                         <option value="pulgadas">Pulgadas (in)</option>
                     </select>
-                    <button onclick="convertir('mm-pulgadas', 'mm-pulgadas-unit', 'mm-pulgadas-results', 'longitud')">Convertir</button>
+                    <button onclick="convertir(&#39;mm-pulgadas&#39;, &#39;mm-pulgadas-unit&#39;, &#39;mm-pulgadas-results&#39;, &#39;longitud&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="mm-pulgadas-results"></div>
             </div>
@@ -61,12 +64,12 @@
                         <option value="m">Metros (m)</option>
                         <option value="pies">Pies (ft)</option>
                     </select>
-                    <button onclick="convertir('m-pies', 'm-pies-unit', 'distance-results', 'distancia')">Convertir</button>
+                    <button onclick="convertir(&#39;m-pies&#39;, &#39;m-pies-unit&#39;, &#39;distance-results&#39;, &#39;distancia&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="distance-results"></div>
             </div>
         </div>
-        <div class="conversion-section" id="section-peso-fuerza">
+        <div class="conversion-section" id="section-peso-fuerza" style="display: none;">
             <h2>Peso y Fuerza</h2>
             <div class="converter">
                 <h3>Kilogramos ↔ Libras</h3>
@@ -77,7 +80,7 @@
                         <option value="kg">Kilogramos (kg)</option>
                         <option value="lbs">Libras (lb)</option>
                     </select>
-                    <button onclick="convertir('kg-lbs', 'kg-lbs-unit', 'weight-results', 'peso')">Convertir</button>
+                    <button onclick="convertir(&#39;kg-lbs&#39;, &#39;kg-lbs-unit&#39;, &#39;weight-results&#39;, &#39;peso&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="weight-results"></div>
             </div>
@@ -90,12 +93,12 @@
                         <option value="N">Newton (N)</option>
                         <option value="kgf">Kilogramo-fuerza (kgf)</option>
                     </select>
-                    <button onclick="convertir('n-kgf', 'n-kgf-unit', 'force-results', 'fuerza')">Convertir</button>
+                    <button onclick="convertir(&#39;n-kgf&#39;, &#39;n-kgf-unit&#39;, &#39;force-results&#39;, &#39;fuerza&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="force-results"></div>
             </div>
         </div>
-        <div class="conversion-section" id="section-presion-torque">
+        <div class="conversion-section" id="section-presion-torque" style="display: none;">
             <h2>Presión y Torque</h2>
             <div class="converter">
                 <h3>Bar ↔ PSI</h3>
@@ -106,7 +109,7 @@
                         <option value="bar">Bar</option>
                         <option value="psi">PSI (lb/in²)</option>
                     </select>
-                    <button onclick="convertir('bar-psi', 'bar-psi-unit', 'pressure-results', 'presion')">Convertir</button>
+                    <button onclick="convertir(&#39;bar-psi&#39;, &#39;bar-psi-unit&#39;, &#39;pressure-results&#39;, &#39;presion&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="pressure-results"></div>
             </div>
@@ -119,12 +122,12 @@
                         <option value="Nm">Newton-metro (Nm)</option>
                         <option value="lbft">Libra-pie (lb-ft)</option>
                     </select>
-                    <button onclick="convertir('nm-lbft', 'nm-lbft-unit', 'torque-results', 'torque')">Convertir</button>
+                    <button onclick="convertir(&#39;nm-lbft&#39;, &#39;nm-lbft-unit&#39;, &#39;torque-results&#39;, &#39;torque&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="torque-results"></div>
             </div>
         </div>
-        <div class="conversion-section" id="section-dureza-temperatura">
+        <div class="conversion-section" id="section-dureza-temperatura" style="display: none;">
             <h2>Dureza y Temperatura</h2>
             <div class="converter">
                 <h3>Escalas de Dureza</h3>
@@ -158,12 +161,12 @@
                         <option value="C">Celsius (°C)</option>
                         <option value="F">Fahrenheit (°F)</option>
                     </select>
-                    <button onclick="convertir('temp-cf', 'temp-cf-unit', 'temperature-results', 'temperatura')">Convertir</button>
+                    <button onclick="convertir(&#39;temp-cf&#39;, &#39;temp-cf-unit&#39;, &#39;temperature-results&#39;, &#39;temperatura&#39;)">Convertir</button>
                 </div>
                 <div class="results" id="temperature-results"></div>
             </div>
         </div>
-        <div class="conversion-section" id="section-velocidad-avance">
+        <div class="conversion-section" id="section-velocidad-avance" style="display: none;">
             <h2>Velocidad y Avance</h2>
             <div class="converter">
                 <h3>RPM ↔ m/min</h3>
@@ -198,7 +201,7 @@
                 <div class="results" id="feed-results"></div>
             </div>
         </div>
-        <div class="conversion-section" id="section-angulos">
+        <div class="conversion-section" id="section-angulos" style="display: none;">
             <h2>Ángulos: Grados y Minutos</h2>
             <div class="converter">
                 <h3>Grados ↔ Minutos</h3>
@@ -214,7 +217,7 @@
                 <div class="results" id="angle-results"></div>
             </div>
         </div>
-        <div class="conversion-section" id="section-otras">
+        <div class="conversion-section" id="section-otras" style="display: none;">
             <h2>Otras Conversiones</h2>
             <div class="converter">
                 <h3>Área Seccional</h3>
@@ -453,8 +456,8 @@
             }
         });
     </script>
-    </div>
-</body>
-</html>
 
+
+    </div>
+</body></html>
 
